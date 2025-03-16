@@ -11,7 +11,7 @@ import {
 import axios from "axios";
 import Navbar from "../navbar/Navbar";
 import Footer from "../footer/Footer";
-import { useNavigate } from "react-router-dom"; // For programmatic navigation
+import { Link, useNavigate } from "react-router-dom"; // For programmatic navigation
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -100,6 +100,12 @@ const Login = () => {
               </Button>
             </Box>
           </form>
+          <Typography mt={2} variant="body2">
+              Don't have an account?{" "}
+              <Link to="/registration" style={{ color: "#1976d2", textDecoration: "none",}}>
+                Register now
+              </Link>
+            </Typography>
         </Paper>
       </Container>
       <Footer />

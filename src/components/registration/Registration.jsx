@@ -12,6 +12,7 @@ import axios from "axios";
 import Navbar from "../navbar/Navbar";
 import Footer from "../footer/Footer";
 import Cookies from 'js-cookie'
+import { Link } from "react-router-dom";
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -102,6 +103,12 @@ const Registration = () => {
               </Button>
             </Box>
           </form>
+          <Typography mt={2} variant="body2">
+              Already registered?{" "}
+              <Link to="/login" style={{ color: "#1976d2", textDecoration: "none",}}>
+                Login now
+              </Link>
+            </Typography>
         </Paper>
       </Container>
       <Footer />
