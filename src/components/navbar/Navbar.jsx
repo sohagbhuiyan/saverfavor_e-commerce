@@ -8,6 +8,8 @@ import {
   FaUser,
   FaBars,
   FaTimes,
+  FaLightbulb,
+  FaInfo,
 } from "react-icons/fa";
 import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
@@ -352,19 +354,19 @@ const fetchProfileData = async () => {
                 onClick={() => toggleDropdown("user")}
               />
               {activeDropdown === "user" && (
-                <div className="absolute top-8 right-0 z-51 bg-white text-black px-2 py-4 rounded-lg shadow-lg">
+                <div className="absolute top-8 right-0 z-40 bg-white text-black px-1 py-2 rounded-lg shadow-lg">
                   {user ? (
                     <>
-                      <p className="">{user.email}</p>
-                      <p className="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-300 rounded-lg ">Profile Edit</p>
+                      <p className="bg-green-600 text-white rounded-lg px-1">{user.email}</p>
+                      <p className="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-500 rounded-lg ">Profile Edit</p>
                       <button 
-                      className="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-300 rounded-lg "
+                      className="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-500 rounded-lg "
                       onClick={fetchProfileData}
                       >
                       Profile View
                     </button>
                       <button
-                        className="mt-2 bg-red-500 text-white text-md rounded-lg w-48 cursor-pointer"
+                        className="text-red-600 hover:text-red-400 font-medium text-sm md:text-md rounded-lg w-full cursor-pointer"
                         onClick={handleLogout}
                       >
                         Log Out
@@ -374,7 +376,7 @@ const fetchProfileData = async () => {
                     <>
                       <p className="text-sm text-gray-600">Not logged in</p>
                       <Link to="/login">
-                        <button className="mt-2 bg-green-500 text-white p-2 rounded-lg  cursor-pointer">
+                        <button className="mt-2 bg-green-500 text-white px-1 py-2 rounded-lg w-48 cursor-pointer">
                           Log In
                         </button>
                       </Link>
@@ -506,17 +508,17 @@ const fetchProfileData = async () => {
           />
           <span className="text-xs">Profile</span>
           {activeDropdown === "user" && (
-            <div className="absolute bottom-12 right-0 bg-white text-black p-4 rounded-lg shadow-lg w-48">
+            <div className="absolute bottom-12 right-0 bg-white text-black px-1 py-2 rounded-lg shadow-lg">
               {user ? (
                 <>
-                  <p className="">{user.email}</p>
-                  <p className="text-sm text-gray-600">Profile Edit</p>
-                  <button className="mt-1 cursor-pointer bg-green-500 text-white rounded-lg "
+                  <p className="bg-green-600 text-white rounded-lg ">{user.email}</p>
+                  <p className="text-sm font-medium text-gray-600 cursor-pointer">Profile Edit</p>
+                  <button className="cursor-pointer text-sm font-medium text-gray-600 rounded-lg "
                   onClick={fetchProfileData}>
                       Profile View
                     </button>
                   <button
-                    className="mt-2 bg-red-500 text-white rounded-lg w-full"
+                    className="text-red-600 hover:text-red-400 font-medium text-sm md:text-md rounded-lg w-full cursor-pointer"
                     onClick={handleLogout}
                   >
                     Log Out
@@ -526,7 +528,7 @@ const fetchProfileData = async () => {
                 <>
                   <p className="text-sm text-gray-600">Not logged in</p>
                   <Link to="/login">
-                    <button className="mt-2 cursor-pointer bg-green-500 text-white rounded-lg w-full">
+                    <button className="mt-2 cursor-pointer bg-green-500 text-white rounded-lg w-48">
                       Log In
                     </button>
                   </Link>
@@ -553,8 +555,7 @@ const fetchProfileData = async () => {
           <p><strong>Country:</strong> {profileData.country}</p>
           <p><strong>Phone Number:</strong> {profileData.phoneNo}</p>
           <p><strong>Date of Birth:</strong> {profileData.dob}</p>
-          <p><strong>NID Number:</strong> {profileData.nidnumber}</p>
-         
+          <p><strong>NID Number:</strong> {profileData.nidnumber}</p>  
         </ul>
       )}
       <button
