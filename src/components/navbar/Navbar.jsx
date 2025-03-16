@@ -10,6 +10,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { AiOutlineSearch } from "react-icons/ai";
+import axios from "axios";
 
 const menuItems = [
   { name: "Home", path: "/" },
@@ -169,6 +170,10 @@ const Navbar = () => {
   const [user, setUser] = useState(
     localStorage.getItem("userEmail") ? { email: localStorage.getItem("userEmail") } : null
   );
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
 
   // Initialize user state from localStorage
   useEffect(() => {
@@ -177,6 +182,47 @@ const Navbar = () => {
       setUser({ email: userEmail });
     }
   }, []);
+
+// Fetch all users' data and filter for the logged-in user
+const fetchProfileData = async () => {
+  setLoading(true);
+  setError("");
+  try {
+    const token = localStorage.getItem("token");
+    const userEmail = localStorage.getItem("userEmail"); // Get the logged-in user's email
+
+    if (!token || !userEmail) {
+      throw new Error("No token or user email found. Please log in again.");
+    }
+
+    // Fetch all users' data
+    const response = await axios.get(
+      "http://108.181.173.121:6061/api/userRegistration/get",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("API Response (All Users):", response.data); // Log the API response
+
+    // Filter the data to find the logged-in user
+    const loggedInUser = response.data.find((user) => user.email === userEmail);
+
+    if (loggedInUser) {
+      console.log("Filtered User Data:", loggedInUser); // Log the filtered user data
+      setProfileData(loggedInUser); // Set the logged-in user's data
+    } else {
+      throw new Error("No data found for the logged-in user.");
+    }
+  } catch (err) {
+    console.error("Error fetching profile data:", err);
+    setError("Failed to fetch profile data. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Logout function
   const handleLogout = () => {
@@ -306,11 +352,17 @@ const Navbar = () => {
                 onClick={() => toggleDropdown("user")}
               />
               {activeDropdown === "user" && (
-                <div className="absolute top-8 right-0 z-51 bg-white text-black p-3 rounded-lg shadow-lg">
+                <div className="absolute top-8 right-0 z-51 bg-white text-black px-2 py-4 rounded-lg shadow-lg">
                   {user ? (
                     <>
                       <p className="">{user.email}</p>
-                      <p className="text-sm text-gray-600">Profile Edit</p>
+                      <p className="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-300 rounded-lg ">Profile Edit</p>
+                      <button 
+                      className="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-300 rounded-lg "
+                      onClick={fetchProfileData}
+                      >
+                      Profile View
+                    </button>
                       <button
                         className="mt-2 bg-red-500 text-white text-md rounded-lg w-48 cursor-pointer"
                         onClick={handleLogout}
@@ -322,7 +374,7 @@ const Navbar = () => {
                     <>
                       <p className="text-sm text-gray-600">Not logged in</p>
                       <Link to="/login">
-                        <button className="mt-2 bg-green-500 text-white p-2 rounded-lg w-48 cursor-pointer">
+                        <button className="mt-2 bg-green-500 text-white p-2 rounded-lg  cursor-pointer">
                           Log In
                         </button>
                       </Link>
@@ -459,6 +511,10 @@ const Navbar = () => {
                 <>
                   <p className="">{user.email}</p>
                   <p className="text-sm text-gray-600">Profile Edit</p>
+                  <button className="mt-1 cursor-pointer bg-green-500 text-white rounded-lg "
+                  onClick={fetchProfileData}>
+                      Profile View
+                    </button>
                   <button
                     className="mt-2 bg-red-500 text-white rounded-lg w-full"
                     onClick={handleLogout}
@@ -480,7 +536,37 @@ const Navbar = () => {
           )}
         </div>
       </div>
+      {/* // Modal for displaying profile data */}
+      {profileData && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <h2 className="text-xl text-gray-600 font-bold mb-4">Profile Information</h2>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <ul className="text-gray-800">
+          <p><strong>Name:</strong> {profileData.name}</p>
+          <p><strong>Email:</strong> {profileData.email}</p>
+          <p><strong>Address:</strong> {profileData.address}</p>
+          <p><strong>Country:</strong> {profileData.country}</p>
+          <p><strong>Phone Number:</strong> {profileData.phoneNo}</p>
+          <p><strong>Date of Birth:</strong> {profileData.dob}</p>
+          <p><strong>NID Number:</strong> {profileData.nidnumber}</p>
+         
+        </ul>
+      )}
+      <button
+        className="mt-4 bg-red-500 text-white p-2 cursor-pointer rounded-lg w-full"
+        onClick={() => setProfileData(null)}
+      >
+        Close
+      </button>
     </div>
+  </div>
+)}
+</div>
   );
 };
 

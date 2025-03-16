@@ -40,7 +40,7 @@ const ProfileEdit = () => {
               <Button fullWidth variant="contained" sx={{ my: 1 }}>Profile</Button>
               <Button fullWidth>Favorites</Button>
             </Paper>
-          </Grid>~
+          </Grid>
   
           {/* Profile Form */}
           <Grid item xs={12} sm={8}>
