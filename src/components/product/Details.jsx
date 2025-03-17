@@ -8,7 +8,7 @@ const Details = () => {
         for keeping your screens crystal clear and free from smudges...
       </Typography>
 
-      <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ fontSize: { xs: "1.125rem", md: "1.5rem" } }}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
         Key Features and Benefits
       </Typography>
 
@@ -30,7 +30,7 @@ const Details = () => {
       <Divider sx={{ my: 3 }} />
 
       {/* Maintenance Section */}
-      <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ fontSize: { xs: "1.125rem", md: "1.5rem" } }}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
         How to Maintain Your Screens with the K2 Opula KCL-1029
       </Typography>
 
@@ -56,7 +56,7 @@ const Details = () => {
         fontWeight="bold"
         color="primary"
         paragraph
-        sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+        sx={{ fontSize: { xs: "0.875", md: "1rem" } }}
       >
         Keep your screens looking pristine with the K2 Opula KCL-1029 Screen Cleaning Kit (100ML)!
       </Typography>
@@ -67,7 +67,7 @@ const Details = () => {
       <Divider sx={{ my: 3 }} />
 
       {/* Pricing Section */}
-      <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}>
+      <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
         What is the price of K2 Opula KCL-1029 Accessories in Bangladesh?
       </Typography>
       <Typography variant="body1" sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
