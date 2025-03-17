@@ -23,9 +23,9 @@ const ProductDetails = () => {
   };
 
   return (
-    <div className="p-4 px-6">
+    <div className=" px-3 md:p-4 md:px-6">
       {/* Header Tabs */}
-      <div className="flex max-w-md bg-gray-800 font-medium ">
+      <div className="flex max-w-sm md:max-w-xl space-x-1 md:space-x-8 bg-gray-800 font-medium text-xs md:text-lg ">
         {["specifications", "details", "qa", "review"].map((tab) => (
           <button
             key={tab}
