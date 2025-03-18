@@ -1,6 +1,6 @@
 import Footer from "../../footer/Footer";
 import Navbar from "../../navbar/Navbar";
-import Categories from "../Categories";
+
 const Software = ()=> {
 
     return (

@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { FaLaptop, FaGamepad, FaPrint, FaCogs, FaMicrochip, FaTv, FaCamera, FaSpeakerDeck } from "react-icons/fa";
 
 const categories = [
-  { name: "Laptop", icon: <FaLaptop size={30} />, path: "/laptop" },
-  { name: "Gaming", icon: <FaGamepad size={30} />, path: "/gaming" },
+  { name: "Laptop", icon: <FaLaptop size={30} />, path: "/all-laptop" },
+  // { name: "Gaming", icon: <FaGamepad size={30} />, path: "/gaming" },
   { name: "Printer", icon: <FaPrint size={30} />, path: "/printer" },
   { name: "Software", icon: <FaCogs size={30} />, path: "/software" },
   { name: "GPU", icon: <FaMicrochip size={30}/>, path: "/gpu" },

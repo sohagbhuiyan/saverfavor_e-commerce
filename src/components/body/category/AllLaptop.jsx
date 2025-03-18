@@ -1,7 +1,7 @@
 import Footer from "../../footer/Footer";
 import Navbar from "../../navbar/Navbar";
 
-const Laptop = ()=> {
+const AllLaptop = ()=> {
 
 return (
     <>
@@ -12,4 +12,4 @@ return (
   );
 }
 
-export default Laptop;
+export default AllLaptop;

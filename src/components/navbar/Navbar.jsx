@@ -8,8 +8,6 @@ import {
   FaUser,
   FaBars,
   FaTimes,
-  FaLightbulb,
-  FaInfo,
 } from "react-icons/fa";
 import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
@@ -18,8 +16,8 @@ const menuItems = [
   { name: "Home", path: "/" },
   {
     name: "Laptop",
-    path: "/laptop",
     subMenu: [
+      { name: "All Laptop", path: "/all-laptop",},
       { name: "HP", path: "/laptop/hp" },
       { name: "Acer", path: "/laptop/acer" },
       { name: "Dell", path: "/laptop/dell" },
@@ -37,7 +35,7 @@ const menuItems = [
   },
   {
     name: "Gaming",
-    path: "/gaming",
+   
     subMenu: [
       { name: "Consoles", path: "/gaming/consoles" },
       { name: "Accessories", path: "/gaming/accessories" },
@@ -257,10 +255,9 @@ const fetchProfileData = async () => {
     <div className="bg-[#CF212B] text-white">
       {/* Top Bar */}
       <div className="flex items-center justify-center space-x-6 px-6 py-2 text-xs md:text-sm">
-        <span className="hover:text-gray-300 cursor-pointer">Big Sale</span>
-        <span className="hover:text-gray-300 cursor-pointer">Offers</span>
-        <span className="hover:text-gray-300 cursor-pointer">System Builder</span>
-        <span className="hover:text-gray-300 cursor-pointer">Customer Service</span>
+        <span className="hover:text-gray-300 cursor-pointer">Home</span>
+        <span className="hover:text-gray-300 cursor-pointer">News & Media</span>
+        <span className="hover:text-gray-300 cursor-pointer">Contact</span>
       </div>
 
       {/* Main Navbar */}
@@ -270,7 +267,7 @@ const fetchProfileData = async () => {
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="md:hidden text-xl"
         >
-          {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+          {mobileMenuOpen ? <FaTimes /> : <FaBars className="cursor-pointer "/>}
         </button>
 
         {/* Logo and Search Bar */}
@@ -279,7 +276,7 @@ const fetchProfileData = async () => {
             className="text-sm sm:text-2xl font-bold md:text-4xl text-center cursor-pointer"
             onClick={() => window.location.href = "/"}
           >
-            SaverFavor
+            JS Computer
           </h1>
           <div className="relative bg-white w-full max-w-xs sm:max-w-xs md:max-w-lg lg:max-w-xl rounded-md flex">
             <input
