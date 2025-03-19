@@ -33,19 +33,16 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/registration" element={<Registration />} /> 
         <Route path="/login" element={<Login />} />
-        <Route path="/all-laptop" element={<AllLaptop />} />
         <Route path="/laptop/hp" element={<LaptopHP />} />
         {/* <Route path="/gaming" element={<Gaming />} /> */}
-        <Route path="/printer" element={<Printer />} />
         <Route path="/software" element={<Software />} />
-        <Route path="/gpu" element={<GPU />} />
-        <Route path="/monitor" element={<Monitor />} />
+     
         <Route path="/network" element={<Network />} />
-        <Route path="/camera" element={<Camera />} />
+      
         <Route path="/speaker" element={<Speaker />} />
         <Route path="/software" element={<Software />} />
         <Route path="/daily-life" element={<DailyLife />} />
-        <Route path="/store" element={<Store />} />
+        <Route path="/storage" element={<Store />} />
         <Route path="/accessories" element={<Accessories />} />
         <Route path="/all-categories" element={<AllCategories />} />
         <Route path="/product/:name" element={<ProductviewPage />} />

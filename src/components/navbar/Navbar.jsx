@@ -8,16 +8,18 @@ import {
   FaUser,
   FaBars,
   FaTimes,
+  FaChevronDown,
+  FaAngleDoubleRight,
 } from "react-icons/fa";
 import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
+import TopBar from "./TopBar";
 
 const menuItems = [
   { name: "Home", path: "/" },
   {
-    name: "Laptop",
+    name: "Notebook",
     subMenu: [
-      { name: "All Laptop", path: "/all-laptop",},
       { name: "HP", path: "/laptop/hp" },
       { name: "Acer", path: "/laptop/acer" },
       { name: "Dell", path: "/laptop/dell" },
@@ -25,26 +27,23 @@ const menuItems = [
     ],
   },
   {
-    name: "Desktop & Server",
-    path: "/desktop-server",
+    name: "Desktop",
     subMenu: [
-      { name: "Gaming PC", path: "/desktop-server/gaming-pc" },
-      { name: "Workstation", path: "/desktop-server/workstation" },
+   
       { name: "Server", path: "/desktop-server/server" },
     ],
   },
   {
-    name: "Gaming",
+    name: "Accessories & Gaming",
    
     subMenu: [
-      { name: "Consoles", path: "/gaming/consoles" },
       { name: "Accessories", path: "/gaming/accessories" },
       { name: "Games", path: "/gaming/games" },
     ],
   },
   {
     name: "Monitor",
-    path: "/monitor",
+
     subMenu: [
       { name: "Samsung", path: "/monitor/samsung" },
       { name: "HP", path: "/monitor/hp" },
@@ -52,8 +51,8 @@ const menuItems = [
     ],
   },
   {
-    name: "Tablet PC",
-    path: "/tablet-pc",
+    name: "Storage",
+   
     subMenu: [
       { name: "Samsung", path: "/tablet-pc/samsung" },
       { name: "HP", path: "/tablet-pc/hp" },
@@ -61,8 +60,8 @@ const menuItems = [
     ],
   },
   {
-    name: "Printer",
-    path: "/printer",
+    name: "Printer & Scanner",
+ 
     subMenu: [
       { name: "Samsung", path: "/printer/samsung" },
       { name: "HP", path: "/printer/hp" },
@@ -73,7 +72,7 @@ const menuItems = [
   },
   {
     name: "Camera",
-    path: "/camera",
+
     subMenu: [
       { name: "Canon", path: "/camera/canon" },
       { name: "Sony", path: "/camera/sony" },
@@ -82,7 +81,7 @@ const menuItems = [
   },
   {
     name: "Security System",
-    path: "/security-system",
+
     subMenu: [
       { name: "XYZ", path: "/security-system/xyz" },
       { name: "ABC", path: "/security-system/abc" },
@@ -90,8 +89,8 @@ const menuItems = [
     ],
   },
   {
-    name: "Network",
-    path: "/network",
+    name: "Network Items",
+
     subMenu: [
       { name: "SDVX", path: "/network/sdvx" },
       { name: "DFDF", path: "/network/dfdf" },
@@ -102,7 +101,7 @@ const menuItems = [
   },
   {
     name: "Sound System",
-    path: "/sound-system",
+  
     subMenu: [
       { name: "WCSAC", path: "/sound-system/wcsac" },
       { name: "Tep", path: "/sound-system/tep" },
@@ -111,7 +110,7 @@ const menuItems = [
   },
   {
     name: "Office Items",
-    path: "/office-items",
+  
     subMenu: [
       { name: "CSDD", path: "/office-items/csdd" },
       { name: "TGVE", path: "/office-items/tgve" },
@@ -119,8 +118,8 @@ const menuItems = [
     ],
   },
   {
-    name: "Accessories",
-    path: "/accessories",
+    name: "Photocopier",
+
     subMenu: [
       { name: "CEW", path: "/accessories/cew" },
       { name: "BGD", path: "/accessories/bgd" },
@@ -130,8 +129,8 @@ const menuItems = [
     ],
   },
   {
-    name: "Software",
-    path: "/software",
+    name: "Projector",
+
     subMenu: [
       { name: "ZEDSA", path: "/software/zedsa" },
       { name: "MJHg", path: "/software/mjhg" },
@@ -139,8 +138,8 @@ const menuItems = [
     ],
   },
   {
-    name: "Daily Life",
-    path: "/daily-life",
+    name: "Cable & Converter",
+ 
     subMenu: [
       { name: "WDWD", path: "/daily-life/wdwd" },
       { name: "TWWW", path: "/daily-life/twww" },
@@ -148,8 +147,17 @@ const menuItems = [
     ],
   },
   {
-    name: "Store",
-    path: "/store",
+    name: "Electronic Gadgets",
+ 
+    subMenu: [
+      { name: "OPhg", path: "/store/ophg" },
+      { name: "Crsd", path: "/store/crsd" },
+      { name: "Dell", path: "/store/dell" },
+    ],
+  },
+  {
+    name: "Educational Items",
+
     subMenu: [
       { name: "OPhg", path: "/store/ophg" },
       { name: "Crsd", path: "/store/crsd" },
@@ -173,7 +181,21 @@ const Navbar = () => {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showMoreItems, setShowMoreItems] = useState(false); 
+  const [moreItemsSubmenuOpen, setMoreItemsSubmenuOpen] = useState(null);
 
+  const firstTenItems = menuItems.slice(0, 10);
+  const remainingItems = menuItems.slice(10);
+  // Toggle "More Items" dropdown
+  const toggleMoreItems = () => {
+    setShowMoreItems(!showMoreItems);
+    setMoreItemsSubmenuOpen(null); // Reset submenu when toggling
+  };
+
+  // Toggle submenu under "More Items"
+  const toggleMoreItemsSubmenu = (index) => {
+    setMoreItemsSubmenuOpen(moreItemsSubmenuOpen === index ? null : index);
+  };
 
   // Initialize user state from localStorage
   useEffect(() => {
@@ -254,14 +276,9 @@ const fetchProfileData = async () => {
   return (
     <div className="bg-[#CF212B] text-white">
       {/* Top Bar */}
-      <div className="flex items-center justify-center space-x-6 px-6 py-2 text-xs md:text-sm">
-        <span className="hover:text-gray-300 cursor-pointer">Home</span>
-        <span className="hover:text-gray-300 cursor-pointer">News & Media</span>
-        <span className="hover:text-gray-300 cursor-pointer">Contact</span>
-      </div>
-
+      <TopBar/>
       {/* Main Navbar */}
-      <div className="flex items-center justify-between px-4 py-3 md:px-6 lg:px-12">
+      <div className="flex items-center justify-between px-5 py-3 md:px-6 lg:px-12">
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -271,9 +288,9 @@ const fetchProfileData = async () => {
         </button>
 
         {/* Logo and Search Bar */}
-        <div className="flex-1 flex items-center justify-center gap-3 px-2 md:gap-10">
+        <div className=" flex flex-1 items-center justify-center gap-3 px-2 md:gap-10">
           <h1
-            className="text-sm sm:text-2xl font-bold md:text-4xl text-center cursor-pointer"
+            className="text-sm font-medium sm:text-2xl md:text-4xl text-center cursor-pointer"
             onClick={() => window.location.href = "/"}
           >
             JS Computer
@@ -386,9 +403,10 @@ const fetchProfileData = async () => {
         </div>
       </div>
 
-      {/* Desktop Menu */}
-      <div className="hidden md:flex items-center justify-center space-x-2 px-2 py-3 text-sm md:space-x-4 md:px-4">
-        {menuItems.map((item, index) => (
+{/* Desktop Menu */}
+<div className="hidden md:flex items-center justify-center space-x-2 px-2 py-3 font-medium text-sm md:space-x-6 md:px-4">
+        {/* First 10 Menu Items */}
+        {firstTenItems.map((item, index) => (
           <div
             key={index}
             className="relative cursor-pointer group"
@@ -403,7 +421,7 @@ const fetchProfileData = async () => {
             {item.subMenu && (
               <div
                 className={`${
-                  (hoverIndex === index || desktopSubmenuOpen === index) ? 'block' : 'hidden'
+                  hoverIndex === index || desktopSubmenuOpen === index ? "block" : "hidden"
                 } absolute left-0 mt-2 w-48 bg-gray-300 text-black shadow-lg rounded-md z-50`}
               >
                 {item.subMenu.map((subItem, subIndex) => (
@@ -419,6 +437,50 @@ const fetchProfileData = async () => {
             )}
           </div>
         ))}
+
+        {/* More Items Dropdown */}
+        {remainingItems.length > 0 && (
+          <div className="relative cursor-pointer group">
+            <div
+              className="flex items-center hover:text-gray-300"
+              onClick={toggleMoreItems}
+            >
+              More Items <FaAngleDoubleRight className="ml-1" />
+            </div>
+
+            {/* Dropdown for Remaining Items */}
+            {showMoreItems && (
+              <div className="absolute left-0 mt-2 w-48 bg-gray-300 text-black shadow-lg rounded-md z-50">
+                {remainingItems.map((item, index) => (
+                  <div key={index} className="relative">
+                    <div
+                      className="flex justify-between items-center px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                      onClick={() => toggleMoreItemsSubmenu(index)}
+                    >
+                      <span>{item.name}</span>
+                      {item.subMenu && <FaChevronDown className="text-sm" />}
+                    </div>
+
+                    {/* Submenu for Remaining Items */}
+                    {item.subMenu && moreItemsSubmenuOpen === index && (
+                      <div className="ml-4 mt-1">
+                        {item.subMenu.map((subItem, subIndex) => (
+                          <Link
+                            key={subIndex}
+                            to={subItem.path}
+                            className="block px-4 py-2 hover:bg-gray-200"
+                          >
+                            {subItem.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Mobile Menu (Sidebar) */}

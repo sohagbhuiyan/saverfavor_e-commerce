@@ -42,7 +42,7 @@ const Slider = () => {
         ))}
       </div>
       </div>
-      <div className="flex justify-center space-x-5 md:space-x-12 p-1 bg-orange-100 text-xs md:text-sm font-semibold text-yellow-950 ">
+      <div className="flex px-5 justify-center space-x-3 md:space-x-12 p-1 bg-orange-100 text-xs md:text-sm font-semibold text-yellow-950 ">
       <p className="">0% EMI</p>
       <p className="">24/7 Online Support</p>
       <p className="">No charge on card paynent</p>
