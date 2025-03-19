@@ -33,7 +33,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/registration" element={<Registration />} /> 
         <Route path="/login" element={<Login />} />
-        <Route path="/laptop/hp" element={<LaptopHP />} />
+        <Route path="/all-notebook/hp" element={<LaptopHP />} />
         {/* <Route path="/gaming" element={<Gaming />} /> */}
         <Route path="/software" element={<Software />} />
      
