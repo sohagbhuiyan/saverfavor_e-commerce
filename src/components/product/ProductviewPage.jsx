@@ -9,11 +9,11 @@ const ProductviewPage = () => {
 
     return (
       <>
-      <Navbar/>
+     
       <ProductView/>
       <ProductDetails/>
       <RelatedProduct/>
-      <Footer/>
+     
       </>
     )
   

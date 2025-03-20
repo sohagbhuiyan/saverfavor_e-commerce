@@ -63,7 +63,6 @@ const Login = () => {
 
   return (
     <>
-      <Navbar />
       <Container maxWidth="sm">
         <Paper elevation={3} sx={{ padding: 4, marginTop: 4, marginBottom: 4 }}>
           <Typography variant="h5" component="h2" gutterBottom>
@@ -108,7 +107,7 @@ const Login = () => {
             </Typography>
         </Paper>
       </Container>
-      <Footer />
+     
     </>
   );
 };

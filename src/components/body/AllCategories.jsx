@@ -3,7 +3,7 @@ import Navbar from "../navbar/Navbar";
 const AllCategories = () => {
     return (
       <>
-      <Navbar/>
+   
       <div className="p-6">
         <h1 className="text-center text-2xl font-bold text-[#CF212B]">All Categories<br/>No Product Available! </h1>
         <p className="text-center text-gray-600 mt-2">Explore all available categories in detail.</p>

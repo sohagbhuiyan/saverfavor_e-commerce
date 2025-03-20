@@ -1,15 +1,23 @@
 import { Link } from "react-router-dom";
-import { FaLaptop, FaGamepad, FaPrint, FaCogs, FaMicrochip, FaTv, FaCamera, FaSpeakerDeck } from "react-icons/fa";
+import {
+  FaLaptop,
+  FaDesktop,
+  FaTv,
+  FaCamera,
+  FaPrint,
+  FaVideo,
+  FaSpeakerDeck,
+} from "react-icons/fa";
 
 const categories = [
-  { name: "Laptop", icon: <FaLaptop size={30} />, path: "/all-laptop" },
-  // { name: "Gaming", icon: <FaGamepad size={30} />, path: "/gaming" },
-  { name: "Printer", icon: <FaPrint size={30} />, path: "/printer" },
-  { name: "Software", icon: <FaCogs size={30} />, path: "/software" },
-  { name: "GPU", icon: <FaMicrochip size={30}/>, path: "/gpu" },
-  { name: "Monitor", icon: <FaTv size={30}/>, path: "/monitor" },
-  { name: "Camera", icon: <FaCamera size={30}/>, path: "/camera" },
-  { name: "Speaker", icon: <FaSpeakerDeck size={30}/>, path: "/speaker" },
+  { name: "Notebook", icon: <FaLaptop size={30} />, path: "/notebook" },
+  { name: "Desktop", icon: <FaDesktop size={30} />, path: "/desktops" },
+  { name: "Projector", icon: <FaVideo size={30} />, path: "/projectors" },
+  { name: "Monitor", icon: <FaTv size={30} />, path: "/monitors" },
+  { name: "Camera", icon: <FaCamera size={30} />, path: "/cameras" },
+  { name: "Photocopier", icon: <FaPrint size={30} />, path: "/photocopiers" },
+  { name: "Printer", icon: <FaPrint size={30} />, path: "/printers" },
+  { name: "Soundsystem", icon: <FaSpeakerDeck size={30} />, path: "/soundsystems" },
 ];
 
 const Categories = () => {
