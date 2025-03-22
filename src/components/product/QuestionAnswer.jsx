@@ -50,7 +50,7 @@ const QuestionAnswer = () => {
 
         {/* Submit Button */}
         <Box>
-          <Button type="submit" variant="contained" color="secondary">
+          <Button type="submit" variant="contained" color="error">
             Submit
           </Button>
         </Box>

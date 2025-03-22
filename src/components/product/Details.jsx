@@ -2,7 +2,7 @@ import { Typography, Paper, Box, Divider } from "@mui/material";
 
 const Details = () => {
   return (
-    <div >
+    <div className="px-3">
       <Typography variant="body1" paragraph sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
         The <strong>K2 Opula KCL-1029 Screen Cleaning Kit (100ML)</strong> is the ideal solution
         for keeping your screens crystal clear and free from smudges...

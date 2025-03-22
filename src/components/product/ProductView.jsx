@@ -93,7 +93,7 @@ const ProductView = () => {
   };
   
   return (
-    <div className=" p-8 flex flex-col md:flex-row-reverse gap-10">
+    <div className="p-8 flex flex-col md:flex-row-reverse gap-10">
     {/* Right Section: Product Details (Shown first on mobile) */}
     <div className="flex-col px-6 md:px-10 md:flex-1">
       <h2 className="text-md md:text-2xl font-bold">{product.name}</h2>

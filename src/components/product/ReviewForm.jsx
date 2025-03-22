@@ -58,7 +58,7 @@ const ReviewForm =()=> {
           required
           sx={{ mt: 2 }}
         />
-        <Button type="submit" variant="contained" color="secondary" sx={{ mt: 2 }} >
+        <Button type="submit" variant="contained" color="error" sx={{ mt: 2 }} >
           Submit Review
         </Button>
       </form>

@@ -5,7 +5,10 @@ import lap from '../Utils/laptop.jpg'
 import gp from '../Utils/gpu.jpg'
 import gm from '../Utils/gaming.jpg'
 import monit from '../Utils/monitor.webp'
+import jss from '../Utils/js.png'
 
+
+export const jscomputer = jss
 export const slider = sl1
 export const slider2 = sl2
 export const camera = cam

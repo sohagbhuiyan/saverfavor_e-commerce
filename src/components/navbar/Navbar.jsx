@@ -15,6 +15,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
 import TopBar from "./TopBar";
 import { menuItems } from "./menuItems";
+import { jscomputer } from "../../Utils/images";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -139,12 +140,11 @@ const fetchProfileData = async () => {
 
         {/* Logo and Search Bar */}
         <div className=" flex flex-1 items-center justify-center gap-3 px-2 md:gap-10">
-          <h1
-            className="text-sm font-medium sm:text-2xl md:text-4xl text-center cursor-pointer"
+          <img  src = {jscomputer}
+            className="text-sm font-medium sm:text-2xl md:text-4xl h-10 w-20 text-center cursor-pointer"
             onClick={() => window.location.href = "/"}
-          >
-            JS Computer
-          </h1>
+           
+          />
           <div className="relative bg-white w-full max-w-xs sm:max-w-xs md:max-w-lg lg:max-w-xl rounded-md flex">
             <input
               type="text"

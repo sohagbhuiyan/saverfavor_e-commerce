@@ -23,14 +23,14 @@ const ProductDetails = () => {
   };
 
   return (
-    <div className=" px-3 md:p-4 md:px-6">
+    <div className=" px-2 md:p-4 md:px-6">
       {/* Header Tabs */}
-      <div className="flex max-w-sm md:max-w-xl space-x-1 md:space-x-8 bg-gray-800 font-medium text-xs md:text-lg ">
+      <div className="flex max-w-full md:max-w-xl space-x-1 md:space-x-8 bg-gray-800 font-medium text-xs md:text-lg ">
         {["specifications", "details", "qa", "review"].map((tab) => (
           <button
             key={tab}
             className={`px-4 py-2 cursor-pointer ${
-              activeTab === tab ? "border-b-2 border-white text-white" : "text-gray-200"
+              activeTab === tab ? "border-b-2 border-red-400 text-white " : "text-gray-400"
             }`}
             onClick={() => handleScroll(tab)}
           >
@@ -40,7 +40,7 @@ const ProductDetails = () => {
       </div>
 
       {/* Sections */}
-      <section ref={sectionsRef.specifications} className="py-6">
+      <section ref={sectionsRef.specifications} className=" px-6 py-6">
         <div className="text-sm md:text-lg">
           <p><strong>Brand:</strong> K2</p>
           <p><strong>Model:</strong> K2 Opula KCL-1029</p>
