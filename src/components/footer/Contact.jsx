@@ -10,10 +10,10 @@ const mapContainerStyle = {
   borderRadius: "10px",
 };
 
-// Center of the map
+// Center of the map (updated to match the exact location of JS Computer)
 const center = {
-  lat: 24.7518523,
-  lng: 90.4072613,
+  lat: 24.7584246, // Updated latitude
+  lng: 90.4040342, // Updated longitude
 };
 
 const Contact = () => {
@@ -73,7 +73,6 @@ const Contact = () => {
           Saturday – Thursday 09 AM – 08 PM
         </Typography>
       </div>
-      
     </Container>
   );
 };
