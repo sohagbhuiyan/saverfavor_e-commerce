@@ -9,8 +9,6 @@ import {
   Alert,
 } from "@mui/material";
 import axios from "axios";
-import Navbar from "../navbar/Navbar";
-import Footer from "../footer/Footer";
 import Cookies from 'js-cookie'
 import { Link } from "react-router-dom";
 
