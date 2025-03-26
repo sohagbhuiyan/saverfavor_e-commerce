@@ -16,7 +16,7 @@ const MobileBottomNav = ({
     <div className="md:hidden fixed z-50 bottom-0 left-0 w-full bg-[#CF212B] p-2 flex justify-around items-center text-white">
       {/* Mobile Cart */}
       <div className="relative flex flex-col items-center">
-        <div className="flex items-center cursor-pointer" onClick={toggleCartDropdown}>
+        <div className="flex flex-col items-center cursor-pointer" onClick={toggleCartDropdown}>
           <FaShoppingCart className="text-xl" />
           {cartCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs p-1 rounded-full">

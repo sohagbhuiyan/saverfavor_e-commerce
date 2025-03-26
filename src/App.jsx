@@ -28,6 +28,7 @@ import AboutCEO from './components/footer/AboutCEO';
 import Specialty from './components/footer/Specialty';
 import ServiceCenter from './components/footer/ServiceCenter';
 import Layout from './components/layout/Layout';
+import ProfileView from './components/registration/profile/ProfileView';
 
 
 function App() {
@@ -39,6 +40,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/registration" element={<Registration />} />
           <Route path="/login" element={<Login />} />
+          {/* profile view-edit  */}
+          <Route path="/view-profile" element={<ProfileView />} />
           {/* TOPBAR  */}
           <Route path="/exclusive-offers" element={<ExclusiveOffer/>} />
           <Route path="/news-media" element={<NewsMedia/>} />

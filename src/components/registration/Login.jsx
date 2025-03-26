@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../../store/authSlice";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, clearError } from "../../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -21,6 +21,26 @@ const Login = () => {
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { error: authError, token } = useSelector((state) => state.auth);
+
+  // Clear any existing errors when component mounts
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
+
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token, navigate]);
+
+  // Update error state if authError changes
+  useEffect(() => {
+    if (authError) {
+      setError(authError);
+    }
+  }, [authError]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,13 +54,13 @@ const Login = () => {
     try {
       const result = await dispatch(loginUser(formData));
       
-      if (result.payload?.token) {
+      if (loginUser.fulfilled.match(result)) {
         navigate("/");
-      } else if (result.error) {
-        setError(result.error.message || "Login failed");
+      } else if (loginUser.rejected.match(result)) {
+        setError(result.payload || "Login failed");
       }
     } catch (err) {
-      setError("An unexpected error occurred",err.response);
+      setError("An unexpected error occurred",err);
     }
   };
 

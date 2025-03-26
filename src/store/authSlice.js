@@ -27,8 +27,10 @@ export const loginUser = createAsyncThunk(
         credentials
       );
       
-      // Store email in localStorage along with token
-      localStorage.setItem("userEmail", credentials.email);
+      // Store token and email in localStorage
+      localStorage.setItem("authToken", response.data.token);
+      localStorage.setItem("authUser", JSON.stringify({ email: credentials.email }));
+      
       return {
         token: response.data.token,
         email: credentials.email
@@ -45,7 +47,7 @@ export const fetchProfile = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const { auth } = getState();
-      if (!auth.user) {
+      if (!auth.token) {
         return rejectWithValue("User not logged in");
       }
 
@@ -63,22 +65,48 @@ export const fetchProfile = createAsyncThunk(
         (user) => user.email === auth.user.email
       );
 
-      return loggedInUser || rejectWithValue("User not found");
+      if (!loggedInUser) {
+        return rejectWithValue("User profile not found");
+      }
+
+      const profileData = {
+        name: loggedInUser.name || 'Not provided',
+        email: loggedInUser.email,
+        address: loggedInUser.address || 'Not provided',
+        country: loggedInUser.country || 'Not provided',
+        phoneNo: loggedInUser.phoneNo || 'Not provided',
+        dob: loggedInUser.dob || 'Not provided',
+        nidnumber: loggedInUser.nidnumber || 'Not provided',
+      };
+
+      // Store profile in localStorage
+      localStorage.setItem("authProfile", JSON.stringify(profileData));
+      
+      return profileData;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to fetch profile");
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch profile");
     }
   }
 );
 
-const authSlice = createSlice({
-  name: "auth",
-  initialState: {
-    user: null,
-    token: localStorage.getItem("token") || null,
-    profile: JSON.parse(localStorage.getItem("authProfile")) || null,
+// Check for existing auth data in localStorage
+const loadInitialState = () => {
+  const token = localStorage.getItem("authToken");
+  const user = JSON.parse(localStorage.getItem("authUser"));
+  const profile = JSON.parse(localStorage.getItem("authProfile"));
+
+  return {
+    user: user || null,
+    token: token || null,
+    profile: profile || null,
     loading: false,
     error: null,
-  },
+  };
+};
+
+const authSlice = createSlice({
+  name: "auth",
+  initialState: loadInitialState(),
   reducers: {
     logout: (state) => {
       localStorage.removeItem("authToken");
@@ -103,21 +131,29 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
-        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("authToken", action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-// Login
-.addCase(loginUser.fulfilled, (state, action) => {
-  state.loading = false;
-  state.user = { email: action.payload.email };
-  state.token = action.payload.token;
-  localStorage.setItem("authToken", action.payload.token);
-  localStorage.setItem("authUser", JSON.stringify({ email: action.payload.email }));
-})
+      // Login
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = { email: action.payload.email };
+        state.token = action.payload.token;
+        localStorage.setItem("authToken", action.payload.token);
+        localStorage.setItem("authUser", JSON.stringify({ email: action.payload.email }));
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
       // Fetch Profile
       .addCase(fetchProfile.pending, (state) => {
@@ -127,6 +163,7 @@ const authSlice = createSlice({
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.profile = action.payload;
+        localStorage.setItem("authProfile", JSON.stringify(action.payload));
       })
       .addCase(fetchProfile.rejected, (state, action) => {
         state.loading = false;

@@ -66,7 +66,7 @@ export const UserDropdown = ({ position = "desktop" }) => {
               </div>
               
               <Link
-                to="/profile"
+                to="/view-profile"
                 className="block text-sm font-medium text-gray-600 hover:text-gray-500 mb-1 hover:bg-gray-100 p-1 rounded"
                 onClick={() => setIsOpen(false)}
               >
