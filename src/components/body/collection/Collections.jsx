@@ -64,7 +64,6 @@ const products = [
 const Collections = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // 🔍 Filter logic
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category.toLowerCase().includes(searchQuery.toLowerCase())

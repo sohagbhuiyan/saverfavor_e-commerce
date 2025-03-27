@@ -56,7 +56,7 @@ const DesktopMenu = ({ menuItems }) => {
           )}
         </div>
       ))}
-
+      
       {remainingItems.length > 0 && (
         <div
           className="relative cursor-pointer desktop-menu-item"
