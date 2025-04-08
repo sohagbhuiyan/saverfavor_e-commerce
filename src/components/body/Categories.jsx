@@ -22,27 +22,32 @@ const categories = [
 
 const Categories = () => {
   return (
-    
     <div className="mt-1 pb-12">
-      <div className="bg-[#CF212B] flex justify-between px-10 text-white text-xs md:text-lg font-semibold py-2">
-       <p>Top Categories</p> 
-       <p 
+      <div className="bg-[#CF212B] flex justify-between px-4 md:px-10 text-white text-xs md:text-lg font-semibold py-2">
+        <p>Top Categories</p> 
+        <Link 
+          to="/all-categories"
           className="underline cursor-pointer"
-          onClick={() => window.location.href = "/all-categories"}
         >
           See all categories
-        </p>
+        </Link>
       </div>
-      <div className="bg-white shadow-xs p-4 flex justify-around items-center flex-wrap gap-4">
+      <div className="bg-white shadow-xs p-4 grid grid-cols-4 md:grid-cols-8 gap-2 md:gap-4">
         {categories.map((category, index) => (
-          <Link to={category.path} key={index} className="md:flex flex-col items-center text-center cursor-pointer">
-            <div className="text-green-600">{category.icon}</div>
-            <span className="text-xs md:text-sm font-medium text-center">{category.name}</span>
+          <Link 
+            to={category.path} 
+            key={index} 
+            className="flex flex-col items-center justify-center p-2 hover:scale-105 transition-transform"
+          >
+            <div className="text-green-600 mb-1 md:mb-2">{category.icon}</div>
+            <span className="text-[10px] md:text-sm font-medium text-center leading-tight">
+              {category.name}
+            </span>
           </Link>
         ))}
-      </div>
+      </div>  
     </div>
   );
-};
+};  
 
 export default Categories;
