@@ -5,9 +5,7 @@ export const menuItems = [
      {
      name: "Notebook",
      subMenu: [
-       {
-         name: "All Notebook",
-         subMenu: [
+   
            { name: "HP", path: "/all-notebook/hp" },
            { name: "Dell", path: "/all-notebook/dell" },
            { name: "Acer", path: "/all-notebook/acer" },
@@ -26,8 +24,7 @@ export const menuItems = [
            { name: "Notebook Charger", path: "/notebook-accessories/charger" },
            { name: "Notebook Bag", path: "/notebook-accessories/bag" },
            { name: "Notebook Stand", path: "/notebook-accessories/stand" },
-         ],
-       },
+        
      ],
    },
    {
@@ -96,45 +93,69 @@ export const menuItems = [
        ],
      },
      {
-       name: "Printer & Scanner",
-    
-       subMenu: [
-         {
-           name: "All Printer",
-           subMenu: [
-             { name: "Ink Printer", path: "/all-Printer/Ink Printer" },
-             { name: "Card Printer", path: "/all-Printer/Card Printer" },
-             { name: "Laser Printer", path: "/all-Printer/Laser Printer" },
-             { name: "Pos Printer", path: "/all-Printer/Pos Printer" },
-             { name: "Label Printer", path: "/all-Printer/Label Printer" },
-             { name: "Flatbed Scanner", path: "/all-Printer/Flatbed Scanner" },
-             { name: "Sheetfed Scanner", path: "/all-Printer/Sheetfed Scanner" },
-             { name: "Barcode Scanner", path: "/all-Printer/Barcode Scanner" },
-             { name: "Dot Matrix Printer", path: "/all-Printer/Dot Matrix Printer" },
-             { name: "Large Formate Printer", path: "/all-Printer/Large Formate Printer" },
-           ],
-         },
-         {
-           name: "Printer Accessories",
-           subMenu: [
-             { name: "Toner", path: "/Printer-accessories/Toner" },
-             { name: "Refill", path: "/Printer-accessories/Refill" },
-             { name: "Ribbon", path: "/Printer-accessories/Ribbon" },
-             { name: "Ink Bottle", path: "/Printer-accessories/Ink Bottle" },
-             { name: "Cartridge", path: "/Printer-accessories/Cartridge" },
-             { name: "Fuser Film", path: "/Printer-accessories/Fuser Film" },
-             { name: "Photo Paper", path: "/Printer-accessories/Photo Paper" },
-             { name: "Pickup roller", path: "/Printer-accessories/Pickup roller" },
-             { name: "Pressure Ruler", path: "/Printer-accessories/Pressure Ruler" },
-             { name: "Printer Cable", path: "/Printer-accessories/Printer Cable" },
-             { name: "Printer Drum", path: "/Printer-accessories/Printer Drum" },
-             { name: "Printer head", path: "/Printer-accessories/Printer head" },
-             { name: "Printer Switch", path: "/Printer-accessories/Printer Switch" },
-          
-           ],
-         },
-       ],
-     },
+      name: "Printer & Scanner",
+      subMenu: [
+        {
+          name: "Printers & Scanners",
+          subMenu: [
+            {
+              name: "Printers",
+              subMenu: [
+                { name: "Ink Printer", path: "/all-Printer/ink-printer" },
+                { name: "Laser Printer", path: "/all-Printer/laser-printer" },
+                { name: "Dot Matrix Printer", path: "/all-Printer/dot-matrix" },
+                { name: "Large Format Printer", path: "/all-Printer/large-format" },
+                { name: "POS Printer", path: "/all-Printer/pos-printer" },
+                { name: "Label Printer", path: "/all-Printer/label-printer" },
+                { name: "Card Printer", path: "/all-Printer/card-printer" },
+              ]
+            },
+            {
+              name: "Scanners",
+              subMenu: [
+                { name: "Flatbed Scanner", path: "/scanners/flatbed" },
+                { name: "Sheetfed Scanner", path: "/scanners/sheetfed" },
+                { name: "Barcode Scanner", path: "/scanners/barcode" },
+              ]
+            }
+          ]
+        },
+        {
+          name: "Printer Accessories",
+          subMenu: [
+            {
+              name: "Consumables",
+              subMenu: [
+                { name: "Toner", path: "/accessories/toner" },
+                { name: "Ink Bottle", path: "/accessories/ink-bottle" },
+                { name: "Cartridge", path: "/accessories/cartridge" },
+                { name: "Ribbon", path: "/accessories/ribbon" },
+                { name: "Photo Paper", path: "/accessories/photo-paper" },
+              ]
+            },
+            {
+              name: "Parts & Components",
+              subMenu: [
+                { name: "Fuser Film", path: "/components/fuser-film" },
+                { name: "Pickup Roller", path: "/components/pickup-roller" },
+                { name: "Pressure Ruler", path: "/components/pressure-ruler" },
+                { name: "Printer Drum", path: "/components/drum" },
+                { name: "Printer Head", path: "/components/head" },
+                { name: "Printer Switch", path: "/components/switch" },
+                { name: "Printer Cable", path: "/components/cable" },
+              ]
+            },
+            {
+              name: "Services",
+              subMenu: [
+                { name: "Refill Service", path: "/services/refill" },
+                { name: "Maintenance", path: "/services/maintenance" },
+              ]
+            }
+          ]
+        }
+      ]
+    },
      {
        name: "Camera",
    

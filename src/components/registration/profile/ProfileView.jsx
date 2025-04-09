@@ -28,7 +28,7 @@ const ProfileView = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Profile Information</h2>
+      <h2 className="text-md md:text-2xl font-bold text-gray-800 mb-6">Profile Information</h2>
       
       {loading && (
         <div className="text-center py-4">
@@ -45,38 +45,38 @@ const ProfileView = () => {
       {profile && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="mb-4">
-            <h3 className="text-sm font-medium text-gray-500">Full Name</h3>
-            <p className="text-lg">{profile.name}</p>
+            <h3 className="text-xs md:text-sm font-medium text-gray-500">Full Name</h3>
+            <p className="text-xs md:text-lg">{profile.name}</p>
           </div>
           
           <div className="mb-4">
-            <h3 className="text-sm font-medium text-gray-500">Email</h3>
-            <p className="text-lg">{profile.email}</p>
+            <h3 className="text-xs md:text-sm font-medium text-gray-500">Email</h3>
+            <p className="text-xs md:text-lg">{profile.email}</p>
           </div>
           
           <div className="mb-4">
-            <h3 className="text-sm font-medium text-gray-500">Address</h3>
-            <p className="text-lg">{profile.address}</p>
+            <h3 className="text-xs md:text-sm font-medium text-gray-500">Address</h3>
+            <p className="text-xs md:text-lg">{profile.address}</p>
           </div>
           
           <div className="mb-4">
-            <h3 className="text-sm font-medium text-gray-500">Country</h3>
-            <p className="text-lg">{profile.country}</p>
+            <h3 className="text-xs md:text-sm font-medium text-gray-500">Country</h3>
+            <p className="text-xs md:text-lg">{profile.country}</p>
           </div>
           
           <div className="mb-4">
-            <h3 className="text-sm font-medium text-gray-500">Phone Number</h3>
-            <p className="text-lg">{profile.phoneNo}</p>
+            <h3 className="text-xs md:text-sm font-medium text-gray-500">Phone Number</h3>
+            <p className="text-xs md:text-lg">{profile.phoneNo}</p>
           </div>
           
           <div className="mb-4">
-            <h3 className="text-sm font-medium text-gray-500">Date of Birth</h3>
-            <p className="text-lg">{profile.dob}</p>
+            <h3 className="text-xs md:text-sm font-medium text-gray-500">Date of Birth</h3>
+            <p className="text-xs md:text-lg">{profile.dob}</p>
           </div>
           
           <div className="mb-4">
-            <h3 className="text-sm font-medium text-gray-500">NID Number</h3>
-            <p className="text-lg">{profile.nidnumber}</p>
+            <h3 className="text-xs md:text-sm font-medium text-gray-500">NID Number</h3>
+            <p className="text-xs md:text-lg">{profile.nidnumber}</p>
           </div>
         </div>
       )}
