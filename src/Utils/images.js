@@ -5,7 +5,7 @@ import lap from '../Utils/laptop.jpg'
 import gp from '../Utils/gpu.jpg'
 import gm from '../Utils/gaming.jpg'
 import monit from '../Utils/monitor.webp'
-import jss from '../Utils/js.png'
+import jss from '../Utils/jss.png'
 
 
 export const jscomputer = jss
