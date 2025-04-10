@@ -1,21 +1,20 @@
 import { FaShoppingCart, FaHeart, FaExchangeAlt, FaUser } from "react-icons/fa";
 import { CartDropdown } from "./CartDropdown";
 import { UserDropdown } from "./UserDropdown";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-const NavIcon = ({ 
-  icon: Icon, 
-  label, 
-  onClick, 
-  count = 0, 
-  isActive, 
-  dropdownContent,
+const NavIcon = ({
+  icon: Icon,
+  label,
+  onClick,
+  count = 0,
   isMobile = false,
   isUserIcon = false
 }) => {
   return (
     <div className={`relative ${isMobile ? "flex flex-col items-center" : ""}`}>
-      <div 
+      <div
         className={`flex items-center cursor-pointer ${isMobile ? "flex-col" : ""}`}
         onClick={onClick}
       >
@@ -29,8 +28,8 @@ const NavIcon = ({
         </div>
         {isMobile && <span className="text-xs mt-1">{label}</span>}
       </div>
-      
-      {isActive && dropdownContent}
+
+      {/* We will conditionally render dropdown content outside of NavIcon for toggle behavior */}
     </div>
   );
 };
@@ -39,31 +38,71 @@ const NavIcons = ({
   variant = "desktop",
   activeDropdown,
   toggleDropdown,
-  cartDropdownOpen,
-  toggleCartDropdown,
-  cartCount,
-  closeAllDropdowns
 }) => {
   const isMobile = variant === "mobile";
-  const wrapperClasses = isMobile 
+  const wrapperClasses = isMobile
     ? "fixed z-50 bottom-0 w-full bg-[#CF212B] p-2 flex justify-around items-center text-white"
     : "flex items-center justify-center space-x-4";
-  
-  const navIconsRef = useRef(null);
 
-  // Close dropdowns when clicking outside
+  const navIconsRef = useRef(null);
+  const cartCount = useSelector((state) => state.cart.count);
+  const dispatch = useDispatch();
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+
+  const toggleCartDropdown = (e) => {
+    e.stopPropagation();
+    setIsCartOpen((prevState) => !prevState);
+    setIsWishlistOpen(false);
+    setIsCompareOpen(false);
+    if (activeDropdown && activeDropdown !== "cart" && !isCartOpen) {
+      toggleDropdown(activeDropdown);
+    } else if (activeDropdown && activeDropdown !== "cart" && isCartOpen) {
+      toggleDropdown(activeDropdown);
+    }
+  };
+
+  const toggleWishlistDropdown = (e) => {
+    e.stopPropagation();
+    setIsWishlistOpen((prevState) => !prevState);
+    setIsCartOpen(false);
+    setIsCompareOpen(false);
+    if (activeDropdown && activeDropdown !== "wishlist" && !isWishlistOpen) {
+      toggleDropdown(activeDropdown);
+    } else if (activeDropdown && activeDropdown !== "wishlist" && isWishlistOpen) {
+      toggleDropdown(activeDropdown);
+    }
+  };
+
+  const toggleCompareDropdown = (e) => {
+    e.stopPropagation();
+    setIsCompareOpen((prevState) => !prevState);
+    setIsCartOpen(false);
+    setIsWishlistOpen(false);
+    if (activeDropdown && activeDropdown !== "compare" && !isCompareOpen) {
+      toggleDropdown(activeDropdown);
+    } else if (activeDropdown && activeDropdown !== "compare" && isCompareOpen) {
+      toggleDropdown(activeDropdown);
+    }
+  };
+
+  // Click outside logic for all dropdowns
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (navIconsRef.current && !navIconsRef.current.contains(event.target)) {
-        closeAllDropdowns();
+        setIsCartOpen(false);
+        setIsWishlistOpen(false);
+        setIsCompareOpen(false);
+        if (activeDropdown) {
+          toggleDropdown(activeDropdown);
+        }
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [closeAllDropdowns]);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [activeDropdown, toggleDropdown, isCartOpen, isWishlistOpen, isCompareOpen]);
 
   return (
     <div className={isMobile ? "md:hidden" : "hidden md:flex"} ref={navIconsRef}>
@@ -73,77 +112,63 @@ const NavIcons = ({
           <NavIcon
             icon={FaShoppingCart}
             label="Cart"
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleCartDropdown();
-            }}
+            onClick={toggleCartDropdown}
             count={cartCount}
-            isActive={cartDropdownOpen}
+            isActive={isCartOpen}
             isMobile={isMobile}
           />
-          {cartDropdownOpen && (
-            <CartDropdown 
-              isOpen={cartDropdownOpen} 
-              onClose={toggleCartDropdown} 
-              position={variant}
-            />
-          )}
+          <CartDropdown
+            isOpen={isCartOpen}
+            onClose={() => setIsCartOpen(false)}
+            position={variant}
+          />
         </div>
-        
+
         {/* Wishlist */}
         <div className="relative">
           <NavIcon
             icon={FaHeart}
             label="Wishlist"
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleDropdown("wishlist");
-            }}
-            isActive={activeDropdown === "wishlist"}
-            dropdownContent={
-              <div className={`
-                ${isMobile 
-                  ? "fixed bottom-16 bg-white text-black p-3 rounded-t-lg shadow-lg z-50" 
-                  : "absolute top-8 right-0 bg-white text-black p-3 rounded-lg shadow-lg w-48 z-50"}
-              `}>
-                <p className="font-semibold">Wishlist</p>
-                <p className="text-sm text-gray-600">Your favorite items.</p>
-              </div>
-            }
+            onClick={toggleWishlistDropdown}
+            isActive={isWishlistOpen}
             isMobile={isMobile}
           />
+          {isWishlistOpen && (
+            <div className={`
+              ${isMobile
+                ? "fixed bottom-16 bg-white text-black p-3 rounded-t-lg shadow-lg z-50"
+                : "absolute top-8 -left-5 bg-white text-black p-3 rounded-lg shadow-lg w-48 z-50"}
+            `} onClick={(e) => e.stopPropagation()}>
+              <p className="font-semibold">Wishlist</p>
+              <p className="text-sm text-gray-600">Your favorite items.</p>
+            </div>
+          )}
         </div>
-        
+
         {/* Compare */}
         <div className="relative">
           <NavIcon
             icon={FaExchangeAlt}
             label="Compare"
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleDropdown("compare");
-            }}
-            isActive={activeDropdown === "compare"}
-            dropdownContent={
-              <div className={`
-                ${isMobile 
-                  ? "fixed bottom-16 bg-white text-black p-3 rounded-t-lg shadow-lg z-50" 
-                  : "absolute top-8 right-0 bg-white text-black p-3 rounded-lg shadow-lg w-48 z-50"}
-              `}>
-                <p className="font-semibold">Compare Items</p>
-                <p className="text-sm text-gray-600">No items to compare.</p>
-              </div>
-            }
+            onClick={toggleCompareDropdown}
+            isActive={isCompareOpen}
             isMobile={isMobile}
           />
+          {isCompareOpen && (
+            <div className={`
+              ${isMobile
+                ? "fixed bottom-16 bg-white text-black p-3 rounded-t-lg shadow-lg "
+                : "absolute top-8 -left-5 bg-white text-black p-3 rounded-lg shadow-lg w-48 z-50"}
+            `} onClick={(e) => e.stopPropagation()}>
+              <p className="font-semibold">Compare Items</p>
+              <p className="text-sm text-gray-600">No items to compare.</p>
+            </div>
+          )}
         </div>
-        
+
         {/* User Profile */}
         <div className="relative">
-          <UserDropdown 
-            position={variant}
-            onClose={() => toggleDropdown("user")}
-          />
+          <UserDropdown position={variant} />
         </div>
       </div>
     </div>

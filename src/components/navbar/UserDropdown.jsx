@@ -39,7 +39,7 @@ export const UserDropdown = ({ position = "desktop" }) => {
   }, []);
 
   const containerClasses = position === "desktop"
-    ? "absolute top-8 right-0 z-50 bg-white text-black px-3 py-2 rounded-lg shadow-lg min-w-[200px]"
+    ? "absolute top-8 -left-5 z-50 bg-white text-black px-3 py-2 rounded-lg shadow-lg min-w-[200px]"
     : "fixed bottom-16 right-0 bg-white text-black px-3 py-2 rounded-t-lg shadow-lg min-w-[200px]";
 
   return (
