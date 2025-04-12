@@ -1,28 +1,15 @@
 import { Link } from "react-router-dom";
-import { FaAngleDoubleRight, FaChevronDown } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { FaAngleDoubleRight, FaChevronRight, FaChevronDown } from "react-icons/fa";
+import { useState } from "react";
 
 const DesktopMenu = ({ menuItems }) => {
   const [hoverIndex, setHoverIndex] = useState(null);
-  const [desktopSubmenuOpen, setDesktopSubmenuOpen] = useState(null);
+  const [hoverSubIndex, setHoverSubIndex] = useState(null);
   const [showMoreItems, setShowMoreItems] = useState(false);
-  const [moreItemsSubmenuOpen, setMoreItemsSubmenuOpen] = useState(null);
+  const [hoverMoreItemIndex, setHoverMoreItemIndex] = useState(null);
 
   const firstTenItems = menuItems.slice(0, 10);
   const remainingItems = menuItems.slice(10);
-
-  // Close menus when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest(".desktop-menu-item")) {
-        setDesktopSubmenuOpen(null);
-        setShowMoreItems(false);
-        setMoreItemsSubmenuOpen(null);
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
 
   return (
     <div className="hidden md:flex items-center justify-center space-x-2 px-2 py-3 font-medium text-sm md:space-x-6 md:px-4">
@@ -31,39 +18,76 @@ const DesktopMenu = ({ menuItems }) => {
           key={index}
           className="relative cursor-pointer desktop-menu-item"
           onMouseEnter={() => setHoverIndex(index)}
-          onMouseLeave={() => setHoverIndex(null)}
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent closing when clicking inside
-            setDesktopSubmenuOpen(desktopSubmenuOpen === index ? null : index);
+          onMouseLeave={() => {
+            setHoverIndex(null);
+            setHoverSubIndex(null);
           }}
         >
-          <Link to={item.path} className="hover:text-gray-300">
+          <Link to={item.path || "#"} className="hover:text-gray-300">
             {item.name}
           </Link>
 
-          {item.subMenu && (hoverIndex === index || desktopSubmenuOpen === index) && (
-            <div className="absolute left-0 mt-2 w-48 bg-gray-300 text-black shadow-lg rounded-md z-50">
+          {/* Printer & Scanner submenu with nested hover */}
+          {item.name === "Printer & Scanner" && hoverIndex === index && (
+            <div className="absolute -left-2 top-full w-48 bg-gray-300 text-gray-900 shadow-lg rounded-md z-50">
               {item.subMenu.map((subItem, subIndex) => (
-                <Link
+                <div
                   key={subIndex}
-                  to={subItem.path}
-                  className="block px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                  className="relative group"
+                  onMouseEnter={() => setHoverSubIndex(subIndex)}
+                  onMouseLeave={() => setHoverSubIndex(null)}
                 >
-                  {subItem.name}
-                </Link>
+                  <div className="flex justify-between items-center px-4 py-2 hover:bg-gray-200">
+                    <span>{subItem.name}</span>
+                    {subItem.subMenu && <FaChevronRight className="text-xs" />}
+                  </div>
+
+                  {/* Nested submenu */}
+                  {subItem.subMenu && hoverSubIndex === subIndex && (
+                    <div className="absolute left-full top-0 w-48 bg-gray-200 text-gray-900 shadow-lg rounded-md z-50">
+                      {subItem.subMenu.map((nestedItem, nestedIndex) => (
+                        <Link
+                          key={nestedIndex}
+                          to={nestedItem.path}
+                          className="block px-4 py-2 hover:bg-gray-100"
+                        >
+                          {nestedItem.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           )}
+
+          {/* Regular single-level submenu for other items */}
+          {item.name !== "Printer & Scanner" &&
+            item.subMenu &&
+            hoverIndex === index && (
+              <div className="absolute left-0 top-full w-48 bg-gray-300 text-gray-900 shadow-lg rounded-md z-50">
+                {item.subMenu.map((subItem, subIndex) => (
+                  <Link
+                    key={subIndex}
+                    to={subItem.path}
+                    className="block px-4 py-2 hover:bg-gray-200"
+                  >
+                    {subItem.name}
+                  </Link>
+                ))}
+              </div>
+            )}
         </div>
       ))}
-      
+
+      {/* More Items dropdown – untouched */}
       {remainingItems.length > 0 && (
         <div
           className="relative cursor-pointer desktop-menu-item"
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowMoreItems(!showMoreItems);
-            setMoreItemsSubmenuOpen(null);
+          onMouseEnter={() => setShowMoreItems(true)}
+          onMouseLeave={() => {
+            setShowMoreItems(false);
+            setHoverMoreItemIndex(null);
           }}
         >
           <div className="flex items-center hover:text-gray-300">
@@ -71,27 +95,29 @@ const DesktopMenu = ({ menuItems }) => {
           </div>
 
           {showMoreItems && (
-            <div className="absolute left-0 mt-2 w-48 bg-gray-300 text-black shadow-lg rounded-md z-50">
+            <div className="absolute left-0 w-48 bg-gray-300 text-gray-900 shadow-lg rounded-md z-50">
               {remainingItems.map((item, index) => (
-                <div key={index} className="relative">
-                  <div
-                    className="flex justify-between items-center px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setMoreItemsSubmenuOpen(moreItemsSubmenuOpen === index ? null : index);
-                    }}
+                <div
+                  key={index}
+                  className="relative"
+                  onMouseEnter={() => setHoverMoreItemIndex(index)}
+                  onMouseLeave={() => setHoverMoreItemIndex(null)}
+                >
+                  <Link
+                    to={item.path || "#"}
+                    className="flex justify-between items-center px-4 py-2 "
                   >
                     <span>{item.name}</span>
                     {item.subMenu && <FaChevronDown className="text-sm" />}
-                  </div>
+                  </Link>
 
-                  {item.subMenu && moreItemsSubmenuOpen === index && (
-                    <div className="ml-4 mt-1">
+                  {item.subMenu && hoverMoreItemIndex === index && (
+                    <div className="block left-full top-0 mt-0 w-48 p-1 bg-gray-200 text-gray-900 shadow-lg rounded-md z-50">
                       {item.subMenu.map((subItem, subIndex) => (
                         <Link
                           key={subIndex}
                           to={subItem.path}
-                          className="block px-4 py-2 hover:bg-gray-200"
+                          className="block px-4 py-2 hover:bg-gray-100 rounded-md"
                         >
                           {subItem.name}
                         </Link>

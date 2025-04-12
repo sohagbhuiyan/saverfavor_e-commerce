@@ -96,10 +96,7 @@ export const menuItems = [
       name: "Printer & Scanner",
       subMenu: [
         {
-          name: "Printers & Scanners",
-          subMenu: [
-            {
-              name: "Printers",
+              name: "All Printers",
               subMenu: [
                 { name: "Ink Printer", path: "/all-Printer/ink-printer" },
                 { name: "Laser Printer", path: "/all-Printer/laser-printer" },
@@ -108,34 +105,19 @@ export const menuItems = [
                 { name: "POS Printer", path: "/all-Printer/pos-printer" },
                 { name: "Label Printer", path: "/all-Printer/label-printer" },
                 { name: "Card Printer", path: "/all-Printer/card-printer" },
+                { name: "Flatbed Scanner", path: "/all-Printer/flatbed" },
+                { name: "Sheetfed Scanner", path: "/all-Printer/sheetfed" },
+                { name: "Barcode Scanner", path: "/all-Printer/barcode" },
               ]
             },
-            {
-              name: "Scanners",
-              subMenu: [
-                { name: "Flatbed Scanner", path: "/scanners/flatbed" },
-                { name: "Sheetfed Scanner", path: "/scanners/sheetfed" },
-                { name: "Barcode Scanner", path: "/scanners/barcode" },
-              ]
-            }
-          ]
-        },
-        {
+     {
           name: "Printer Accessories",
           subMenu: [
-            {
-              name: "Consumables",
-              subMenu: [
                 { name: "Toner", path: "/accessories/toner" },
                 { name: "Ink Bottle", path: "/accessories/ink-bottle" },
                 { name: "Cartridge", path: "/accessories/cartridge" },
                 { name: "Ribbon", path: "/accessories/ribbon" },
                 { name: "Photo Paper", path: "/accessories/photo-paper" },
-              ]
-            },
-            {
-              name: "Parts & Components",
-              subMenu: [
                 { name: "Fuser Film", path: "/components/fuser-film" },
                 { name: "Pickup Roller", path: "/components/pickup-roller" },
                 { name: "Pressure Ruler", path: "/components/pressure-ruler" },
@@ -143,19 +125,12 @@ export const menuItems = [
                 { name: "Printer Head", path: "/components/head" },
                 { name: "Printer Switch", path: "/components/switch" },
                 { name: "Printer Cable", path: "/components/cable" },
-              ]
-            },
-            {
-              name: "Services",
-              subMenu: [
                 { name: "Refill Service", path: "/services/refill" },
                 { name: "Maintenance", path: "/services/maintenance" },
               ]
             }
           ]
-        }
-      ]
-    },
+        },
      {
        name: "Camera",
    

@@ -4,17 +4,18 @@ import { useState } from "react";
 
 const MobileMenu = ({ isOpen, onClose, menuItems }) => {
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(null);
+  const [nestedSubmenuOpen, setNestedSubmenuOpen] = useState(null);
 
-  // Reset submenu state when closing the menu
   const handleCloseMenu = () => {
     setMobileSubmenuOpen(null);
+    setNestedSubmenuOpen(null);
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="md:hidden fixed top-0 left-0 h-full w-48 bg-gray-900 text-white z-50">
+    <div className="md:hidden fixed top-0 left-0 h-full w-54 bg-gray-900 text-white z-50">
       <button
         onClick={handleCloseMenu}
         className="absolute top-4 right-4 text-xl cursor-pointer"
@@ -24,7 +25,7 @@ const MobileMenu = ({ isOpen, onClose, menuItems }) => {
 
       <h2 className="text-sm font-bold text-green-400 p-4">Menu</h2>
 
-      <div className="flex flex-col space-y-2 px-4 overflow-y-auto pb-10 h-[calc(100vh-60px)]">
+      <div className="flex flex-col space-y-2 px-3 overflow-y-auto pb-10 h-[calc(100vh-60px)]">
         {menuItems.map((item, index) => (
           <div key={index} className="py-2 text-xs border-b border-gray-700">
             <div
@@ -33,7 +34,7 @@ const MobileMenu = ({ isOpen, onClose, menuItems }) => {
                 setMobileSubmenuOpen(mobileSubmenuOpen === index ? null : index)
               }
             >
-              <Link to={item.path} className="hover:text-gray-300">
+              <Link to={item.path || "#"} className="hover:text-gray-300">
                 {item.name}
               </Link>
               {item.subMenu && (
@@ -43,16 +44,48 @@ const MobileMenu = ({ isOpen, onClose, menuItems }) => {
               )}
             </div>
 
+            {/* First-level submenu */}
             {item.subMenu && mobileSubmenuOpen === index && (
-              <div className="ml-4 mt-2 bg-gray-700 p-1 ">
+              <div className="ml-1 mt-2 bg-gray-800 p-1 rounded-md">
                 {item.subMenu.map((subItem, subIndex) => (
-                  <Link
-                    key={subIndex}
-                    to={subItem.path}
-                    className="block text-white text-xs p-1 cursor-pointer hover:bg-gray-600 rounded-md"
-                  >
-                    {subItem.name}
-                  </Link>
+                  <div key={subIndex} className="mb-1">
+                    <div
+                      className="flex justify-between items-center cursor-pointer px-1 py-1 hover:bg-gray-700 rounded"
+                      onClick={() =>
+                        setNestedSubmenuOpen(
+                          nestedSubmenuOpen === subIndex ? null : subIndex
+                        )
+                      }
+                    >
+                      {subItem.path ? (
+                        <Link to={subItem.path} className="block w-full">
+                          {subItem.name}
+                        </Link>
+                      ) : (
+                        <span>{subItem.name}</span>
+                      )}
+                      {subItem.subMenu && (
+                        <span className="ml-1">
+                          {nestedSubmenuOpen === subIndex ? "▲" : "▼"}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Nested submenu (second level) */}
+                    {subItem.subMenu && nestedSubmenuOpen === subIndex && (
+                      <div className="ml-1 mt-1 bg-gray-700 p-1 rounded">
+                        {subItem.subMenu.map((nestedItem, nestedIndex) => (
+                          <Link
+                            key={nestedIndex}
+                            to={nestedItem.path}
+                            className="block text-white text-xs p-1 hover:bg-gray-600 rounded-md"
+                          >
+                            {nestedItem.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             )}

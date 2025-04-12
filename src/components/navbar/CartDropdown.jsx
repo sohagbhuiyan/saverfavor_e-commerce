@@ -7,7 +7,7 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
   const dropdownRef = useRef(null);
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
-
+ 
   const containerClasses = position === "desktop"
     ? "absolute md:-left-15 right-0 top-8 w-60 md:w-80 bg-white shadow-lg rounded-lg p-2 z-50 text-black"
     : "fixed bottom-16 bg-white shadow-lg rounded-t-lg p-2 z-50 text-black max-h-100 overflow-y-auto";
