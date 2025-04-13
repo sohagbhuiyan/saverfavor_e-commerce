@@ -16,6 +16,7 @@ import Projector from './components/body/category/Projector';
 import Soundsystem from './components/body/category/SoundSystems';
 import Desktop from './components/body/category/Desktop';
 import ProductviewPage from './components/product/ProductviewPage';
+import Photocopier from './components/body/category/Photocopier';
 
 import LaptopHP from './components/menu_Submeu/laptop/LaptopHP';
 import Network from './components/menu_Submeu/network/Network';
@@ -29,6 +30,7 @@ import Specialty from './components/footer/Specialty';
 import ServiceCenter from './components/footer/ServiceCenter';
 import Layout from './components/layout/Layout';
 import ProfileView from './components/registration/profile/ProfileView';
+
 
 
 function App() {
@@ -53,6 +55,7 @@ function App() {
           <Route path="/cameras" element={<Camera/>} />
           <Route path="/printers" element={<Printer/>} />
           <Route path="/projectors" element={<Projector />} />
+          <Route path="/photocopiers" element={<Photocopier />} />
           <Route path="/soundsystems" element={<Soundsystem/>} />
           {/* menu and submenu  */}
           <Route path="/all-notebook/hp" element={<LaptopHP />} />

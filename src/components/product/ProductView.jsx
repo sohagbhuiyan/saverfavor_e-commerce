@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { laptop, monitor } from "../../Utils/images";
+import { camera, gaming, gpu, laptop, monitor } from "../../Utils/images";
 import toast, { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../store/cartSlice";
@@ -41,6 +41,60 @@ const productData = {
       rotatable: "No",
       hdmiPort: "1",
     },
+  },
+  "GPU QSW Ew00D": {
+    images: [gpu, gpu, gpu],
+    category: "GPU",
+    name: "GPU QSW Ew00D",
+    description: "Dual Pixel, 24.1MP, CMOS AF, 4K video...",
+    specialprice: 55200,
+    regularprice: 55900, // 55200 + 700
+    discount: 700,
+    productId: "93.07.154.101",
+    details: {
+      displaySize: "N/A",
+      resolution: "7680x4320",
+      panelType: "GDDR6X",
+      refreshRate: "N/A",
+      rotatable: "No",
+      hdmiPort: "3"
+    }
+  },
+  "Canon EOS 200D DSLR": {
+    images: [camera, camera, camera],
+    category: "Camera",
+    name: "Canon EOS 200D DSLR",
+    description: "24.1MP, Dual Pixel CMOS AF, 4K video...",
+    specialprice: 55000,
+    regularprice: 57000, // 55000 + 2000
+    discount: 2000,
+    productId: "94.04.120.202",
+    details: {
+      displaySize: "3.0 Inch",
+      resolution: "6000x4000",
+      panelType: "CMOS",
+      refreshRate: "60Hz",
+      rotatable: "Yes",
+      hdmiPort: "1"
+    }
+  },
+  "Gaming POE 4s 200D": {
+    images: [gaming, gaming, gaming],
+    category: "Gaming",
+    name: "Gaming POE 4s 200D",
+    description: "4K video, 24.1MP, Dual Pixel CMOS AF...",
+    specialprice: 55200,
+    regularprice: 56400, // 55200 + 1200
+    discount: 1200,
+    productId: "95.05.130.303",
+    details: {
+      displaySize: "N/A",
+      resolution: "3840x2160",
+      panelType: "LED",
+      refreshRate: "144Hz",
+      rotatable: "No",
+      hdmiPort: "2"
+    }
   },
 };
 

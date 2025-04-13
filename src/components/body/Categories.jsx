@@ -15,7 +15,7 @@ const categories = [
   { name: "Projector", icon: <FaVideo size={30} />, path: "/projectors" },
   { name: "Monitor", icon: <FaTv size={30} />, path: "/monitors" },
   { name: "Camera", icon: <FaCamera size={30} />, path: "/cameras" },
-  { name: "Photocopier", icon: <FaPrint size={30} />, path: "/photocopiers" },
+  { name: "Photocopiers", icon: <FaPrint size={30} />, path: "/photocopiers" },
   { name: "Printer", icon: <FaPrint size={30} />, path: "/printers" },
   { name: "Soundsystem", icon: <FaSpeakerDeck size={30} />, path: "/soundsystems" },
 ];
