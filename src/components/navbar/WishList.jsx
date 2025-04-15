@@ -1,0 +1,85 @@
+// components/navigation/WishlistDropdown.jsx
+import { FaHeart, FaShoppingCart, FaTimes } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { removeFromWishlist } from "../../store/wishlistSlice";
+import { addToCart } from "../../store/cartSlice";
+import { Link } from "react-router-dom";
+
+const Wishlist = ({ isOpen, isMobile }) => {
+  const dispatch = useDispatch();
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+  const cartItems = useSelector((state) => state.cart.items);
+
+  const handleAddToCart = (product, e) => {
+    e.stopPropagation();
+    if (!cartItems.some(item => item.id === product.id)) {
+      dispatch(addToCart({ ...product, quantity: 1 }));
+    }
+  };
+
+  const handleRemove = (id, e) => {
+    e.stopPropagation();
+    dispatch(removeFromWishlist(id));
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className={`${
+        isMobile
+          ? "fixed bottom-16 left-10 right-10 text-black bg-gray-100 p-3 rounded-t-lg shadow-lg z-50 max-h-64 overflow-y-auto"
+          : "absolute top-8 right-0 text-black bg-gray-100 p-3 rounded-lg shadow-lg w-82 z-50 max-h-96 overflow-y-auto"
+      }`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h3 className="text-lg font-bold flex items-center mb-4">
+        <FaHeart className="text-red-500 mr-2" />
+        Wishlist ({wishlistItems.length})
+      </h3>
+      {wishlistItems.length === 0 ? (
+        <p className="text-center py-4">Your wishlist is empty</p>
+      ) : (
+        wishlistItems.map((product) => (
+          <div key={product.id} className="flex items-center py-2 border-b last:border-b-0">
+            <Link to={`/product/${product.name}`} className="flex-1 flex items-center hover:bg-gray-50 p-2 rounded">
+              <img src={product.image} alt={product.name} className="w-12 h-12 object-cover rounded-md mr-3" />
+              <div className="flex-1 min-w-0">
+                <h4 className="font-medium truncate">{product.name}</h4>
+                <p className="text-sm text-gray-600">${product.price}</p>
+              </div>
+            </Link>
+            <div className="flex items-center ml-2 space-x-2">
+              <button
+                onClick={(e) => handleAddToCart(product, e)}
+                className={`p-2 rounded-md ${
+                  cartItems.some((item) => item.id === product.id)
+                    ? "bg-gray-200 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-200 text-blue-600"
+                }`}
+                disabled={cartItems.some((item) => item.id === product.id)}
+              >
+                <FaShoppingCart className="text-sm" />
+              </button>
+              <button
+                onClick={(e) => handleRemove(product.id, e)}
+                className="p-2 rounded-md text-red-600 hover:bg-red-100"
+              >
+                <FaTimes className="text-sm" />
+              </button>
+            </div>
+          </div>
+        ))
+      )}
+      {wishlistItems.length > 0 && (
+        <div className="mt-4 text-center">
+          <Link to="/wishlist" className="text-blue-600 hover:text-blue-800 font-medium text-sm">
+            View Full Wishlist →
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Wishlist;

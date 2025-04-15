@@ -10,7 +10,7 @@ const Footer = () => {
           <div className="flex flex-col items-center md:items-start">
             <h2 className="text-lg font-semibold">JS Computer</h2>
             <div className="flex gap-3 md:gap-6 mt-2">
-              <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.facebook.com/jscomputermym" target="_blank" rel="noopener noreferrer">
                 <FaFacebook className="text-xl cursor-pointer hover:text-gray-400" />
               </a>
               <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer">

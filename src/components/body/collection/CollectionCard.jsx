@@ -1,11 +1,26 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FaShoppingCart, FaExchangeAlt, FaHeart, FaEye, FaTimes } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { addToWishlist } from "../../../store/wishlistSlice"; // adjust path if needed
 
 const CollectionCard = ({ image, category, name, price, discount, description }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false); // State for quick view modal
+  const dispatch = useDispatch();
 
+  const handleAddToWishlist = (e) => {
+    e.preventDefault(); // Prevent Link navigation
+    dispatch(addToWishlist({
+      image,
+      category,
+      name,
+      price,
+      discount,
+      description
+    }));
+  };
+  
   return (
     <>
       <Link to={`/product/${name}`} className="block">
@@ -33,9 +48,14 @@ const CollectionCard = ({ image, category, name, price, discount, description })
                 <button className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" title="Compare">
                   <FaExchangeAlt />
                 </button>
-                <button className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" title="Wishlist">
-                  <FaHeart />
-                </button>
+                <button
+  className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer"
+  title="Wishlist"
+  onClick={handleAddToWishlist}
+>
+  <FaHeart />
+</button>
+
                 <button 
                   className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" 
                   title="Quick View"

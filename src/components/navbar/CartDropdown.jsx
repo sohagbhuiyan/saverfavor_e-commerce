@@ -17,11 +17,7 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        isOpen &&
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target) &&
-        cartIconRef.current &&
-        !cartIconRef.current.contains(event.target)
+        isOpen && dropdownRef.current && !dropdownRef.current.contains(event.target) && cartIconRef.current && !cartIconRef.current.contains(event.target)
       ) {
         onClose();
       }
