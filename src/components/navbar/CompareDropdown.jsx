@@ -21,7 +21,7 @@ const CompareDropdown = ({ isOpen, isMobile, onClose }) => {
     >
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-lg font-bold flex items-center">
-          <FaExchangeAlt className="text-blue-500 mr-2" />
+     
           Compare ({compareItems.length})
         </h3>
         <button 
