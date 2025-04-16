@@ -91,6 +91,7 @@ const NavIcons = ({ variant = "desktop" }) => {
           />
           <CompareDropdown
             isOpen={openDropdown === DROPDOWNS.compare}
+            onClose={closeDropdown}
             isMobile={isMobile}
           />
         </div>

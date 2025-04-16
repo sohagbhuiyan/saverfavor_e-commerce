@@ -5,7 +5,7 @@ import { removeFromWishlist } from "../../store/wishlistSlice";
 import { addToCart } from "../../store/cartSlice";
 import { Link } from "react-router-dom";
 
-const Wishlist = ({ isOpen, isMobile }) => {
+const Wishlist = ({ isOpen, isMobile, onClose }) => {  // Added onClose prop
   const dispatch = useDispatch();
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const cartItems = useSelector((state) => state.cart.items);
@@ -28,15 +28,23 @@ const Wishlist = ({ isOpen, isMobile }) => {
     <div
       className={`${
         isMobile
-          ? "fixed bottom-16 left-10 right-10 text-black bg-gray-100 p-3 rounded-t-lg shadow-lg z-50 max-h-64 overflow-y-auto"
+          ? "fixed bottom-16 left-20 right-20 text-black bg-gray-100 p-3 rounded-t-lg shadow-lg z-50 max-h-64 overflow-y-auto"
           : "absolute top-8 right-0 text-black bg-gray-100 p-3 rounded-lg shadow-lg w-82 z-50 max-h-96 overflow-y-auto"
       }`}
       onClick={(e) => e.stopPropagation()}
     >
-      <h3 className="text-lg font-bold flex items-center mb-4">
-        <FaHeart className="text-red-500 mr-2" />
-        Wishlist ({wishlistItems.length})
-      </h3>
+      <div className="flex justify-between items-center mb-2">
+        <h3 className="text-lg font-bold flex items-center">
+          <FaHeart className="text-red-500 mr-2" />
+          Wishlist ({wishlistItems.length})
+        </h3>
+        <button 
+          onClick={onClose}  // Added close handler
+          className="p-1 hover:bg-gray-200 rounded-full"
+        >
+          <FaTimes className="text-lg text-gray-600" />
+        </button>
+      </div>
       {wishlistItems.length === 0 ? (
         <p className="text-center py-4">Your wishlist is empty</p>
       ) : (

@@ -29,7 +29,7 @@ const DesktopMenu = ({ menuItems }) => {
 
           {/* Printer & Scanner submenu with nested hover */}
           {item.name === "Printer & Scanner" && hoverIndex === index && (
-            <div className="absolute -left-2 top-full w-48 bg-gray-300 text-gray-900 shadow-lg rounded-md z-50">
+            <div className="absolute -left-2 top-full w-48 bg-gray-300 text-gray-900 shadow-lg hover:rounded-t-lg rounded-md z-50">
               {item.subMenu.map((subItem, subIndex) => (
                 <div
                   key={subIndex}
@@ -70,7 +70,7 @@ const DesktopMenu = ({ menuItems }) => {
                   <Link
                     key={subIndex}
                     to={subItem.path}
-                    className="block px-4 py-2 hover:bg-gray-200"
+                    className="block px-4 py-2 rounded-t-md hover:bg-gray-200"
                   >
                     {subItem.name}
                   </Link>
