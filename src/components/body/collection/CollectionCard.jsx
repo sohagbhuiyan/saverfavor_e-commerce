@@ -4,7 +4,7 @@ import { FaShoppingCart, FaExchangeAlt, FaHeart, FaEye, FaTimes } from "react-ic
 import { useDispatch } from "react-redux";
 import { addToWishlist } from "../../../store/wishlistSlice"; // adjust path if needed
 
-const CollectionCard = ({ image, category, name, price, discount, description }) => {
+const CollectionCard = ({id, image, category, name, price, discount, description }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false); // State for quick view modal
   const dispatch = useDispatch();
@@ -12,6 +12,7 @@ const CollectionCard = ({ image, category, name, price, discount, description })
   const handleAddToWishlist = (e) => {
     e.preventDefault(); // Prevent Link navigation
     dispatch(addToWishlist({
+      id,
       image,
       category,
       name,
@@ -49,12 +50,12 @@ const CollectionCard = ({ image, category, name, price, discount, description })
                   <FaExchangeAlt />
                 </button>
                 <button
-  className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer"
-  title="Wishlist"
-  onClick={handleAddToWishlist}
->
-  <FaHeart />
-</button>
+                      className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer"
+                      title="Wishlist"
+                      onClick={handleAddToWishlist}
+                    >
+                      <FaHeart />
+                    </button>
 
                 <button 
                   className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" 

@@ -30,6 +30,7 @@ import Specialty from './components/footer/Specialty';
 import ServiceCenter from './components/footer/ServiceCenter';
 import Layout from './components/layout/Layout';
 import ProfileView from './components/registration/profile/ProfileView';
+import WishlistPage from './components/navbar/WishlistPage';
 
 
 
@@ -48,6 +49,7 @@ function App() {
           <Route path="/exclusive-offers" element={<ExclusiveOffer/>} />
           <Route path="/news-media" element={<NewsMedia/>} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
           {/* Categories  */}
           <Route path="/notebook" element={<Notebook />} />
           <Route path="/desktops" element={<Desktop/>} />

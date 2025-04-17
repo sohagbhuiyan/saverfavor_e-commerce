@@ -28,7 +28,7 @@ const Wishlist = ({ isOpen, isMobile, onClose }) => {  // Added onClose prop
     <div
       className={`${
         isMobile
-          ? "fixed bottom-16 left-10 right-10 text-black bg-gray-100 p-3 rounded-t-lg shadow-lg z-50 max-h-64 overflow-y-auto"
+          ? "fixed bottom-16 left-10 right-10 text-black bg-gray-100 p-3 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto"
           : "absolute top-8 right-0 text-black bg-gray-100 p-3 rounded-lg shadow-lg w-84 z-50 max-h-96 overflow-y-auto"
       }`}
       onClick={(e) => e.stopPropagation()}
@@ -59,7 +59,7 @@ const Wishlist = ({ isOpen, isMobile, onClose }) => {  // Added onClose prop
             </Link>
             <div className="flex items-center ml-2 space-x-2">
               <button
-                onClick={(e) => handleRemove(product.id, e)}
+                onClick={(e) => handleRemove(product.name, e)}
                 className="p-2 rounded-md text-red-600 hover:bg-red-100"
               >
                 <FaTimes className="text-sm" />

@@ -4,6 +4,7 @@ import CollectionCard from "./CollectionCard";
 
 const products = [
   {
+    id: 1,
     image: monitor,
     category: "Monitor",
     name: "HP M22F 21.5 Inch FHD IPS Monitor",
@@ -12,6 +13,7 @@ const products = [
     discount: 600
   },
   {
+    id: 2,
     image: laptop,
     category: "Laptop",
     name: "Dell Inspiron 15 3511",
@@ -20,6 +22,7 @@ const products = [
     discount: 1500
   },
   {
+    id: 3,
     image: gpu,
     category: "GPU",
     name: "GPU QSW Ew00D",
@@ -28,6 +31,7 @@ const products = [
     discount: 700
   },
   {
+    id: 4,
     image: camera,
     category: "Camera",
     name: "Canon EOS 200D DSLR",
@@ -36,6 +40,7 @@ const products = [
     discount: 2000
   },
   {
+    id: 5,
     image: gaming,
     category: "Gaming",
     name: "Gaming POE 4s 200D",
@@ -44,6 +49,7 @@ const products = [
     discount: 1200
   },
   {
+    id: 6,
     image: monitor,
     category: "Monitor",
     name: "HP M22F 21.5 Inch FHD IPS Monitor",
@@ -52,6 +58,7 @@ const products = [
     discount: 600
   },
   {
+    id: 7,
     image: laptop,
     category: "Laptop",
     name: "Dell Inspiron 15 3511",
