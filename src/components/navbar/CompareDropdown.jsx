@@ -1,15 +1,19 @@
-// src/components/navbar/CompareDropdown.jsx
+import { Link } from "react-router-dom";
 import { FaExchangeAlt, FaTimes } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { removeFromCompare } from "../../store/compareSlice";
+import { clearCompare, removeFromCompare } from "../../store/compareSlice";
+import toast from "react-hot-toast";
 
 const CompareDropdown = ({ isOpen, isMobile, onClose }) => {
   const dispatch = useDispatch();
-  const compareItems = useSelector((state) => state.compare.items);
+  const { items, maxItems } = useSelector((state) => state.compare);
+
+  const handleRemove = (productId) => {
+    dispatch(removeFromCompare(productId));
+    toast.success("Product removed from comparison", { position: "bottom-right" });
+  };
 
   if (!isOpen) return null;
-
   return (
     <div
       className={`${
@@ -22,7 +26,7 @@ const CompareDropdown = ({ isOpen, isMobile, onClose }) => {
       <div className="flex justify-between items-center border-b border-gray-400 mb-2">
         <h3 className="text-lg font-bold flex items-center">
      
-          Compare ({compareItems.length})
+        Compare ({items.length}/{maxItems})
         </h3>
         <button 
           onClick={onClose}
@@ -32,11 +36,11 @@ const CompareDropdown = ({ isOpen, isMobile, onClose }) => {
         </button>
       </div>
 
-      {compareItems.length === 0 ? (
+      {items.length === 0 ? (
         <p className="text-center py-4">No items added for comparison</p>
       ) : (
         <>
-          {compareItems.map((product) => (
+          {items.map((product) => (
             <div key={product.id} className="flex items-center py-2 border-b last:border-b-0">
               <Link
                 to={`/product/${product.name}`}
@@ -62,13 +66,26 @@ const CompareDropdown = ({ isOpen, isMobile, onClose }) => {
               </div>
             </div>
           ))}
-          <div className="mt-4 text-center">
+<div className="mt-4 p-2">
             <Link
               to="/compare"
-              className="text-blue-600 hover:text-blue-800 font-medium text-sm"
+              onClick={onClose}
+              className={`w-full block text-center px-4 py-2 ${
+                items.length >= 2 
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              } rounded-md transition-colors`}
             >
-              Compare Now →
+              {items.length >= 2 ? "Compare Now" : "Add 2+ products to compare"}
             </Link>
+          </div>
+          <div className="text-center pb-2">
+            <button
+              onClick={() => dispatch(clearCompare())}
+              className="text-red-600 hover:text-red-800 text-sm"
+            >
+              Clear All
+            </button>
           </div>
         </>
       )}

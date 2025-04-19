@@ -4,12 +4,23 @@ import { FaShoppingCart, FaExchangeAlt, FaHeart, FaEye, FaTimes } from "react-ic
 import { useDispatch } from "react-redux";
 import { addToWishlist } from "../../../store/wishlistSlice"; // adjust path if needed
 import { addToCart } from "../../../store/cartSlice";
+import { addToCompare } from "../../../store/compareSlice";
 
 const CollectionCard = ({id, image, category, name, price, discount, description }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false); // State for quick view modal
   const dispatch = useDispatch();
 
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    dispatch(addToCart({
+      productId: id,
+      name,
+      specialprice: price,
+      images: [image], // Wrap in array as per your cart structure
+      quantity: 1 // Start with quantity 1
+    }));
+  };
   const handleAddToWishlist = (e) => {
     e.preventDefault(); // Prevent Link navigation
     dispatch(addToWishlist({
@@ -22,16 +33,26 @@ const CollectionCard = ({id, image, category, name, price, discount, description
       description
     }));
   };
-  const handleAddToCart = (e) => {
+  const handleAddToCompare = (e) => {
     e.preventDefault();
-    dispatch(addToCart({
-      productId: id,
+    dispatch(addToCompare({
+      id,
       name,
-      specialprice: price,
-      images: [image], // Wrap in array as per your cart structure
-      quantity: 1 // Start with quantity 1
+      price,
+      image,
+      category,
+      description,
+      specifications: { // Add sample specifications
+        display: "15.6\" FHD IPS Display",
+        processor: "Intel Core i5-1135G7",
+        ram: "8GB DDR4",
+        storage: "512GB SSD",
+        graphics: "Intel Iris Xe Graphics",
+        weight: "1.75 kg"
+      }
     }));
   };
+  
   
   return (
     <>
@@ -61,9 +82,14 @@ const CollectionCard = ({id, image, category, name, price, discount, description
                   >
                     <FaShoppingCart />
                   </button>
-                <button className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" title="Compare">
+                <button 
+                  className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" 
+                  title="Compare"
+                  onClick={handleAddToCompare}
+                >
                   <FaExchangeAlt />
                 </button>
+
                 <button
                       className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer"
                       title="Wishlist"

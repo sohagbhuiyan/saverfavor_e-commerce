@@ -32,6 +32,7 @@ import Layout from './components/layout/Layout';
 import ProfileView from './components/registration/profile/ProfileView';
 import WishlistPage from './components/navbar/WishlistPage';
 import CartPage from './components/navbar/CartPage';
+import ComparePage from './components/navbar/ComparePage';
 
 
 
@@ -52,6 +53,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/compare" element={<ComparePage />} />
           {/* Categories  */}
           <Route path="/notebook" element={<Notebook />} />
           <Route path="/desktops" element={<Desktop/>} />
