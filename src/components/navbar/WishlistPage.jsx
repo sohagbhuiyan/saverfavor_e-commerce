@@ -1,11 +1,28 @@
 // pages/WishlistPage.jsx
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromWishlist } from "../../store/wishlistSlice";
+import { addToCart } from "../../store/cartSlice"; // Add cart slice import
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast"; // Add toast notification
 
 const WishlistPage = () => {
   const wishlistItems = useSelector(state => state.wishlist.items);
   const dispatch = useDispatch();
+
+  // Add to cart handler
+  const handleAddToCart = (item) => {
+    dispatch(addToCart({
+      productId: item.id, // Make sure your wishlist items have IDs
+      name: item.name,
+      specialprice: item.price,
+      images: [item.image],
+      quantity: 1
+    }));
+    toast.success(`${item.name} added to cart!`, {
+      position: "top-right",
+      duration: 2000
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -45,7 +62,7 @@ const WishlistPage = () => {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {wishlistItems.map((item) => (
             <div key={item.name} className="group relative bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-shadow">
               <div className="aspect-square overflow-hidden rounded-t-lg bg-gray-100">
@@ -79,6 +96,7 @@ const WishlistPage = () => {
                       </svg>
                     </button>
                     <button
+                    onClick={() => handleAddToCart(item)}
                       className="p-2 text-green-600 hover:bg-green-50 rounded-full transition-colors"
                       title="Add to cart"
                     >

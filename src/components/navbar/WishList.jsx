@@ -33,7 +33,7 @@ const Wishlist = ({ isOpen, isMobile, onClose }) => {  // Added onClose prop
       }`}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center border-b border-gray-400 mb-2">
         <h3 className="text-lg font-bold flex items-center">
           <FaHeart className="text-red-500 mr-2" />
           Wishlist ({wishlistItems.length})
@@ -42,14 +42,14 @@ const Wishlist = ({ isOpen, isMobile, onClose }) => {  // Added onClose prop
           onClick={onClose}  // Added close handler
           className="p-1 hover:bg-gray-200 rounded-full"
         >
-          <FaTimes className="text-lg text-gray-600" />
+          <FaTimes className="text-lg cursor-pointer text-gray-600" />
         </button>
       </div>
       {wishlistItems.length === 0 ? (
         <p className="text-center py-4">Your wishlist is empty</p>
       ) : (
         wishlistItems.map((product) => (
-          <div key={product.id} className="flex items-center py-2 border-b last:border-b-0">
+          <div key={product.id} className="flex items-center py-2 border-b border-gray-300">
             <Link to={`/product/${product.name}`} className="flex-1 flex items-center hover:bg-gray-50 p-2 rounded">
               <img src={product.image} alt={product.name} className="w-12 h-12 object-cover rounded-md mr-3" />
               <div className="flex-1 min-w-0">
@@ -60,7 +60,7 @@ const Wishlist = ({ isOpen, isMobile, onClose }) => {  // Added onClose prop
             <div className="flex items-center ml-2 space-x-2">
               <button
                 onClick={(e) => handleRemove(product.name, e)}
-                className="p-2 rounded-md text-red-600 hover:bg-red-100"
+                className="p-2 rounded-md text-red-600 cursor-pointer hover:bg-red-100"
               >
                 <FaTimes className="text-sm" />
               </button>

@@ -31,6 +31,7 @@ import ServiceCenter from './components/footer/ServiceCenter';
 import Layout from './components/layout/Layout';
 import ProfileView from './components/registration/profile/ProfileView';
 import WishlistPage from './components/navbar/WishlistPage';
+import CartPage from './components/navbar/CartPage';
 
 
 
@@ -50,6 +51,7 @@ function App() {
           <Route path="/news-media" element={<NewsMedia/>} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/wishlist" element={<WishlistPage />} />
+          <Route path="/cart" element={<CartPage />} />
           {/* Categories  */}
           <Route path="/notebook" element={<Notebook />} />
           <Route path="/desktops" element={<Desktop/>} />

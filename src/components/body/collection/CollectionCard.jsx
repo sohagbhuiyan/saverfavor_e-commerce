@@ -3,6 +3,7 @@ import { useState } from "react";
 import { FaShoppingCart, FaExchangeAlt, FaHeart, FaEye, FaTimes } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { addToWishlist } from "../../../store/wishlistSlice"; // adjust path if needed
+import { addToCart } from "../../../store/cartSlice";
 
 const CollectionCard = ({id, image, category, name, price, discount, description }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -19,6 +20,16 @@ const CollectionCard = ({id, image, category, name, price, discount, description
       price,
       discount,
       description
+    }));
+  };
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    dispatch(addToCart({
+      productId: id,
+      name,
+      specialprice: price,
+      images: [image], // Wrap in array as per your cart structure
+      quantity: 1 // Start with quantity 1
     }));
   };
   
@@ -43,9 +54,13 @@ const CollectionCard = ({id, image, category, name, price, discount, description
             {/* Icons on Hover */}
             {isHovered && (
               <div className="absolute top-2 right-2 flex flex-col space-y-2 rounded-lg">
-                <button className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" title="Add to Cart">
-                  <FaShoppingCart />
-                </button>
+               <button 
+                    className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" 
+                    title="Add to Cart"
+                    onClick={handleAddToCart} // Use the new handler
+                  >
+                    <FaShoppingCart />
+                  </button>
                 <button className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" title="Compare">
                   <FaExchangeAlt />
                 </button>

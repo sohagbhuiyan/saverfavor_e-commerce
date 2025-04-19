@@ -1,7 +1,9 @@
 import { useRef, useEffect } from "react";
-import { X, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart, updateQuantity } from "../../store/cartSlice";
+import { Link } from "react-router-dom"; // Add this import
+import { FaTimes } from "react-icons/fa";
 
 export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRef }) => {
   const dropdownRef = useRef(null);
@@ -41,19 +43,25 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
 
   const handleItemClick = (item, event) => {
     event.stopPropagation();
-    console.log("Clicked on cart item:", item);
+    onClose(); // Close dropdown when navigating
   };
 
   if (!isOpen) return null;
 
   return (
     <div className={containerClasses} ref={dropdownRef} onClick={(e) => e.stopPropagation()}>
-      <div className="flex justify-between items-center border-b">
+      {/* Keep header section */}
+      <div className="flex justify-between items-center border-b border-gray-400">
         <h3 className="text-lg font-semibold">Cart ({cartItems.length})</h3>
-        <button onClick={onClose}>
-          <X className="w-6 h-6 cursor-pointer" />
+        <button 
+          onClick={onClose}  // Added close handler
+          className="p-1 hover:bg-gray-200 rounded-full"
+        >
+          <FaTimes className="text-lg cursor-pointer text-gray-600" />
         </button>
       </div>
+
+      {/* Modified items section */}
       <div className={`mt-2 ${position === "desktop" ? "max-h-90" : ""} overflow-y-auto`}>
         {cartItems.length === 0 ? (
           <p className="text-center text-gray-500">Your cart is empty</p>
@@ -61,45 +69,63 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
           cartItems.map((item) => (
             <div
               key={item.productId}
-              className="flex items-center justify-between p-2 border-b cursor-pointer"
-              onClick={(event) => handleItemClick(item, event)}
+              className="group relative flex items-center justify-between p-2 border-b border-gray-200"
             >
-              <img
-                src={item.images[0]}
-                alt={item.name}
-                className={`${imageSize} object-cover rounded`}
+              {/* Product Link Wrapper */}
+              <Link
+                to={`/product/${item.name}`}
+                className="absolute inset-0 z-10"
+                onClick={(e) => handleItemClick(item, e)}
               />
-              <div className="flex-1 px-2">
-                <p className="text-sm font-semibold">{item.name}</p>
-                <div className="flex items-center space-x-2 text-xs text-gray-500">
-                  <span>Tk {item.specialprice}</span>
-                  <span>x</span>
-                  <input
-                    type="number"
-                    min="1"
-                    value={item.quantity}
-                    onChange={(e) =>
-                      handleQuantityChange(item.productId, e.target.value, e)
-                    }
-                    className="w-12 border border-gray-300 rounded-sm text-center"
-                  />
+
+              {/* Product Content */}
+              <div className="flex items-center w-full">
+                <img
+                  src={item.images[0]}
+                  alt={item.name}
+                  className={`${imageSize} object-cover rounded`}
+                />
+                <div className="flex-1 px-2">
+                  <p className="text-sm font-semibold group-hover:text-blue-600 transition-colors">
+                    {item.name}
+                  </p>
+                  <div className="flex items-center space-x-2 text-xs text-gray-500">
+                    <span>Tk {item.specialprice}</span>
+                    <span>x</span>
+                    <input
+                      type="number"
+                      min="1"
+                      value={item.quantity}
+                      onChange={(e) => handleQuantityChange(item.productId, e.target.value, e)}
+                      className="w-12 border border-gray-300 rounded-sm text-center z-20 relative"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
                 </div>
               </div>
+
+              {/* Remove Button */}
               <button
                 onClick={(event) => handleRemove(item.productId, event)}
-                className="text-red-500 hover:text-red-700"
+                className="text-red-500 hover:text-red-700 z-20 relative"
               >
-                <Trash className="w-5 h-5" />
+                <Trash className="w-5 cursor-pointer h-5" />
               </button>
             </div>
           ))
         )}
       </div>
+
+      {/* Keep footer buttons */}
       {cartItems.length > 0 && (
-        <div className="border-t p-2">
-          <button className="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded">
+        <div className="p-2">
+          <Link
+            to="/cart"
+            className="block w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded text-center"
+            onClick={onClose}
+          >
             View Cart
-          </button>
+          </Link>
           <button className="w-full mt-2 bg-green-500 hover:bg-green-600 text-white py-2 rounded">
             Checkout
           </button>

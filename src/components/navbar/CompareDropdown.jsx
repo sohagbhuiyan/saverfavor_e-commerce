@@ -19,7 +19,7 @@ const CompareDropdown = ({ isOpen, isMobile, onClose }) => {
       }`}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center border-b border-gray-400 mb-2">
         <h3 className="text-lg font-bold flex items-center">
      
           Compare ({compareItems.length})

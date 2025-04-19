@@ -165,9 +165,9 @@ const ProductView = () => {
 
         {/* Quantity Selector & Add to Cart */}
         <div className="mt-4 flex items-center gap-2">
-          <button className="bg-gray-300 text-xs md:text-sm px-3 py-1 rounded" onClick={decreaseQuantity}>-</button>
+          <button className="bg-gray-300 cursor-pointer text-xs md:text-sm px-3 py-1 rounded" onClick={decreaseQuantity}>-</button>
           <span>{quantity}</span>
-          <button className="bg-gray-300 text-xs md:text-sm px-3 py-1 rounded" onClick={increaseQuantity}>+</button>
+          <button className="bg-gray-300 cursor-pointer text-xs md:text-sm px-3 py-1 rounded" onClick={increaseQuantity}>+</button>
           <button className="bg-red-600 hover:bg-red-700 text-xs md:text-md font-medium text-white p-2 rounded cursor-pointer" onClick={handleAddToCart}>
             Add to Cart
           </button>
