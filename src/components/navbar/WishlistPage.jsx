@@ -41,21 +41,21 @@ const WishlistPage = () => {
           </ol>
         </nav>
         
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">My Wishlist</h1>
+        <h1 className="text-xl md:text-3xl font-bold text-gray-900 mb-2">My Wishlist</h1>
         <p className="text-gray-600">{wishlistItems.length} items in wishlist</p>
       </div>
 
       {wishlistItems.length === 0 ? (
         <div className="text-center py-16">
           <div className="max-w-md mx-auto">
-            <svg className="mx-auto h-24 w-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="mx-auto h-12 w-12 md:h-24 md:w-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">Your wishlist is empty</h2>
+            <h2 className="mt-4 md:text-2xl font-bold text-gray-900">Your wishlist is empty</h2>
             <p className="mt-2 text-gray-600">Start adding items you love to your wishlist</p>
             <Link
               to="/"
-              className="mt-6 inline-block px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors"
+              className="mt-6 inline-block p-2 md:p-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors"
             >
               Continue Shopping
             </Link>

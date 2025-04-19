@@ -60,7 +60,7 @@ const Wishlist = ({ isOpen, isMobile, onClose }) => {  // Added onClose prop
             <div className="flex items-center ml-2 space-x-2">
               <button
                 onClick={(e) => handleRemove(product.name, e)}
-                className="p-2 rounded-md text-red-600 cursor-pointer hover:bg-red-100"
+                className="p-2 rounded-md text-red-600 hover:bg-red-100"
               >
                 <FaTimes className="text-sm" />
               </button>
