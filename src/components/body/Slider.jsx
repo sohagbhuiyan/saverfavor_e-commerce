@@ -48,7 +48,7 @@ const Slider = () => {
       <p className="">No charge on card paynent</p>
   
     </div>
-    </>
+    </>   
   );
 };
 

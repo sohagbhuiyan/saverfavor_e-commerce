@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { jscomputer } from "../../Utils/images";
+import { logo } from "../../Utils/images";
 import TopBar from "./TopBar";
 import NavIcons from "./NavIcons";
 import DesktopMenu from "./DesktopMenu";
@@ -44,13 +44,13 @@ const Navbar = () => {
 
           <div className="flex flex-1 items-center justify-center gap-3 px-2 md:gap-10">
             <img
-              src={jscomputer}
-              className="h-10 w-20 cursor-pointer"
+              src={logo}
+              className="h-8 md:h-12 cursor-pointer"
               onClick={() => {
                 window.location.href = "/";
                 closeAllDropdowns();
               }}
-              alt="JS Computer Logo"
+              alt="Techno shop"
             />
             
             <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />

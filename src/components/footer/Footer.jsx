@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between gap-6">
 
           <div className="flex flex-col items-center md:items-start">
-            <h2 className="text-lg font-semibold">JS Computer</h2>
+            <h2 className="text-lg font-semibold">TECHNO SHOP</h2>
             <div className="flex gap-3 md:gap-6 mt-2">
               <a href="https://www.facebook.com/jscomputermym" target="_blank" rel="noopener noreferrer">
                 <FaFacebook className="text-xl cursor-pointer hover:text-gray-400" />
@@ -52,8 +52,8 @@ const Footer = () => {
             <h3 className="font-semibold">Contact Us</h3>
             <p>42/6 Ram Babu Rd, Mymensingh-2200, Bangladesh</p>
             <p>+88 01762691654</p>
-            <p>info@jscomputersbd.com</p>
-            <p>JS Computer</p>
+            <p>info@technoshop.com</p>
+            <p>TECHNO SHOP</p>
             <p>Saturday – Thursday 09 AM – 08 PM</p>
           </div>
         </div>

@@ -37,7 +37,7 @@ const Categories = () => {
           <Link 
             to={category.path} 
             key={index} 
-            className="flex flex-col items-center justify-center p-2 hover:scale-105 transition-transform"
+            className="flex flex-col items-center justify-center p-2 hover:scale-110 hover:opacity-85 transition-transform"
           >
             <div className="text-green-600 mb-1 md:mb-2">{category.icon}</div>
             <span className="text-[10px] md:text-sm font-medium text-center leading-tight">
