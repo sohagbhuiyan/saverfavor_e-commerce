@@ -85,15 +85,8 @@ const Registration = () => {
 
           <form onSubmit={handleSubmit}>
             <TextField fullWidth label="Full Name" name="name" value={formData.name} onChange={handleChange} margin="normal" required />
-            <TextField fullWidth type="email" label="Email" name="email" value={formData.email} onChange={handleChange} margin="normal" required />
-            <TextField fullWidth type="password" label="Password" name="password" value={formData.password} onChange={handleChange} margin="normal" required />
             <TextField fullWidth label="Phone Number" name="phoneNo" value={formData.phoneNo} onChange={handleChange} margin="normal" />
-            <TextField fullWidth label="Address" name="address" value={formData.address} onChange={handleChange} margin="normal" />
-            <TextField fullWidth label="Country" name="country" value={formData.country} onChange={handleChange} margin="normal" />
-            <TextField fullWidth type="date" name="dob" value={formData.dob} onChange={handleChange} margin="normal" InputLabelProps={{ shrink: true }} />
-            <TextField fullWidth label="NID Number" name="nidnumber" value={formData.nidnumber} onChange={handleChange} margin="normal" />
-            <TextField fullWidth label="Passport Number" name="passport" value={formData.passport} onChange={handleChange} margin="normal" />
-
+            <TextField fullWidth type="email" label="Email" name="email" value={formData.email} onChange={handleChange} margin="normal" required />
             <Box mt={2}>
               <Button type="submit" variant="contained" color="secondary" fullWidth>
                 Register

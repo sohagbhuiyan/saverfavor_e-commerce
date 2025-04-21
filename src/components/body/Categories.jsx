@@ -22,7 +22,7 @@ const categories = [
 
 const Categories = () => {
   return (
-    <div className="mt-1 pb-12">
+    <div className="mt-1 pb-1 md:pb-3">
       <div className="bg-[#CF212B] flex justify-between px-4 md:px-10 text-white text-xs md:text-lg font-semibold py-2">
         <p>Top Categories</p> 
         <Link 
@@ -32,7 +32,7 @@ const Categories = () => {
           See all categories
         </Link>
       </div>
-      <div className="bg-white shadow-xs p-4 grid grid-cols-4 md:grid-cols-8 gap-2 md:gap-4">
+      <div className="bg-white shadow-xs p-2 md:p-4 grid grid-cols-4 md:grid-cols-8 gap-2 md:gap-4">
         {categories.map((category, index) => (
           <Link 
             to={category.path} 

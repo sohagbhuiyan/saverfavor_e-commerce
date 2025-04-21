@@ -77,12 +77,12 @@ const Collections = () => {
   );
 
   return (
-    <div className="p-4 md:px-12">
+    <div className="py-1 px-3 md:px-10">
  
       <input
         type="text"
         placeholder="Search products or categories..."
-        className="w-full px-4 py-2 mb-4 text-black border border-gray-300 rounded-md outline-none"
+        className="w-full px-4 py-2 mb-2 md:mb-4 text-black border border-gray-300 rounded-md outline-none"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
