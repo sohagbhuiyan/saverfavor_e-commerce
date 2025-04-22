@@ -1,28 +1,69 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaShoppingCart, FaExchangeAlt, FaHeart, FaEye, FaTimes } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { addToWishlist } from "../../../store/wishlistSlice"; // adjust path if needed
+import { addToWishlist } from "../../../store/wishlistSlice";
 import { addToCart } from "../../../store/cartSlice";
 import { addToCompare } from "../../../store/compareSlice";
 
 const CollectionCard = ({id, image, category, name, price, discount, description }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false); // State for quick view modal
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const [showMobileIcons, setShowMobileIcons] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const iconsRef = useRef(null);
   const dispatch = useDispatch();
 
-  const handleAddToCart = (e) => {
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+
+  // Close icons when clicking outside (mobile only)
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (isMobile && showMobileIcons && iconsRef.current && !iconsRef.current.contains(e.target)) {
+        setShowMobileIcons(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isMobile, showMobileIcons]);
+
+  const handleProductClick = (e) => {
+    if (isMobile) {
+      // Prevent navigation only when showing icons
+      if (!showMobileIcons) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      setShowMobileIcons(!showMobileIcons);
+    }
+  };
+
+  const handleIconAction = (callback) => (e) => {
     e.preventDefault();
+    callback(e);
+    if (isMobile) setShowMobileIcons(false);
+  };
+
+  const handleAddToCart = handleIconAction((e) => {
     dispatch(addToCart({
       productId: id,
       name,
       specialprice: price,
-      images: [image], // Wrap in array as per your cart structure
-      quantity: 1 // Start with quantity 1
+      images: [image],
+      quantity: 1
     }));
-  };
-  const handleAddToWishlist = (e) => {
-    e.preventDefault(); // Prevent Link navigation
+  });
+
+  const handleAddToWishlist = handleIconAction((e) => {
     dispatch(addToWishlist({
       id,
       image,
@@ -32,9 +73,9 @@ const CollectionCard = ({id, image, category, name, price, discount, description
       discount,
       description
     }));
-  };
-  const handleAddToCompare = (e) => {
-    e.preventDefault();
+  });
+
+  const handleAddToCompare = handleIconAction((e) => {
     dispatch(addToCompare({
       id,
       name,
@@ -42,7 +83,7 @@ const CollectionCard = ({id, image, category, name, price, discount, description
       image,
       category,
       description,
-      specifications: { // Add sample specifications
+      specifications: {
         display: "15.6\" FHD IPS Display",
         processor: "Intel Core i5-1135G7",
         ram: "8GB DDR4",
@@ -51,9 +92,8 @@ const CollectionCard = ({id, image, category, name, price, discount, description
         weight: "1.75 kg"
       }
     }));
-  };
-  
-  
+  });
+
   return (
     <>
       <Link to={`/product/${name}`} className="block">
@@ -61,8 +101,8 @@ const CollectionCard = ({id, image, category, name, price, discount, description
           className="border border-gray-300 rounded-lg p-3 shadow-md hover:shadow-lg transition duration-300 bg-white cursor-pointer relative"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          onClick={handleProductClick}
         >
-          {/* Image Section */}
           <div className="relative p-1 md:p-2 overflow-hidden rounded-md">
             <img 
               src={image} 
@@ -72,16 +112,19 @@ const CollectionCard = ({id, image, category, name, price, discount, description
               }`}
             />
 
-            {/* Icons on Hover */}
-            {isHovered && (
-              <div className="absolute top-2 right-2 flex flex-col space-y-2 rounded-lg">
-               <button 
-                    className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" 
-                    title="Add to Cart"
-                    onClick={handleAddToCart} // Use the new handler
-                  >
-                    <FaShoppingCart />
-                  </button>
+            {/* Action Icons */}
+            {(isHovered || (isMobile && showMobileIcons)) && (
+              <div 
+                ref={iconsRef}
+                className="absolute top-2 right-2 flex flex-col space-y-2 rounded-lg"
+              >
+                <button 
+                  className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" 
+                  title="Add to Cart"
+                  onClick={handleAddToCart}
+                >
+                  <FaShoppingCart />
+                </button>
                 <button 
                   className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" 
                   title="Compare"
@@ -89,21 +132,20 @@ const CollectionCard = ({id, image, category, name, price, discount, description
                 >
                   <FaExchangeAlt />
                 </button>
-
                 <button
-                      className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer"
-                      title="Wishlist"
-                      onClick={handleAddToWishlist}
-                    >
-                      <FaHeart />
-                    </button>
-
+                  className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer"
+                  title="Wishlist"
+                  onClick={handleAddToWishlist}
+                >
+                  <FaHeart />
+                </button>
                 <button 
                   className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" 
                   title="Quick View"
                   onClick={(e) => {
-                    e.preventDefault(); // Prevent Link navigation
-                    setIsQuickViewOpen(true); // Open quick view modal
+                    e.preventDefault();
+                    setIsQuickViewOpen(true);
+                    if (isMobile) setShowMobileIcons(false);
                   }}
                 >
                   <FaEye />

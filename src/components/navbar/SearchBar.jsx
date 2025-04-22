@@ -6,7 +6,7 @@ const SearchBar = ({ searchQuery, setSearchQuery }) => {
       <input
         type="text"
         placeholder="Enter Your Keyword..."
-        className="w-full px-2 text-sm md:text-lg sm:px-4 text-black rounded-md outline-none"
+        className="w-full px-2 md:px-6 text-xs md:text-sm sm:px-4 text-black rounded-md outline-none"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && console.log("Searching:", searchQuery)}

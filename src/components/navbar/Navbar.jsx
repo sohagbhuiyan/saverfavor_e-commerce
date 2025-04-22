@@ -39,7 +39,7 @@ const Navbar = () => {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden text-xl"
           >
-            {mobileMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-4 md:w-5 h-4 md:h-5" />}
+            {mobileMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
           </button>
 
           <div className="flex flex-1 items-center justify-center gap-3 px-2 md:gap-15">

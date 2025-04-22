@@ -28,7 +28,7 @@ const Wishlist = ({ isOpen, isMobile, onClose }) => {  // Added onClose prop
     <div
       className={`${
         isMobile
-          ? "fixed bottom-16 left-10 right-10 text-black bg-gray-100 p-3 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto"
+          ? "fixed bottom-14 left-6 right-6 text-black bg-gray-200 p-3 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto"
           : "absolute top-8 right-0 text-black bg-gray-100 p-3 rounded-lg shadow-lg w-84 z-50 max-h-96 overflow-y-auto"
       }`}
       onClick={(e) => e.stopPropagation()}
@@ -50,17 +50,17 @@ const Wishlist = ({ isOpen, isMobile, onClose }) => {  // Added onClose prop
       ) : (
         wishlistItems.map((product) => (
           <div key={product.id} className="flex items-center py-2 border-b border-gray-300">
-            <Link to={`/product/${product.name}`} className="flex-1 flex items-center hover:bg-gray-50 p-2 rounded">
-              <img src={product.image} alt={product.name} className="w-12 h-12 object-cover rounded-md mr-3" />
+            <Link to={`/product/${product.name}`} className="flex-1 flex items-center hover:bg-gray-50 p-1 rounded">
+              <img src={product.image} alt={product.name} className="w-10 h-10 object-cover rounded-md mr-1.5" />
               <div className="flex-1 min-w-0">
                 <h4 className="font-medium truncate">{product.name}</h4>
                 <p className="text-sm text-gray-600">${product.price}</p>
               </div>
             </Link>
-            <div className="flex items-center ml-2 space-x-2">
+            <div className="flex items-center ml-1 space-x-2">
               <button
                 onClick={(e) => handleRemove(product.name, e)}
-                className="p-2 rounded-md text-red-600 hover:bg-red-100"
+                className="p-1 rounded-md text-red-600 hover:bg-red-100"
               >
                 <FaTimes className="text-sm" />
               </button>

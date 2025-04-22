@@ -18,7 +18,7 @@ const CompareDropdown = ({ isOpen, isMobile, onClose }) => {
     <div
       className={`${
         isMobile
-          ? "fixed bottom-16 right-10 bg-gray-100 text-black p-2 rounded-t-lg shadow-lg z-50 max-h-64 overflow-y-auto"
+          ? "fixed bottom-14 left-6 right-6 bg-gray-100 text-black p-2 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto"
           : "absolute top-7 -right-5 bg-gray-100 text-black  p-2 rounded-lg shadow-lg w-82 z-50 max-h-96 overflow-y-auto"
       }`}
       onClick={(e) => e.stopPropagation()}
@@ -49,7 +49,7 @@ const CompareDropdown = ({ isOpen, isMobile, onClose }) => {
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-12 h-12 object-cover rounded-md mr-3"
+                  className="w-10 h-10 object-cover rounded-md mr-3"
                 />
                 <div className="flex-1 min-w-0">
                   <h4 className="font-medium truncate">{product.name}</h4>
@@ -59,7 +59,7 @@ const CompareDropdown = ({ isOpen, isMobile, onClose }) => {
               <div className="flex items-center ml-2 space-x-2">
                 <button
                   onClick={() => dispatch(removeFromCompare(product.id))}
-                  className="p-2 rounded-md text-red-600 hover:bg-red-100"
+                  className="p-1 rounded-md text-red-600 hover:bg-red-100"
                 >
                   <FaTimes className="text-sm" />
                 </button>

@@ -39,8 +39,8 @@ export const UserDropdown = ({ position = "desktop" }) => {
   }, []);
 
   const containerClasses = position === "desktop"
-    ? "absolute top-8 -left-5 z-50 bg-white text-black px-3 py-2 rounded-lg shadow-lg min-w-[200px]"
-    : "fixed bottom-16 right-0 bg-white text-black px-3 py-2 rounded-t-lg shadow-lg min-w-[200px]";
+    ? "absolute top-8 -left-5 z-50 bg-gray-100 text-black px-3 py-2 rounded-lg shadow-lg min-w-[200px]"
+    : "fixed bottom-14 right-0 bg-gray-100 text-black px-3 py-2 rounded-lg shadow-lg min-w-[200px]";
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -90,7 +90,7 @@ export const UserDropdown = ({ position = "desktop" }) => {
             </>
           ) : (
             <>
-              <p className="text-sm text-gray-600 mb-2">Not logged in</p>
+              <p className="text-sm text-gray-800 mb-2">Not logged in</p>
               <Link
                 to="/login"
                 className="block bg-green-500 text-white px-2 py-1 rounded text-center text-sm hover:bg-green-600"
