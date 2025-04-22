@@ -54,7 +54,7 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
       <div className="flex justify-between items-center border-b border-gray-400">
         <h3 className="text-lg font-semibold">Cart ({cartItems.length})</h3>
         <button 
-          onClick={onClose}  // Added close handler
+          onClick={onClose} 
           className="p-1 hover:bg-gray-200 rounded-full"
         >
           <FaTimes className="text-lg cursor-pointer text-gray-600" />

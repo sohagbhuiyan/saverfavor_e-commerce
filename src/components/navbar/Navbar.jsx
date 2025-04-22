@@ -34,18 +34,18 @@ const Navbar = () => {
       <div className="bg-[#CF212B] text-white">
         <TopBar />
         
-        <div className="flex items-center justify-between px-5 py-3 md:px-6 lg:px-12">
+        <div className="flex items-center justify-between px-5 py-2 md:py-1 md:px-6 lg:px-12">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden text-xl"
           >
-            {mobileMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
+            {mobileMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-4 md:w-5 h-4 md:h-5" />}
           </button>
 
-          <div className="flex flex-1 items-center justify-center gap-3 px-2 md:gap-10">
+          <div className="flex flex-1 items-center justify-center gap-3 px-2 md:gap-15">
             <img
               src={logo}
-              className="h-8 md:h-12 cursor-pointer"
+              className="h-6 md:h-9.5 cursor-pointer"
               onClick={() => {
                 window.location.href = "/";
                 closeAllDropdowns();

@@ -4,7 +4,7 @@ const TopBar = ()=> {
 
     return (
         <>
-      <div className="flex items-center justify-center space-x-6 md:space-x-9 md:font-medium px-6 py-2 text-xs md:text-sm">
+      <div className="flex items-center justify-center space-x-6 md:space-x-9 md:font-medium px-6 mt-1.5 text-xs md:text-sm">
       <NavLink
           to="/exclusive-offers"
           className={({ isActive }) =>

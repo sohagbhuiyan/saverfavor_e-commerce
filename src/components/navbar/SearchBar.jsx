@@ -12,7 +12,7 @@ const SearchBar = ({ searchQuery, setSearchQuery }) => {
         onKeyDown={(e) => e.key === "Enter" && console.log("Searching:", searchQuery)}
       />
       <button
-        className="p-1 sm:p-2 bg-green-500 hover:bg-green-600 rounded-r-md cursor-pointer"
+        className="p-0.5 md:p-1.5 bg-green-500 hover:bg-green-600 rounded-r-md cursor-pointer"
         onClick={() => console.log("Searching:", searchQuery)}
       >
         <AiOutlineSearch className="text-white text-xl" />

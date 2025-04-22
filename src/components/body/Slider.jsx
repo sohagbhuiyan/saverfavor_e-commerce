@@ -16,7 +16,7 @@ const Slider = () => {
   return (
     <>
    
-    <div className="relative w-full h-64 md:h-80 overflow-hidden">
+    <div className="relative w-full h-64 md:h-92 overflow-hidden">
       {/* Sliding images */}
       <div
         className={`absolute w-full h-full transition-transform duration-1000 ease-in-out transform ${currentIndex === 0 ? 'translate-x-0' : '-translate-x-full'}`}
@@ -42,7 +42,7 @@ const Slider = () => {
         ))}
       </div>
       </div>
-      <div className="flex px-3 md:px-5 justify-center space-x-4 md:space-x-8 p-1 bg-orange-100 text-xs md:text-sm font-semibold text-yellow-950 ">
+      <div className="flex px-3 md:px-5 justify-center space-x-4 md:space-x-8 bg-orange-100 text-xs md:text-sm font-semibold text-yellow-950 ">
       <p className="">0% EMI</p>
       <p className="">24/7 Online Support </p>
       <p className="">No charge on card paynent</p>
