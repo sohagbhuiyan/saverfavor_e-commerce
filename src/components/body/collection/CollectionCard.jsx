@@ -98,10 +98,13 @@ const CollectionCard = ({id, image, category, name, price, discount, description
     <>
       <Link to={`/product/${name}`} className="block">
         <div 
-          className="border border-gray-300 rounded-lg p-3 shadow-md hover:shadow-lg transition duration-300 bg-white cursor-pointer relative"
+          className={`border border-gray-300 rounded-lg p-3 shadow-md hover:shadow-xl transition duration-500 bg-white cursor-pointer relative ${
+            isHovered ? "scale-104" : "scale-100"
+          }`}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           onClick={handleProductClick}
+          
         >
           <div className="relative p-1 md:p-2 overflow-hidden rounded-md">
             <img 

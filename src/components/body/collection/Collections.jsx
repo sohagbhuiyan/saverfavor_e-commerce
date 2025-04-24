@@ -88,7 +88,7 @@ const Collections = () => {
       />
 
  
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 md:gap-6 lg:gap-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 md:gap-6 lg:gap-8 mb-4">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product, index) => (
             <CollectionCard key={index} {...product} />
