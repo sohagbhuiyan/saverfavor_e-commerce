@@ -62,10 +62,10 @@ const WishlistPage = () => {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {wishlistItems.map((item) => (
             <div key={item.name} className="group relative bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-shadow">
-              <div className="aspect-square overflow-hidden rounded-t-lg bg-gray-100">
+              <div className="aspect-square overflow-hidden rounded-lg bg-gray-100">
                 <img
                   src={item.image}
                   alt={item.name}
@@ -73,13 +73,13 @@ const WishlistPage = () => {
                 />
               </div>
               
-              <div className="p-4">
-                <h2 className="text-lg font-semibold text-gray-900 mb-1">{item.name}</h2>
-                <p className="text-sm text-gray-500 line-clamp-2 mb-3">{item.description}</p>
+              <div className="p-1.5 md:p-4">
+                <h2 className="md:text-lg font-semibold text-gray-900 mb-1">{item.name}</h2>
+                <p className="text-xs md:text-sm text-gray-500 line-clamp-2 mb-3">{item.description}</p>
                 
                 <div className="flex items-center justify-between mt-4">
                   <div>
-                    <p className="text-lg font-bold text-gray-900">Tk {item.price}</p>
+                    <p className="text-sm md:text-lg font-bold text-gray-900">Tk {item.price}</p>
                     {item.originalPrice && (
                       <p className="text-sm text-gray-500 line-through">Tk {item.originalPrice}</p>
                     )}
