@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile, logout } from "../../store/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
+import { clearCart } from "../../store/cartSlice"; 
 
 export const UserDropdown = ({ position = "desktop" }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +22,7 @@ export const UserDropdown = ({ position = "desktop" }) => {
   }, [isOpen, user, dispatch]);
 
   const handleLogout = () => {
+    dispatch(clearCart()); // 👈 Clear user's cart before logging out
     dispatch(logout());
     setIsOpen(false);
     navigate("/");

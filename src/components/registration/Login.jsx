@@ -2,65 +2,47 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, clearError } from "../../store/authSlice";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  Box,
-  Typography,
-  Container,
-  Paper,
-  Alert,
-} from "@mui/material";
+import { TextField, Button, Box, Typography, Container, Paper, Alert } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [localError, setLocalError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { error: authError, token } = useSelector((state) => state.auth);
+  const { loading, token, error: authError } = useSelector((state) => state.auth);
 
-  // Clear any existing errors when component mounts
   useEffect(() => {
     dispatch(clearError());
   }, [dispatch]);
 
-  // Redirect if user is already logged in
   useEffect(() => {
     if (token) {
       navigate("/");
     }
   }, [token, navigate]);
 
-  // Update error state if authError changes
   useEffect(() => {
     if (authError) {
-      setError(authError);
+      setLocalError(authError);
     }
   }, [authError]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    
-    try {
-      const result = await dispatch(loginUser(formData));
-      
-      if (loginUser.fulfilled.match(result)) {
-        navigate("/");
-      } else if (loginUser.rejected.match(result)) {
-        setError(result.payload || "Login failed");
-      }
-    } catch (err) {
-      setError("An unexpected error occurred",err);
+    setLocalError("");
+
+    const result = await dispatch(loginUser(formData));
+
+    if (loginUser.fulfilled.match(result)) {
+      navigate("/");
+    } else if (loginUser.rejected.match(result)) {
+      setLocalError(result.payload || "Login failed");
     }
   };
 
@@ -70,7 +52,8 @@ const Login = () => {
         <Typography variant="h5" component="h2" gutterBottom>
           Login
         </Typography>
-        {error && <Alert severity="error">{error}</Alert>}
+
+        {localError && <Alert severity="error">{localError}</Alert>}
 
         <form onSubmit={handleSubmit}>
           <TextField
@@ -93,13 +76,13 @@ const Login = () => {
             margin="normal"
             required
           />
-
           <Box mt={2}>
-            <Button type="submit" variant="contained" color="secondary" fullWidth>
-              Login
+            <Button type="submit" variant="contained" color="error" fullWidth disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
             </Button>
           </Box>
         </form>
+
         <Typography mt={2} variant="body2">
           Don't have an account?{" "}
           <Link to="/registration" style={{ color: "#1976d2", textDecoration: "none" }}>

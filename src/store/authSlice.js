@@ -7,10 +7,27 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://108.181.173.121:6061/api/userRegistration/",
+        "http://75.119.134.82:6060/api/userRegistration",
         userData
       );
-      return response.data;
+
+      // Save data just like login
+      const token = response.data.token;
+      const profileData = {
+        name: userData.name || 'Not provided',
+        email: userData.email,
+        phoneNo: userData.phoneNo || 'Not provided',
+      };
+
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("authUser", JSON.stringify({ email: userData.email }));
+      localStorage.setItem("authProfile", JSON.stringify(profileData));
+
+      return {
+        token,
+        email: userData.email,
+        profile: profileData
+      };
     } catch (error) {
       return rejectWithValue(error.response?.data || "Registration failed");
     }
@@ -23,20 +40,23 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://108.181.173.121:6061/login",
+        "http://75.119.134.82:6060/login",
         credentials
       );
-      
-      // Store token and email in localStorage
+
+      // Store token and email in localStorage upon successful login
       localStorage.setItem("authToken", response.data.token);
       localStorage.setItem("authUser", JSON.stringify({ email: credentials.email }));
-      
+
       return {
         token: response.data.token,
         email: credentials.email
       };
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Login failed");
+      if (!error.response) {
+        return rejectWithValue("Network error. Please try again.");
+      }
+      return rejectWithValue(error.response.data?.message || "Invalid email or password");
     }
   }
 );
@@ -47,20 +67,14 @@ export const fetchProfile = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const { auth } = getState();
-      if (!auth.token) {
+      if (!auth.user?.email) {
         return rejectWithValue("User not logged in");
       }
 
       const response = await axios.get(
-        "http://108.181.173.121:6061/api/userRegistration/get",
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
-        }
-      );
+        "http://75.119.134.82:6060/api/userRegistration/get"
+      ); // 👉 No Authorization headers
 
-      // Find the logged-in user from all users
       const loggedInUser = response.data.find(
         (user) => user.email === auth.user.email
       );
@@ -72,16 +86,11 @@ export const fetchProfile = createAsyncThunk(
       const profileData = {
         name: loggedInUser.name || 'Not provided',
         email: loggedInUser.email,
-        address: loggedInUser.address || 'Not provided',
-        country: loggedInUser.country || 'Not provided',
         phoneNo: loggedInUser.phoneNo || 'Not provided',
-        dob: loggedInUser.dob || 'Not provided',
-        nidnumber: loggedInUser.nidnumber || 'Not provided',
       };
 
-      // Store profile in localStorage
       localStorage.setItem("authProfile", JSON.stringify(profileData));
-      
+
       return profileData;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch profile");
@@ -122,23 +131,21 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Registration
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
+        state.user = { email: action.payload.email };
         state.token = action.payload.token;
-        localStorage.setItem("authToken", action.payload.token);
+        state.profile = action.payload.profile;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -155,7 +162,6 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Fetch Profile
       .addCase(fetchProfile.pending, (state) => {
         state.loading = true;
         state.error = null;

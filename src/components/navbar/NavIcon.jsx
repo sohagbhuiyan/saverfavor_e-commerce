@@ -17,5 +17,5 @@ const NavIcon = ({ icon: Icon, label, onClick, count = 0, isMobile = false, isUs
       </div>
     </div>
   );
-  export default NavIcon;
+  export default NavIcon;   
   
