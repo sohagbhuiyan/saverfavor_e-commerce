@@ -1,5 +1,4 @@
 // components/layout/Layout.jsx
-
 import { useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 
@@ -9,31 +8,20 @@ import AdminNavbar from "../admin/AdminNavbar";
 
 // User components
 import UserNavbar from "../user/navbar/UserNavbar";
-import Footer from "../user/footer/Footer"; // Adjust path if needed
+import Footer from "../user/footer/Footer";
 
 const Layout = () => {
-  const { role, loading } = useSelector((state) => state.auth);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!role) {
-    return <div>No role found. Please login.</div>;
-  }
+  const { role } = useSelector((state) => state.auth);
 
   return (
-    <div className="flex h-screen">
+    <div className="min-h-screen flex flex-col">
       {role === "admin" ? (
         // Admin Layout
-        <>
-          {/* Sidebar */}
-          <div className="w-64 bg-gray-800 text-white">
+        <div className="flex flex-1">
+          <div className="w-64 bg-gray-800 text-white fixed h-full">
             <AdminSidebar />
           </div>
-
-          {/* Main content */}
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col ml-64">
             <div className="bg-gray-900 text-white p-4">
               <AdminNavbar />
             </div>
@@ -41,16 +29,16 @@ const Layout = () => {
               <Outlet />
             </main>
           </div>
-        </>
+        </div>
       ) : (
         // User Layout
-        <div className="flex flex-col h-screen">
+        <>
           <UserNavbar />
           <main className="flex-1">
             <Outlet />
           </main>
           <Footer />
-        </div>
+        </>
       )}
     </div>
   );
