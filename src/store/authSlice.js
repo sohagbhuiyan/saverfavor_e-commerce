@@ -11,7 +11,6 @@ export const registerUser = createAsyncThunk(
         userData
       );
 
-      // Save data just like login
       const token = response.data.token;
       const profileData = {
         name: userData.name || 'Not provided',
@@ -19,14 +18,19 @@ export const registerUser = createAsyncThunk(
         phoneNo: userData.phoneNo || 'Not provided',
       };
 
+      // Since new users are normally 'user' role
+      const role = "user"; 
+
       localStorage.setItem("authToken", token);
       localStorage.setItem("authUser", JSON.stringify({ email: userData.email }));
       localStorage.setItem("authProfile", JSON.stringify(profileData));
+      localStorage.setItem("authRole", role);
 
       return {
         token,
         email: userData.email,
-        profile: profileData
+        profile: profileData,
+        role
       };
     } catch (error) {
       return rejectWithValue(error.response?.data || "Registration failed");
@@ -44,13 +48,22 @@ export const loginUser = createAsyncThunk(
         credentials
       );
 
-      // Store token and email in localStorage upon successful login
-      localStorage.setItem("authToken", response.data.token);
+      const token = response.data.token;
+      
+      // 🔥 Suppose you check email to decide role
+      let role = "user"; 
+      if (credentials.email === "admin@example.com") {
+        role = "admin"; // Hardcode admin for now
+      }
+
+      localStorage.setItem("authToken", token);
       localStorage.setItem("authUser", JSON.stringify({ email: credentials.email }));
+      localStorage.setItem("authRole", role);
 
       return {
-        token: response.data.token,
-        email: credentials.email
+        token,
+        email: credentials.email,
+        role
       };
     } catch (error) {
       if (!error.response) {
@@ -73,7 +86,7 @@ export const fetchProfile = createAsyncThunk(
 
       const response = await axios.get(
         "http://75.119.134.82:6060/api/userRegistration/get"
-      ); // 👉 No Authorization headers
+      );
 
       const loggedInUser = response.data.find(
         (user) => user.email === auth.user.email
@@ -98,16 +111,18 @@ export const fetchProfile = createAsyncThunk(
   }
 );
 
-// Check for existing auth data in localStorage
+// Load initial auth state from localStorage
 const loadInitialState = () => {
   const token = localStorage.getItem("authToken");
   const user = JSON.parse(localStorage.getItem("authUser"));
   const profile = JSON.parse(localStorage.getItem("authProfile"));
+  const role = localStorage.getItem("authRole");
 
   return {
     user: user || null,
     token: token || null,
     profile: profile || null,
+    role: role || null,
     loading: false,
     error: null,
   };
@@ -121,9 +136,11 @@ const authSlice = createSlice({
       localStorage.removeItem("authToken");
       localStorage.removeItem("authUser");
       localStorage.removeItem("authProfile");
+      localStorage.removeItem("authRole");
       state.user = null;
       state.token = null;
       state.profile = null;
+      state.role = null;
     },
     clearError: (state) => {
       state.error = null;
@@ -140,6 +157,7 @@ const authSlice = createSlice({
         state.user = { email: action.payload.email };
         state.token = action.payload.token;
         state.profile = action.payload.profile;
+        state.role = action.payload.role;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -154,8 +172,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = { email: action.payload.email };
         state.token = action.payload.token;
-        localStorage.setItem("authToken", action.payload.token);
-        localStorage.setItem("authUser", JSON.stringify({ email: action.payload.email }));
+        state.role = action.payload.role;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -169,7 +186,6 @@ const authSlice = createSlice({
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.profile = action.payload;
-        localStorage.setItem("authProfile", JSON.stringify(action.payload));
       })
       .addCase(fetchProfile.rejected, (state, action) => {
         state.loading = false;
