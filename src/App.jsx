@@ -51,11 +51,6 @@ import UserProtectedRoute from './components/Protected/UserProtectedRoute';
 import AdminProtectedRoute from './components/Protected/AdminProtectedRoute';
 
 function App() {
-  const { loading } = useSelector((state) => state.auth); // assuming you have auth slice
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <Router>

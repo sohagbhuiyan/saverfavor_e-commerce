@@ -1,37 +1,28 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// API base URL
+const API_BASE_URL = "http://75.119.134.82:6060";
+
 // Async thunk for registration
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "http://75.119.134.82:6060/api/userRegistration",
-        userData
-      );
+      const { data } = await axios.post(`${API_BASE_URL}/api/userRegistration`, userData);
 
-      const token = response.data.token;
+      const token = data.token;
       const profileData = {
         name: userData.name || 'Not provided',
         email: userData.email,
         phoneNo: userData.phoneNo || 'Not provided',
       };
+      const role = "user"; // By default new user role is 'user'
 
-      // Since new users are normally 'user' role
-      const role = "user"; 
+      // Save to localStorage
+      saveAuthData({ token, email: userData.email, role, profileData });
 
-      localStorage.setItem("authToken", token);
-      localStorage.setItem("authUser", JSON.stringify({ email: userData.email }));
-      localStorage.setItem("authProfile", JSON.stringify(profileData));
-      localStorage.setItem("authRole", role);
-
-      return {
-        token,
-        email: userData.email,
-        profile: profileData,
-        role
-      };
+      return { token, email: userData.email, profile: profileData, role };
     } catch (error) {
       return rejectWithValue(error.response?.data || "Registration failed");
     }
@@ -43,28 +34,15 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "http://75.119.134.82:6060/login",
-        credentials
-      );
+      const { data } = await axios.post(`${API_BASE_URL}/login`, credentials);
 
-      const token = response.data.token;
-      
-      // 🔥 Suppose you check email to decide role
-      let role = "user"; 
-      if (credentials.email === "admin@example.com") {
-        role = "admin"; // Hardcode admin for now
-      }
+      const token = data.token;
+      let role = credentials.email === "admin@example.com" ? "admin" : "user";
 
-      localStorage.setItem("authToken", token);
-      localStorage.setItem("authUser", JSON.stringify({ email: credentials.email }));
-      localStorage.setItem("authRole", role);
+      // Save to localStorage
+      saveAuthData({ token, email: credentials.email, role });
 
-      return {
-        token,
-        email: credentials.email,
-        role
-      };
+      return { token, email: credentials.email, role };
     } catch (error) {
       if (!error.response) {
         return rejectWithValue("Network error. Please try again.");
@@ -74,23 +52,21 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Async thunk for fetching profile
+// Async thunk for fetching user profile
 export const fetchProfile = createAsyncThunk(
   "auth/fetchProfile",
   async (_, { getState, rejectWithValue }) => {
     try {
       const { auth } = getState();
-      if (!auth.user?.email) {
+      const userEmail = auth.user?.email;
+
+      if (!userEmail) {
         return rejectWithValue("User not logged in");
       }
 
-      const response = await axios.get(
-        "http://75.119.134.82:6060/api/userRegistration/get"
-      );
+      const { data } = await axios.get(`${API_BASE_URL}/api/userRegistration/get`);
 
-      const loggedInUser = response.data.find(
-        (user) => user.email === auth.user.email
-      );
+      const loggedInUser = data.find((user) => user.email === userEmail);
 
       if (!loggedInUser) {
         return rejectWithValue("User profile not found");
@@ -111,7 +87,17 @@ export const fetchProfile = createAsyncThunk(
   }
 );
 
-// Load initial auth state from localStorage
+// Helper: Save Auth Data to localStorage
+const saveAuthData = ({ token, email, role, profileData = null }) => {
+  localStorage.setItem("authToken", token);
+  localStorage.setItem("authUser", JSON.stringify({ email }));
+  localStorage.setItem("authRole", role);
+  if (profileData) {
+    localStorage.setItem("authProfile", JSON.stringify(profileData));
+  }
+};
+
+// Helper: Load Initial State
 const loadInitialState = () => {
   const token = localStorage.getItem("authToken");
   const user = JSON.parse(localStorage.getItem("authUser"));
@@ -128,19 +114,19 @@ const loadInitialState = () => {
   };
 };
 
+// Create auth slice
 const authSlice = createSlice({
   name: "auth",
   initialState: loadInitialState(),
   reducers: {
     logout: (state) => {
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("authUser");
-      localStorage.removeItem("authProfile");
-      localStorage.removeItem("authRole");
+      localStorage.clear(); // 🔥 Bonus: clear all auth-related localStorage keys
       state.user = null;
       state.token = null;
       state.profile = null;
       state.role = null;
+      state.loading = false;
+      state.error = null;
     },
     clearError: (state) => {
       state.error = null;
@@ -148,48 +134,51 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Register
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.user = { email: action.payload.email };
-        state.token = action.payload.token;
-        state.profile = action.payload.profile;
-        state.role = action.payload.role;
+        state.user = { email: payload.email };
+        state.token = payload.token;
+        state.profile = payload.profile;
+        state.role = payload.role;
       })
-      .addCase(registerUser.rejected, (state, action) => {
+      .addCase(registerUser.rejected, (state, { payload }) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = payload;
       })
 
+      // Login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
+      .addCase(loginUser.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.user = { email: action.payload.email };
-        state.token = action.payload.token;
-        state.role = action.payload.role;
+        state.user = { email: payload.email };
+        state.token = payload.token;
+        state.role = payload.role;
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state, { payload }) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = payload;
       })
 
+      // Fetch Profile
       .addCase(fetchProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchProfile.fulfilled, (state, action) => {
+      .addCase(fetchProfile.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.profile = action.payload;
+        state.profile = payload;
       })
-      .addCase(fetchProfile.rejected, (state, action) => {
+      .addCase(fetchProfile.rejected, (state, { payload }) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = payload;
       });
   },
 });
