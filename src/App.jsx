@@ -1,6 +1,5 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 // Layout
 import Layout from './components/layout/Layout';
@@ -55,7 +54,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route element={<Layout />}>
           {/* PUBLIC ROUTES */}
           <Route path="registration" element={<Registration />} />
           <Route path="login" element={<Login />} />
@@ -63,6 +62,7 @@ function App() {
           {/* USER PROTECTED ROUTES */}
           <Route
             index
+            path="/" 
             element={
               <UserProtectedRoute>
                 <Home />
