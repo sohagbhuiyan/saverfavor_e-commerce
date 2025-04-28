@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { API_BASE_URL } from "./api";
 import axios from "axios";
 
-// API base URL
-const API_BASE_URL = "http://75.119.134.82:6161";
 
 // Async thunk for registration
 export const registerUser = createAsyncThunk(
@@ -88,7 +87,7 @@ export const fetchProfile = createAsyncThunk(
 );
 
 // Helper: Save Auth Data to localStorage
-const saveAuthData = ({ token, email, role, profileData = null }) => {
+const saveAuthData = ({ token, email, role, profileData }) => {
   localStorage.setItem("authToken", token);
   localStorage.setItem("authUser", JSON.stringify({ email }));
   localStorage.setItem("authRole", role);

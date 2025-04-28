@@ -12,7 +12,7 @@ import Footer from "../user/footer/Footer";
 
 const Layout = () => {
   const { role } = useSelector((state) => state.auth);
-
+console.log(role)
   return (
     <div className="min-h-screen flex flex-col">
       {role === "admin" ? (
