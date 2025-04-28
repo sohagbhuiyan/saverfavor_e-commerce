@@ -30,14 +30,18 @@ const MobileMenu = ({ isOpen, onClose, menuItems }) => {
           <div key={index} className="py-2 text-xs border-b border-gray-700">
             <div
               className="flex justify-between items-center cursor-pointer"
-              onClick={() =>
-                setMobileSubmenuOpen(mobileSubmenuOpen === index ? null : index)
-              }
+              onClick={() => {
+                if (item.subMenu && item.subMenu.length > 0) {
+                  setMobileSubmenuOpen(mobileSubmenuOpen === index ? null : index);
+                }
+              }}
             >
               <Link to={item.path || "#"} className="hover:text-gray-300">
                 {item.name}
               </Link>
-              {item.subMenu && (
+
+              {/* ✅ Show dropdown arrow only if subMenu exists and has items */}
+              {item.subMenu && item.subMenu.length > 0 && (
                 <span className="ml-2">
                   {mobileSubmenuOpen === index ? "▲" : "▼"}
                 </span>
@@ -45,17 +49,19 @@ const MobileMenu = ({ isOpen, onClose, menuItems }) => {
             </div>
 
             {/* First-level submenu */}
-            {item.subMenu && mobileSubmenuOpen === index && (
+            {item.subMenu && item.subMenu.length > 0 && mobileSubmenuOpen === index && (
               <div className="ml-1 mt-2 bg-gray-800 p-1 rounded-md">
                 {item.subMenu.map((subItem, subIndex) => (
                   <div key={subIndex} className="mb-1">
                     <div
                       className="flex justify-between items-center cursor-pointer px-1 py-1 hover:bg-gray-700 rounded"
-                      onClick={() =>
-                        setNestedSubmenuOpen(
-                          nestedSubmenuOpen === subIndex ? null : subIndex
-                        )
-                      }
+                      onClick={() => {
+                        if (subItem.subMenu && subItem.subMenu.length > 0) {
+                          setNestedSubmenuOpen(
+                            nestedSubmenuOpen === subIndex ? null : subIndex
+                          );
+                        }
+                      }}
                     >
                       {subItem.path ? (
                         <Link to={subItem.path} className="block w-full">
@@ -64,7 +70,9 @@ const MobileMenu = ({ isOpen, onClose, menuItems }) => {
                       ) : (
                         <span>{subItem.name}</span>
                       )}
-                      {subItem.subMenu && (
+
+                      {/* ✅ Show nested dropdown arrow only if nested submenu exists */}
+                      {subItem.subMenu && subItem.subMenu.length > 0 && (
                         <span className="ml-1">
                           {nestedSubmenuOpen === subIndex ? "▲" : "▼"}
                         </span>
@@ -72,7 +80,7 @@ const MobileMenu = ({ isOpen, onClose, menuItems }) => {
                     </div>
 
                     {/* Nested submenu (second level) */}
-                    {subItem.subMenu && nestedSubmenuOpen === subIndex && (
+                    {subItem.subMenu && subItem.subMenu.length > 0 && nestedSubmenuOpen === subIndex && (
                       <div className="ml-1 mt-1 bg-gray-700 p-1 rounded">
                         {subItem.subMenu.map((nestedItem, nestedIndex) => (
                           <Link

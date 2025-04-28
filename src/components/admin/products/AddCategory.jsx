@@ -47,33 +47,33 @@ const AddCategory = () => {
   
     // Handle Item (Submenu) Submit
     const handleItemSubmit = async (e) => {
-      e.preventDefault();
-      setItemSuccess('');
-      setItemError('');
-    
-      try {
-        const payload = {
-          productName: itemName, 
-          catagory: {
-            id: selectedCategoryId,
-          },
-        };
-    
-        const response = await api.post('http://75.119.134.82:6161/api/Product/save', payload);
-    
-        if (response.data) {
-          setItemSuccess('Item (Submenu) added successfully!');
-          setItemName('');
-          setSelectedCategoryId('');
-          // Optionally refresh products
-        } else {
-          setItemError('Failed to add item.');
-        }
-      } catch (err) {
-        setItemError('Failed to add item.');
-        console.error('Error:', err);
-      }
+  e.preventDefault();
+  setItemSuccess('');
+  setItemError('');
+
+  try {
+    const payload = {
+      name: itemName,  // FIXED: use `name` instead of `productName`
+      catagory: {
+       id: selectedCategoryId,
+      },
     };
+
+    const response = await api.post('http://75.119.134.82:6161/api/Product/save', payload);
+
+    if (response.data) {
+      setItemSuccess('Item (Submenu) added successfully!');
+      setItemName('');
+      setSelectedCategoryId('');
+      // Optionally refresh products here if needed
+    } else {
+      setItemError('Failed to add item.');
+    }
+  } catch (err) {
+    setItemError('Failed to add item.');
+    console.error('Error:', err);
+  }
+};
   
     return (
       <div className="p-8 max-w-2xl mx-auto space-y-12">

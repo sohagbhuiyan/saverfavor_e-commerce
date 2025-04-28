@@ -35,8 +35,8 @@ const UserNavbar = () => {
 
             return {
               ...category,
-              subMenu: relatedProducts.map((product) => ({
-                name: product.name || "Unnamed Product",  // FIXED HERE
+                   subMenu: relatedProducts.map((product) => ({
+                   name: product.name || "Unnamed Product",
                 path: `/product/${product.slug || product.id}`,  // fallback if slug missing
               }))
             };
