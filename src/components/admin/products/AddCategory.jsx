@@ -50,19 +50,22 @@ const AddCategory = () => {
       e.preventDefault();
       setItemSuccess('');
       setItemError('');
-  
+    
       try {
         const payload = {
-          name: itemName,
-          categoryId: selectedCategoryId, // Assuming you need category ID
+          productName: itemName, 
+          catagory: {
+            id: selectedCategoryId,
+          },
         };
-  
+    
         const response = await api.post('http://75.119.134.82:6161/api/Product/save', payload);
-  
+    
         if (response.data) {
           setItemSuccess('Item (Submenu) added successfully!');
           setItemName('');
           setSelectedCategoryId('');
+          // Optionally refresh products
         } else {
           setItemError('Failed to add item.');
         }
