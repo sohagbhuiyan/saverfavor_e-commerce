@@ -29,7 +29,6 @@ const UserNavbar = () => {
         if (Array.isArray(categories) && Array.isArray(products)) {
           const categoriesWithProducts = categories.map((category) => {
             const relatedProducts = products.filter((product) => {
-              // FIX: Correctly check if product.catagory exists and match category id
               return product.catagory?.id === category.id;
             });
 
@@ -37,7 +36,7 @@ const UserNavbar = () => {
               ...category,
                    subMenu: relatedProducts.map((product) => ({
                    name: product.name || "Unnamed Product",
-                path: `/product/${product.slug || product.id}`,  // fallback if slug missing
+                path: `/product/${product.title || product.id}`,  // fallback if slug missing
               }))
             };
           });

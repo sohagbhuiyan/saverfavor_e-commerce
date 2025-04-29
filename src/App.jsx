@@ -260,7 +260,7 @@ import ProductviewPage from './components/user/product/ProductviewPage';
 import Dashboard from './components/admin/Dashboard';
 import ProductManagement from './components/admin/ProductManagement';
 import ViewProduct from './components/admin/ViewProduct';
-// import AddProduct from './components/admin/products/AddProduct';
+import AddProduct from './components/admin/products/AddProduct';
 
 // Others (Footer, Contact, etc.)
 import Contact from './components/user/footer/Contact';
@@ -289,7 +289,7 @@ function App() {
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/products" element={<ProductManagement />} />
           <Route path="/admin/products/view-product" element={<ViewProduct />} />
-          {/* <Route path="/admin/products/add-product" element={<AddProduct />} /> */}
+          <Route path="/admin/products/add-product" element={<AddProduct />} />
           <Route path="/admin/products/add-category" element={<AddCategory />} />
           {/* Catch All */}
           <Route path="*" element={<Navigate to="/" />} />

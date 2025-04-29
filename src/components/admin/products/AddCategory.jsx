@@ -53,7 +53,7 @@ const AddCategory = () => {
 
   try {
     const payload = {
-      name: itemName,  // FIXED: use `name` instead of `productName`
+      name: itemName, 
       catagory: {
        id: selectedCategoryId,
       },

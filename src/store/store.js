@@ -10,7 +10,7 @@ import categoryReducer from "./categorySlice";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    products: productReducer,
+    product: productReducer,
     cart: cartReducer,
     order: orderReducer,
     wishlist: wishlistReducer,

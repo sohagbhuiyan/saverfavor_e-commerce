@@ -1,6 +1,5 @@
-// store/productSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api, { API_BASE_URL } from './api';  // Assuming this is the Axios instance
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api, { API_BASE_URL } from "./api";
 
 // Async thunk to add product
 export const addProduct = createAsyncThunk(
@@ -8,39 +7,53 @@ export const addProduct = createAsyncThunk(
   async (productData, { rejectWithValue }) => {
     try {
       const formData = new FormData();
-      formData.append('productId', productData.productId);
+
+      formData.append('productid', String(productData.productid));
       formData.append('name', productData.name);
-      formData.append('category', productData.category);
-      formData.append('regularPrice', productData.regularPrice);
-      formData.append('specialPrice', productData.specialPrice);
-      formData.append('tax', productData.tax);
-      formData.append('slug', productData.slug);
+      formData.append('categorys', productData.categorys);
+      formData.append('quantity', String(productData.quantity));
+      formData.append('regularprice', String(productData.regularprice));
+      formData.append('specialprice', String(productData.specialprice));
+      formData.append('tax', String(productData.tax));
+      formData.append('title', productData.title);
       formData.append('details', productData.details);
       formData.append('specification', productData.specification);
-      formData.append('quantity', productData.quantity);
-      formData.append('mainImage', productData.mainImage);
 
-      productData.additionalImages.forEach((image, index) => {
-        formData.append(`additionalImages[${index}]`, image);
-      });
+      if (productData.imagea) {
+        formData.append('imagea', productData.imagea);
+      }
 
-      productData.customFields.forEach((field, index) => {
-        formData.append(`customFields[${index}][title]`, field.title);
-        formData.append(`customFields[${index}][value]`, field.value);
-      });
+      if (productData.imageb) {
+        formData.append('imageb', productData.imageb);
+      }
+
+      if (productData.imagec) {
+        formData.append('imagec', productData.imagec);
+      }
+
+      if (productData.catagoryId) {
+        formData.append('catagory', JSON.stringify({ id: productData.catagoryId }));
+      }
+
+      if (productData.productIdNested) {
+        formData.append('product', JSON.stringify({ id: productData.productIdNested }));
+      }
 
       const response = await api.post(`${API_BASE_URL}/api/ProductDetails/save`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      return response.data;  // Return the response data
+
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);  // Return error
+      console.error('Submit error:', error.response?.data || error.message);
+      return rejectWithValue(error.response?.data || { message: 'Unknown error' });
     }
   }
 );
 
+// Slice setup
 const productSlice = createSlice({
   name: 'products',
   initialState: {
@@ -53,14 +66,15 @@ const productSlice = createSlice({
     builder
       .addCase(addProduct.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(addProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.products.push(action.payload);  // Add new product to the state
+        state.products.push(action.payload);
       })
       .addCase(addProduct.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;  // Set error message
+        state.error = action.payload?.message || "Failed to add product";
       });
   },
 });
