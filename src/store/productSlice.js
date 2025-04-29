@@ -13,7 +13,6 @@ export const addProduct = createAsyncThunk(
       formData.append('quantity', String(productData.quantity));
       formData.append('regularprice', String(productData.regularprice));
       formData.append('specialprice', String(productData.specialprice));
-      formData.append('tax', String(productData.tax));
       formData.append('title', productData.title);
       formData.append('details', productData.details);
       formData.append('specification', productData.specification);
@@ -30,12 +29,12 @@ export const addProduct = createAsyncThunk(
         formData.append('imagec', productData.imagec);
       }
 
-      if (productData.catagoryId) {
-        formData.append('catagory', JSON.stringify({ id: productData.catagoryId }));
+      if (productData.categoryId) {
+        formData.append('catagory', JSON.stringify({ id: productData.categoryId }));
       }
 
-      if (productData.productIdNested) {
-        formData.append('product', JSON.stringify({ id: productData.productIdNested }));
+      if (productData.productId) {
+        formData.append('product', JSON.stringify({ id: productData.productId }));
       }
 
       const response = await api.post(`${API_BASE_URL}/api/ProductDetails/save`, formData, {
@@ -47,35 +46,36 @@ export const addProduct = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.error('Submit error:', error.response?.data || error.message);
-      return rejectWithValue(error.response?.data || { message: 'Unknown error' });
-    }
+      return rejectWithValue(error)
+      }
   }
 );
 
-// Slice setup
 const productSlice = createSlice({
-  name: 'products',
+  name: "products",
   initialState: {
-    loading: false,
     products: [],
+    status: "idle",
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(addProduct.pending, (state) => {
-        state.loading = true;
+        state.status = "loading";
         state.error = null;
       })
       .addCase(addProduct.fulfilled, (state, action) => {
-        state.loading = false;
+        state.status = "succeeded";
         state.products.push(action.payload);
       })
       .addCase(addProduct.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload?.message || "Failed to add product";
+        state.status = "failed";
+        state.error = action.payload;
       });
   },
 });
 
 export default productSlice.reducer;
+
+ 

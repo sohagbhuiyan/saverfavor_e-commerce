@@ -1,3 +1,4 @@
+// AddProduct.jsx
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../../../store/productSlice";
@@ -9,6 +10,7 @@ import {
   Avatar,
   Stack,
   CircularProgress,
+  MenuItem,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../../store/api";
@@ -17,8 +19,8 @@ const AddProduct = () => {
   const [product, setProduct] = useState({
     productid: "",
     name: "",
-    category: "",
-    subcategory: "",
+    categoryId: "",
+    productId: "",
     regularprice: "",
     specialprice: "",
     title: "",
@@ -55,19 +57,16 @@ const AddProduct = () => {
             const related = products.filter(
               (product) => product.catagory?.id === category.id
             );
-            return {
-              ...category,
-              subMenu: related,
-            };
+            return { ...category, subMenu: related };
           });
           setCategories(structured);
-          setLoading(false);
         } else {
           throw new Error("API did not return arrays");
         }
       } catch (err) {
         console.error(err);
         setError("Failed to load categories or products");
+      } finally {
         setLoading(false);
       }
     };
@@ -77,42 +76,46 @@ const AddProduct = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProduct((prev) => ({ ...prev, [name]: value }));
 
-    if (name === "category") {
+    if (name === "categoryId") {
       const selected = categories.find((cat) => cat.id === parseInt(value));
       setSubMenus(selected?.subMenu || []);
-      setProduct((prev) => ({ ...prev, subcategory: "" }));
+      setProduct((prev) => ({
+        ...prev,
+        categoryId: value,
+        productId: "",
+      }));
+    } else {
+      setProduct((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleMainImageChange = (e, index) => {
     const file = e.target.files[0];
-    if (file) {
-      const key = index === 0 ? "imagea" : index === 1 ? "imageb" : "imagec";
-      setProduct((prev) => ({ ...prev, [key]: file }));
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (index === 0) setMainImagePreview(reader.result);
-        else setAdditionalImagesPreviews((prev) => {
+    if (!file) return;
+
+    const key = index === 0 ? "imagea" : index === 1 ? "imageb" : "imagec";
+    setProduct((prev) => ({ ...prev, [key]: file }));
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (index === 0) {
+        setMainImagePreview(reader.result);
+      } else {
+        setAdditionalImagesPreviews((prev) => {
           const updated = [...prev];
           updated[index - 1] = reader.result;
           return updated;
         });
-      };
-      reader.readAsDataURL(file);
-    }
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const fullProduct = {
-      ...product,
-      catagoryId: product.category,
-      productIdNested: product.subcategory,
-    };
 
-    dispatch(addProduct(fullProduct))
+    dispatch(addProduct(product))
       .unwrap()
       .then(() => {
         alert("Product added successfully!");
@@ -132,45 +135,43 @@ const AddProduct = () => {
         </Typography>
 
         {loading ? (
-          <CircularProgress className=""/>
+          <CircularProgress />
         ) : error ? (
           <Typography color="error">{error}</Typography>
         ) : (
-          <form onSubmit={handleSubmit} className="flex-col gap-4 space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <Stack spacing={2}>
               <TextField label="Product ID" name="productid" fullWidth onChange={handleChange} value={product.productid} />
               <TextField label="Product Name" name="name" fullWidth required onChange={handleChange} value={product.name} />
               <TextField label="Title" name="title" fullWidth required onChange={handleChange} value={product.title} />
 
               <TextField
-                label=""
-                name="category"
+                select
+                name="categoryId"
+                label="Category"
                 fullWidth
                 required
-                select
-                SelectProps={{ native: true }}
                 onChange={handleChange}
-                value={product.category}
+                value={product.categoryId}
               >
-                <option value="">Select Category</option>
+                <MenuItem value="">Select Category</MenuItem>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
                 ))}
               </TextField>
 
               <TextField
-                label=""
-                name="subcategory"
-                fullWidth
                 select
-                SelectProps={{ native: true }}
-                value={product.subcategory}
-                onChange={handleChange}
+                name="productId"
+                label="Submenu"
+                fullWidth
                 disabled={!subMenus.length}
+                onChange={handleChange}
+                value={product.productId}
               >
-                <option value="">Select Submenu</option>
-                {subMenus.map((prod) => (
-                  <option key={prod.id} value={prod.id}>{prod.name}</option>
+                <MenuItem value="">Select Submenu</MenuItem>
+                {subMenus.map((sub) => (
+                  <MenuItem key={sub.id} value={sub.id}>{sub.name}</MenuItem>
                 ))}
               </TextField>
 
@@ -182,7 +183,7 @@ const AddProduct = () => {
 
               <Box>
                 <Typography variant="subtitle1">Image A (Main)</Typography>
-                {mainImagePreview && <Avatar src={mainImagePreview} variant="rounded" sx={{ width: 80, height: 80 }} />}
+                {mainImagePreview && <Avatar src={mainImagePreview} variant="rounded" sx={{ width: 80, height: 60 }} />}
                 <Button component="label">
                   Upload Image A
                   <input type="file" hidden accept="image/*" onChange={(e) => handleMainImageChange(e, 0)} />
@@ -193,7 +194,7 @@ const AddProduct = () => {
                 <Box key={index}>
                   <Typography variant="subtitle1">Image {index + 1} (Gallery)</Typography>
                   {additionalImagesPreviews[index - 1] && (
-                    <Avatar src={additionalImagesPreviews[index - 1]} variant="rounded" sx={{ width: 60, height: 60 }} />
+                    <Avatar src={additionalImagesPreviews[index - 1]} variant="rounded" sx={{ width: 60, height: 50 }} />
                   )}
                   <Button component="label">
                     Upload Image {index + 1}
