@@ -9,8 +9,7 @@ export const addProduct = createAsyncThunk(
       const formData = new FormData();
 
       formData.append('productid', String(productData.productid));
-      formData.append('name', productData.name);
-      formData.append('categorys', productData.categorys);
+      formData.append('name', productData.name);  
       formData.append('quantity', String(productData.quantity));
       formData.append('regularprice', String(productData.regularprice));
       formData.append('specialprice', String(productData.specialprice));

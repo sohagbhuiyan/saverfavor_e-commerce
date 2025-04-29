@@ -6,6 +6,7 @@ import DesktopMenu from "./DesktopMenu";
 import MobileMenu from "./MobileMenu";
 import SearchBar from "./SearchBar";
 import { FaBars, FaTimes } from "react-icons/fa";
+import api, { API_BASE_URL } from "../../../store/api";
 
 const UserNavbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -14,33 +15,32 @@ const UserNavbar = () => {
   const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [categoriesWithSub, setCategoriesWithSub] = useState([]);
-
   useEffect(() => {
     const fetchCategoriesAndProducts = async () => {
       try {
         const [catRes, prodRes] = await Promise.all([
-          fetch("http://75.119.134.82:6161/api/catagories/get"), // get menu
-          fetch("http://75.119.134.82:6161/api/Product/getall"),  // get submenu
+          api.get(`${API_BASE_URL}/api/catagories/get`),   // 👈 uses baseURL
+          api.get(`${API_BASE_URL}/api/Product/getall`),
         ]);
-
-        const categories = await catRes.json();
-        const products = await prodRes.json();
-
+  
+        const categories = catRes.data;
+        const products = prodRes.data;
+  
         if (Array.isArray(categories) && Array.isArray(products)) {
           const categoriesWithProducts = categories.map((category) => {
-            const relatedProducts = products.filter((product) => {
-              return product.catagory?.id === category.id;
-            });
-
+            const relatedProducts = products.filter(
+              (product) => product.catagory?.id === category.id
+            );
+  
             return {
               ...category,
-                   subMenu: relatedProducts.map((product) => ({
-                   name: product.name || "Unnamed Product",
-                path: `/product/${product.title || product.id}`,  // fallback if slug missing
-              }))
+              subMenu: relatedProducts.map((product) => ({
+                name: product.name || "Unnamed Product",
+                path: `/product/${product.title || product.id}`,
+              })),
             };
           });
-
+  
           setCategoriesWithSub(categoriesWithProducts);
           console.log("Fetched Categories With Submenus:", categoriesWithProducts);
         } else {
@@ -50,10 +50,9 @@ const UserNavbar = () => {
         console.error("Error fetching categories or products:", error);
       }
     };
-
+  
     fetchCategoriesAndProducts();
   }, []);
-
   const toggleDropdown = (dropdownName) => {
     setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
   };

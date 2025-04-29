@@ -24,14 +24,14 @@ const DesktopMenu = ({ menuItems }) => {
           </Link>
 
           {item.subMenu && item.subMenu.length > 0 && hoverIndex === index && (
-            <div className="absolute top-full left-0 mt-0 w-48 bg-white text-black shadow-lg rounded-md border border-gray-200 z-50">
+            <div className="absolute top-full left-0 mt-0 w-48 bg-white text-black shadow-lg rounded-md border border-gray-300 z-50">
               {item.subMenu
                 .filter(subItem => subItem.name && subItem.path)
                 .map((subItem, subIndex) => (
                   <Link
                     key={subIndex}
                     to={subItem.path}
-                    className="block px-4 py-3 hover:bg-gray-100"
+                    className="block px-4 rounded-md py-2 hover:bg-gray-200"
                   >
                     {subItem.name}
                   </Link>
@@ -66,21 +66,25 @@ const DesktopMenu = ({ menuItems }) => {
                 >
                   <Link
                     to={item.path || "#"}
-                    className="flex justify-between items-center px-4 py-3 hover:bg-gray-100"
+                    className="flex justify-between items-center rounded-md px-2 py-2 hover:bg-gray-100"
                   >
                     <span>{item.name}</span>
-                    {item.subMenu && <FaChevronDown className="text-xs ml-1" />}
+                    {/* Only show chevron if submenu exists */}
+                    {item.subMenu?.length > 0 && (
+                      <FaChevronDown className="text-xs ml-1" />
+                    )}
                   </Link>
 
-                  {item.subMenu && hoverMoreItemIndex === index && (
-                    <div className="absolute left-full top-0 ml-2 w-48 bg-white text-black shadow-lg rounded-md border border-gray-200 z-50">
+                  {/* Show submenu only if exists and hovered */}
+                  {item.subMenu?.length > 0 && hoverMoreItemIndex === index && (
+                    <div className="block left-0 w-48 bg-white text-black shadow-lg rounded-md border border-gray-300 z-50">
                       {item.subMenu
                         .filter(subItem => subItem.name && subItem.path)
                         .map((subItem, subIndex) => (
                           <Link
                             key={subIndex}
                             to={subItem.path}
-                            className="block px-4 py-3 hover:bg-gray-100"
+                            className="block p-2 rounded-md hover:bg-gray-200 whitespace-nowrap"
                           >
                             {subItem.name}
                           </Link>

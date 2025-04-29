@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCategory, fetchCategories } from '../../../store/categorySlice'; // Import the addCategory action
-import api from '../../../store/api';
+import api, { API_BASE_URL } from '../../../store/api';
 
 const AddCategory = () => {
     const dispatch = useDispatch();
@@ -59,7 +59,7 @@ const AddCategory = () => {
       },
     };
 
-    const response = await api.post('http://75.119.134.82:6161/api/Product/save', payload);
+    const response = await api.post(`${API_BASE_URL}/api/Product/save`, payload);
 
     if (response.data) {
       setItemSuccess('Item (Submenu) added successfully!');

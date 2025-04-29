@@ -11,6 +11,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../../store/api";
 
 const AddProduct = () => {
   const [product, setProduct] = useState({
@@ -20,7 +21,6 @@ const AddProduct = () => {
     subcategory: "",
     regularprice: "",
     specialprice: "",
-    tax: "",
     title: "",
     details: "",
     specification: "",
@@ -44,8 +44,8 @@ const AddProduct = () => {
     const fetchCategoriesAndProducts = async () => {
       try {
         const [catRes, prodRes] = await Promise.all([
-          fetch("http://75.119.134.82:6161/api/catagories/get"),
-          fetch("http://75.119.134.82:6161/api/Product/getall"),
+          fetch(`${API_BASE_URL}/api/catagories/get`),
+          fetch(`${API_BASE_URL}/api/Product/getall`),
         ]);
         const categories = await catRes.json();
         const products = await prodRes.json();
@@ -132,7 +132,7 @@ const AddProduct = () => {
         </Typography>
 
         {loading ? (
-          <CircularProgress />
+          <CircularProgress className=""/>
         ) : error ? (
           <Typography color="error">{error}</Typography>
         ) : (
@@ -176,7 +176,6 @@ const AddProduct = () => {
 
               <TextField label="Regular Price" name="regularprice" type="number" fullWidth required onChange={handleChange} value={product.regularprice} />
               <TextField label="Special Price" name="specialprice" type="number" fullWidth onChange={handleChange} value={product.specialprice} />
-              <TextField label="Tax (%)" name="tax" type="number" fullWidth onChange={handleChange} value={product.tax} />
               <TextField label="Details" name="details" fullWidth multiline rows={4} required onChange={handleChange} value={product.details} />
               <TextField label="Specification" name="specification" fullWidth multiline rows={2} required onChange={handleChange} value={product.specification} />
               <TextField label="Quantity" name="quantity" type="number" fullWidth required onChange={handleChange} value={product.quantity} />
