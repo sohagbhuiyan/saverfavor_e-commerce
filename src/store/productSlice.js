@@ -1,81 +1,66 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api, { API_BASE_URL } from "./api";
+// src/features/products/productSlice.js
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { API_BASE_URL } from './api';
 
-// Async thunk to add product
-export const addProduct = createAsyncThunk(
-  'products/addProduct',
-  async (productData, { rejectWithValue }) => {
+export const addProductDetails = createAsyncThunk(
+  'products/addProductDetails',
+  async ({ formDataObject }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
 
-      formData.append('productid', String(productData.productid));
-      formData.append('name', productData.name);  
-      formData.append('quantity', String(productData.quantity));
-      formData.append('regularprice', String(productData.regularprice));
-      formData.append('specialprice', String(productData.specialprice));
-      formData.append('title', productData.title);
-      formData.append('details', productData.details);
-      formData.append('specification', productData.specification);
+      // Send productDetails as a JSON blob
+      const jsonBlob = new Blob(
+        [JSON.stringify(formDataObject.productDetails)],
+        { type: 'application/json' }
+      );
 
-      if (productData.imagea) {
-        formData.append('imagea', productData.imagea);
-      }
+      formData.append('productDetails', jsonBlob);
+      formData.append('imagea', formDataObject.imagea);
+      formData.append('imageb', formDataObject.imageb);
+      formData.append('imagec', formDataObject.imagec);
 
-      if (productData.imageb) {
-        formData.append('imageb', productData.imageb);
-      }
-
-      if (productData.imagec) {
-        formData.append('imagec', productData.imagec);
-      }
-
-      if (productData.categoryId) {
-        formData.append('catagory', JSON.stringify({ id: productData.categoryId }));
-      }
-
-      if (productData.productId) {
-        formData.append('product', JSON.stringify({ id: productData.productId }));
-      }
-
-      const response = await api.post(`${API_BASE_URL}/api/ProductDetails/save`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        `${API_BASE_URL}/api/ProductDetails/save`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
 
       return response.data;
     } catch (error) {
-      console.error('Submit error:', error.response?.data || error.message);
-      return rejectWithValue(error)
-      }
+      return rejectWithValue(error.response?.data || error.message);
+    }
   }
 );
 
 const productSlice = createSlice({
-  name: "products",
+  name: 'products',
   initialState: {
-    products: [],
-    status: "idle",
+    loading: false,
     error: null,
+    successMessage: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(addProduct.pending, (state) => {
-        state.status = "loading";
+      .addCase(addProductDetails.pending, (state) => {
+        state.loading = true;
         state.error = null;
+        state.successMessage = null;
       })
-      .addCase(addProduct.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.products.push(action.payload);
+      .addCase(addProductDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.successMessage = action.payload;
       })
-      .addCase(addProduct.rejected, (state, action) => {
-        state.status = "failed";
+      .addCase(addProductDetails.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
 export default productSlice.reducer;
-
- 

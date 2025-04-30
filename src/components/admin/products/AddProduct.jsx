@@ -1,216 +1,235 @@
-// AddProduct.jsx
-import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { addProduct } from "../../../store/productSlice";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   TextField,
-  Button,
-  Typography,
-  Box,
-  Avatar,
-  Stack,
-  CircularProgress,
   MenuItem,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { API_BASE_URL } from "../../../store/api";
+  Button,
+  Box,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  Avatar,
+} from '@mui/material';
+import { addProductDetails } from '../../../store/productSlice';
+import { API_BASE_URL } from '../../../store/api';
 
 const AddProduct = () => {
-  const [product, setProduct] = useState({
-    productid: "",
-    name: "",
-    categoryId: "",
-    productId: "",
-    regularprice: "",
-    specialprice: "",
-    title: "",
-    details: "",
-    specification: "",
-    quantity: "",
-    imagea: null,
-    imageb: null,
-    imagec: null,
+  const dispatch = useDispatch();
+  const { loading, error, successMessage } = useSelector((state) => state.products);
+
+  const [formState, setFormState] = useState({
+    productid: '',
+    name: '',
+    quantity: '',
+    regularprice: '',
+    specialprice: '',
+    title: '',
+    details: '',
+    specification: '',
+    catagory: { id: '' },
+    product: { id: '' },
   });
 
-  const [categories, setCategories] = useState([]);
-  const [subMenus, setSubMenus] = useState([]);
-  const [mainImagePreview, setMainImagePreview] = useState(null);
-  const [additionalImagesPreviews, setAdditionalImagesPreviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [imagea, setImageA] = useState(null);
+  const [imageb, setImageB] = useState(null);
+  const [imagec, setImageC] = useState(null);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [mainImagePreview, setMainImagePreview] = useState(null);
+  const [additionalImagesPreviews, setAdditionalImagesPreviews] = useState([null, null]);
+
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
-    const fetchCategoriesAndProducts = async () => {
+    const fetchData = async () => {
       try {
         const [catRes, prodRes] = await Promise.all([
           fetch(`${API_BASE_URL}/api/catagories/get`),
           fetch(`${API_BASE_URL}/api/Product/getall`),
         ]);
-        const categories = await catRes.json();
-        const products = await prodRes.json();
 
-        if (Array.isArray(categories) && Array.isArray(products)) {
-          const structured = categories.map((category) => {
-            const related = products.filter(
-              (product) => product.catagory?.id === category.id
-            );
-            return { ...category, subMenu: related };
-          });
-          setCategories(structured);
-        } else {
-          throw new Error("API did not return arrays");
-        }
+        const catData = await catRes.json();
+        const prodData = await prodRes.json();
+
+        setCategories(catData);
+        setProducts(prodData);
       } catch (err) {
-        console.error(err);
-        setError("Failed to load categories or products");
-      } finally {
-        setLoading(false);
+        console.error('Failed to fetch categories/products:', err);
       }
     };
 
-    fetchCategoriesAndProducts();
+    fetchData();
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "categoryId") {
-      const selected = categories.find((cat) => cat.id === parseInt(value));
-      setSubMenus(selected?.subMenu || []);
-      setProduct((prev) => ({
+    if (name === 'catagory.id') {
+      setFormState((prev) => ({
         ...prev,
-        categoryId: value,
-        productId: "",
+        catagory: { id: value },
+        product: { id: '' },
+      }));
+
+      const filtered = products.filter((prod) => prod.catagory?.id === parseInt(value));
+      setFilteredProducts(filtered);
+    } else if (name === 'product.id') {
+      setFormState((prev) => ({
+        ...prev,
+        product: { id: value },
       }));
     } else {
-      setProduct((prev) => ({ ...prev, [name]: value }));
+      setFormState((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
-  const handleMainImageChange = (e, index) => {
+  const handleImageChange = (e, index) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    const key = index === 0 ? "imagea" : index === 1 ? "imageb" : "imagec";
-    setProduct((prev) => ({ ...prev, [key]: file }));
 
     const reader = new FileReader();
     reader.onloadend = () => {
       if (index === 0) {
+        setImageA(file);
         setMainImagePreview(reader.result);
-      } else {
+      } else if (index === 1) {
+        setImageB(file);
         setAdditionalImagesPreviews((prev) => {
           const updated = [...prev];
-          updated[index - 1] = reader.result;
+          updated[0] = reader.result;
+          return updated;
+        });
+      } else if (index === 2) {
+        setImageC(file);
+        setAdditionalImagesPreviews((prev) => {
+          const updated = [...prev];
+          updated[1] = reader.result;
           return updated;
         });
       }
     };
+
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    dispatch(addProduct(product))
-      .unwrap()
-      .then(() => {
-        alert("Product added successfully!");
-        navigate("/admin/products");
-      })
-      .catch((err) => {
-        console.error("Error adding product:", err);
-        alert("Failed to add product!");
-      });
+    try {
+      const formDataObject = {
+        productDetails: formState,
+        imagea,
+        imageb,
+        imagec,
+      };
+
+      await dispatch(addProductDetails({ formDataObject })).unwrap();
+      alert('Product added successfully!');
+    } catch (error) {
+      console.error('Error adding product:', error);
+    }
   };
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <div className="max-w-2xl mx-auto bg-white p-6 rounded shadow">
-        <Typography variant="h5" gutterBottom>
-          Add Product
-        </Typography>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: 600, mx: 'auto', p: 2 }}
+    >
+      <Typography variant="h5" fontWeight={600}>Add Product</Typography>
+      <TextField name="productid" label="Product ID" onChange={handleChange} required />
+      <TextField name="name" label="Product Name" onChange={handleChange} required />
 
-        {loading ? (
-          <CircularProgress />
-        ) : error ? (
-          <Typography color="error">{error}</Typography>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Stack spacing={2}>
-              <TextField label="Product ID" name="productid" fullWidth onChange={handleChange} value={product.productid} />
-              <TextField label="Product Name" name="name" fullWidth required onChange={handleChange} value={product.name} />
-              <TextField label="Title" name="title" fullWidth required onChange={handleChange} value={product.title} />
+      <FormControl fullWidth required>
+        <InputLabel>Category (Menu)</InputLabel>
+        <Select
+          name="catagory.id"
+          value={formState.catagory.id}
+          onChange={handleChange}
+          label="Category (Menu)"
+        >
+          <MenuItem value="">-- Select Category --</MenuItem>
+          {categories.map((cat) => (
+            <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-              <TextField
-                select
-                name="categoryId"
-                label="Category"
-                fullWidth
-                required
-                onChange={handleChange}
-                value={product.categoryId}
-              >
-                <MenuItem value="">Select Category</MenuItem>
-                {categories.map((cat) => (
-                  <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
-                ))}
-              </TextField>
+      <FormControl fullWidth>
+        <InputLabel>Product (Submenu)</InputLabel>
+        <Select
+          name="product.id"
+          value={formState.product.id}
+          onChange={handleChange}
+          label="Product (Submenu)"
+          disabled={filteredProducts.length === 0}
+        >
+          <MenuItem value="">
+            {filteredProducts.length === 0
+              ? '-- No Submenu Available --'
+              : '-- Select Product (Submenu) --'}
+          </MenuItem>
+          {filteredProducts.map((prod) => (
+            <MenuItem key={prod.id} value={prod.id}>{prod.name}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-              <TextField
-                select
-                name="productId"
-                label="Submenu"
-                fullWidth
-                disabled={!subMenus.length}
-                onChange={handleChange}
-                value={product.productId}
-              >
-                <MenuItem value="">Select Submenu</MenuItem>
-                {subMenus.map((sub) => (
-                  <MenuItem key={sub.id} value={sub.id}>{sub.name}</MenuItem>
-                ))}
-              </TextField>
+      <TextField name="quantity" type="number" label="Quantity" onChange={handleChange} required />
+      <TextField name="regularprice" type="number" label="Regular Price" onChange={handleChange} required />
+      <TextField name="specialprice" type="number" label="Special Price" onChange={handleChange} required />
+      <TextField name="title" label="Title" onChange={handleChange} required/>
+      <TextField name="details" label="Details" fullWidth multiline rows={4} required onChange={handleChange} />
+      <TextField name="specification" label="Specification" fullWidth multiline required rows={3} onChange={handleChange} />
 
-              <TextField label="Regular Price" name="regularprice" type="number" fullWidth required onChange={handleChange} value={product.regularprice} />
-              <TextField label="Special Price" name="specialprice" type="number" fullWidth onChange={handleChange} value={product.specialprice} />
-              <TextField label="Details" name="details" fullWidth multiline rows={4} required onChange={handleChange} value={product.details} />
-              <TextField label="Specification" name="specification" fullWidth multiline rows={2} required onChange={handleChange} value={product.specification} />
-              <TextField label="Quantity" name="quantity" type="number" fullWidth required onChange={handleChange} value={product.quantity} />
-
-              <Box>
-                <Typography variant="subtitle1">Image A (Main)</Typography>
-                {mainImagePreview && <Avatar src={mainImagePreview} variant="rounded" sx={{ width: 80, height: 60 }} />}
-                <Button component="label">
-                  Upload Image A
-                  <input type="file" hidden accept="image/*" onChange={(e) => handleMainImageChange(e, 0)} />
-                </Button>
-              </Box>
-
-              {[1, 2].map((index) => (
-                <Box key={index}>
-                  <Typography variant="subtitle1">Image {index + 1} (Gallery)</Typography>
-                  {additionalImagesPreviews[index - 1] && (
-                    <Avatar src={additionalImagesPreviews[index - 1]} variant="rounded" sx={{ width: 60, height: 50 }} />
-                  )}
-                  <Button component="label">
-                    Upload Image {index + 1}
-                    <input type="file" hidden accept="image/*" onChange={(e) => handleMainImageChange(e, index)} />
-                  </Button>
-                </Box>
-              ))}
-            </Stack>
-
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              Add Product
-            </Button>
-          </form>
+      {/* Image A (Main) Upload */}
+      <Box>
+        <Typography variant="subtitle1">Image A (Main)</Typography>
+        {mainImagePreview && (
+          <Avatar src={mainImagePreview} variant="rounded" sx={{ width: 80, height: 80, mb: 1 }} />
         )}
-      </div>
-    </div>
+        <Button component="label" variant="outlined">
+          Upload Image A
+          <input type="file" hidden accept="image/*" onChange={(e) => handleImageChange(e, 0)} required />
+        </Button>
+      </Box>
+
+      {/* Image B & C (Gallery) Uploads */}
+      {[1, 2].map((index) => (
+        <Box key={index}>
+          <Typography variant="subtitle1">Image {index} (Gallery)</Typography>
+          {additionalImagesPreviews[index - 1] && (
+            <Avatar
+              src={additionalImagesPreviews[index - 1]}
+              variant="rounded"
+              sx={{ width: 60, height: 60, mb: 1 }}
+            />
+          )}
+          <Button component="label" variant="outlined">
+            Upload Image {index}
+            <input
+              type="file"
+              hidden
+              accept="image/*"
+              onChange={(e) => handleImageChange(e, index)}
+              required
+            />
+          </Button>
+        </Box>
+      ))}
+
+      <Button type="submit" variant="contained" color="primary" disabled={loading}>
+        {loading ? 'Uploading...' : 'Add Product'}
+      </Button>
+
+      {error && <Typography color="error">Error: {error}</Typography>}
+      {successMessage && <Typography color="success.main">{successMessage}</Typography>}
+    </Box>
   );
 };
 

@@ -35,14 +35,14 @@ const UserNavbar = () => {
             return {
               ...category,
               subMenu: relatedProducts.map((product) => ({
-                name: product.name || "Unnamed Product",
+                name: product.name,
                 path: `/product/${product.title || product.id}`,
               })),
             };
           });
   
           setCategoriesWithSub(categoriesWithProducts);
-          console.log("Fetched Categories With Submenus:", categoriesWithProducts);
+          // console.log("Fetched Categories With Submenus:", categoriesWithProducts);
         } else {
           console.error("API did not return arrays:", { categories, products });
         }
