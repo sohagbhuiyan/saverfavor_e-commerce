@@ -5,8 +5,21 @@ import { useDispatch } from "react-redux";
 import { addToWishlist } from "../../../../store/wishlistSlice";
 import { addToCart } from "../../../../store/cartSlice";
 import { addToCompare } from "../../../../store/compareSlice";
+import { API_BASE_URL } from "../../../../store/api";
 
-const CollectionCard = ({id, image, category, name, price, discount, description }) => {
+const CollectionCard = ({
+  id,
+  imagea,
+  imageb,
+  imagec,
+  category,
+  name,
+  regularprice,
+  specialprice,
+  description,
+  details,
+  specification
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const [showMobileIcons, setShowMobileIcons] = useState(false);
@@ -14,31 +27,34 @@ const CollectionCard = ({id, image, category, name, price, discount, description
   const iconsRef = useRef(null);
   const dispatch = useDispatch();
 
-  // Detect mobile screen size
+  const discount = regularprice - specialprice;
+  const hasDiscount = specialprice > 0 && discount > 0;
+  const currentPrice = hasDiscount ? specialprice : regularprice;
+
+  const formatPrice = (amount) =>
+    new Intl.NumberFormat('en-BD', { maximumFractionDigits: 0 })
+      .format(amount)
+      .replace(/(\d+)/, 'Tk $1');
+
   useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
     checkIsMobile();
     window.addEventListener('resize', checkIsMobile);
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
 
-  // Close icons when clicking outside (mobile only)
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (isMobile && showMobileIcons && iconsRef.current && !iconsRef.current.contains(e.target)) {
         setShowMobileIcons(false);
       }
     };
-
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, [isMobile, showMobileIcons]);
 
   const handleProductClick = (e) => {
     if (isMobile) {
-      // Prevent navigation only when showing icons
       if (!showMobileIcons) {
         e.preventDefault();
         e.stopPropagation();
@@ -53,168 +69,174 @@ const CollectionCard = ({id, image, category, name, price, discount, description
     if (isMobile) setShowMobileIcons(false);
   };
 
-  const handleAddToCart = handleIconAction((e) => {
+  const handleAddToCart = handleIconAction(() => {
     dispatch(addToCart({
       productId: id,
       name,
-      specialprice: price,
-      images: [image],
+      price: currentPrice,
+      regularprice,
+      specialprice,
+      image: imagea,
       quantity: 1
     }));
   });
 
-  const handleAddToWishlist = handleIconAction((e) => {
+  const handleAddToWishlist = handleIconAction(() => {
     dispatch(addToWishlist({
       id,
-      image,
+      image: imagea,
       category,
       name,
-      price,
-      discount,
+      regularprice,
+      specialprice,
       description
     }));
   });
 
-  const handleAddToCompare = handleIconAction((e) => {
+  const handleAddToCompare = handleIconAction(() => {
     dispatch(addToCompare({
       id,
       name,
-      price,
-      image,
+      regularprice,
+      specialprice,
+      image: imagea,
       category,
       description,
-      specifications: {
-        display: "15.6\" FHD IPS Display",
-        processor: "Intel Core i5-1135G7",
-        ram: "8GB DDR4",
-        storage: "512GB SSD",
-        graphics: "Intel Iris Xe Graphics",
-        weight: "1.75 kg"
-      }
+      specifications: specification?.split(', ').reduce((acc, spec) => {
+        const [key, value] = spec.split(': ');
+        return { ...acc, [key?.trim()]: value?.trim() };
+      }, {}) || { details }
     }));
   });
 
   return (
     <>
-      <Link to={`/product/${name}`} className="block">
-        <div 
-          className={`border border-gray-300 rounded-lg p-3 shadow-md hover:shadow-xl transition duration-500 bg-white cursor-pointer relative ${
-            isHovered ? "scale-104" : "scale-100"
-          }`}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          onClick={handleProductClick}
-          
+      <Link to={`/product/${id}`} className="block" onClick={handleProductClick}>
+        <div
+          className={`border border-gray-300 rounded-lg p-3 shadow-md hover:shadow-xl transition-all duration-300 bg-white relative ${isHovered ? "md:scale-105" : "scale-100"}`}
+          onMouseEnter={() => !isMobile && setIsHovered(true)}
+          onMouseLeave={() => !isMobile && setIsHovered(false)}
         >
           <div className="relative p-1 md:p-2 overflow-hidden rounded-md">
-            <img 
-              src={image} 
-              alt={name} 
-              className={`w-full h-40 object-cover rounded-md transition-transform duration-600 ${
-                isHovered ? "scale-130" : "scale-100"
-              }`}
+            <img
+              src={imagea}
+              alt={name}
+              className="w-full h-40 md:h-48 object-cover rounded-md transition-transform duration-300"
+              loading="lazy"
             />
 
-            {/* Action Icons */}
             {(isHovered || (isMobile && showMobileIcons)) && (
-              <div 
+              <div
                 ref={iconsRef}
-                className="absolute top-2 right-2 flex flex-col space-y-2 rounded-lg"
+                className="absolute top-2 right-2 flex flex-col gap-2 rounded-lg"
               >
-                <button 
-                  className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" 
-                  title="Add to Cart"
-                  onClick={handleAddToCart}
-                >
-                  <FaShoppingCart />
-                </button>
-                <button 
-                  className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" 
-                  title="Compare"
-                  onClick={handleAddToCompare}
-                >
-                  <FaExchangeAlt />
-                </button>
-                <button
-                  className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer"
-                  title="Wishlist"
-                  onClick={handleAddToWishlist}
-                >
-                  <FaHeart />
-                </button>
-                <button 
-                  className="text-gray-600 bg-white hover:text-white hover:bg-gray-500 p-1 rounded-full border cursor-pointer" 
-                  title="Quick View"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsQuickViewOpen(true);
-                    if (isMobile) setShowMobileIcons(false);
-                  }}
-                >
-                  <FaEye />
-                </button>
+                {['cart', 'compare', 'wishlist', 'view'].map((action, idx) => (
+                  <button
+                    key={action}
+                    className="p-2 bg-white/90 hover:bg-gray-700 rounded-full shadow-sm transition-colors duration-200"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      switch (idx) {
+                        case 0: handleAddToCart(e); break;
+                        case 1: handleAddToCompare(e); break;
+                        case 2: handleAddToWishlist(e); break;
+                        case 3: setIsQuickViewOpen(true); break;
+                      }
+                    }}
+                    aria-label={`${action} ${name}`}
+                  >
+                    {[<FaShoppingCart />, <FaExchangeAlt />, <FaHeart />, <FaEye />][idx]}
+                  </button>
+                ))}
               </div>
             )}
           </div>
 
-          {/* Product Info */}
-          <div className="mt-2 text-center">
-            <h2 className="text-sm md:text-md font-bold text-gray-700">{category}</h2>
-            <p className="text-xs md:text-sm text-gray-600">{description}</p>
-            <p className="text-sm md:text-lg font-bold text-gray-700 mt-1">Tk {price}</p>
-            {discount && (
-              <p className="text-purple-600 text-xs md:text-sm font-medium">
-                Save Tk {discount} on online order
-              </p>
-            )}
+          <div className="mt-2 text-center space-y-1">
+            <h3 className="text-sm font-semibold text-gray-700 truncate">{category}</h3>
+            <p className="text-xs text-gray-600 line-clamp-2 min-h-[2.5rem]">{description}</p>
+            <div className="flex flex-col items-center justify-center">
+              <span className="text-sm font-bold text-gray-900">{formatPrice(currentPrice)}</span>
+              {hasDiscount && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs line-through text-gray-400">{formatPrice(regularprice)}</span>
+                  <span className="text-xs text-green-600 font-medium">Save {formatPrice(discount)}</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </Link>
 
-      {/* Quick View Modal */}
       {isQuickViewOpen && (
-  <div className="fixed inset-0 backdrop-blur-md  bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-gray-50 p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 relative">
-      {/* Close Button */}
-      <button 
-        className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-        onClick={() => setIsQuickViewOpen(false)}
-      >
-        <FaTimes className="text-xl cursor-pointer" />
-      </button>
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 relative">
+              <button
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                onClick={() => setIsQuickViewOpen(false)}
+                aria-label="Close quick view"
+              >
+                <FaTimes className="text-2xl" />
+              </button>
 
-      {/* Modal Content */}
-      {image && name && description ? (
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Product Image */}
-          <div className="w-full md:w-1/2">
-            <img 
-              src={image} 
-              alt={name} 
-              className="w-full h-48 md:h-64 object-cover rounded-md"
-            />
-          </div>
+              <div className="grid md:grid-cols-2 gap-6 mt-4">
+                <div className="space-y-3">
+                  {[imagea, imageb, imagec].map((img, idx) => (
+                    <img
+                      key={idx}
+                      src={imagea}
+                      alt={`${name}-${idx}`}
+                      className="w-full h-40 object-contain rounded-lg"
+                    />
+                  ))}
+                </div>
 
-          {/* Product Details */}
-          <div className="w-full md:w-1/2">
-            <h2 className="text-lg md:text-xl font-bold text-gray-800">{name}</h2>
-            <p className="text-sm md:text-md text-gray-600 mt-2">Product: {category}</p>
-            <p className="text-sm md:text-md text-gray-600 mt-2">{description}</p>
-            <p className="text-sm md:text-md text-gray-600 mt-2">Price: BDT {price}</p>
+                <div className="space-y-4">
+                  <h2 className="text-2xl font-bold text-gray-900">{name}</h2>
+                  <div className="space-y-2">
+                    <p className="text-lg font-semibold text-gray-900">
+                      {formatPrice(currentPrice)}
+                      {hasDiscount && (
+                        <span className="ml-3 text-sm line-through text-gray-400">
+                          {formatPrice(regularprice)}
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600">{category}</p>
+                  </div>
+
+                  {details && (
+                    <div className="space-y-2">
+                      <h3 className="font-semibold text-gray-900">Details</h3>
+                      <p className="text-sm text-gray-600 whitespace-pre-line">{details}</p>
+                    </div>
+                  )}
+
+                  {specification && (
+                    <div className="space-y-2">
+                      <h3 className="font-semibold text-gray-900">Specifications</h3>
+                      <ul className="grid grid-cols-2 gap-2 text-sm">
+                        {specification.split(', ').map((spec, index) => {
+                          const [key, value] = spec.split(': ');
+                          return (
+                            <li key={index} className="flex justify-between py-1 border-b">
+                              <span className="text-gray-600">{key}:</span>
+                              <span className="text-gray-900">{value}</span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      ) : (
-        // Product Not Found Message
-        <div className="text-center">
-          <h2 className="text-xl font-bold text-gray-800">Product Not Found</h2>
-          <p className="text-sm text-gray-600 mt-2">The product you are looking for does not exist.</p>
         </div>
       )}
-    </div>
-  </div>
-)}
-</>
-  )
+    </>
+  );
 };
 
 export default CollectionCard;
