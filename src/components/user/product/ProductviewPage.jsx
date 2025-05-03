@@ -10,7 +10,6 @@ const ProductviewPage = () => {
       <>
       <ProductView/>
       <ProductDetails/>
-      <RelatedProduct/>
       </>
     )
     

@@ -35,12 +35,14 @@ const Collections = () => {
           filteredProducts.map((product) => (
             <CollectionCard 
               key={product.id}
-              image={product.imagea}
+              id={product.id}
+              imagea={`${API_BASE_URL}/images/${product.imagea}`}
               category={product.catagory?.name || 'Uncategorized'}
+              product = {product.product?.name}
               name={product.name}
-              price={product.regularprice}
-              discount={product.regularprice - product.specialprice}
-              description={product.title}
+              regularprice={product.regularprice}
+              specialprice={product.specialprice}
+              title={product.title}
               details={product.details}
               specification={product.specification}
             />

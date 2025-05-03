@@ -10,13 +10,12 @@ import { API_BASE_URL } from "../../../../store/api";
 const CollectionCard = ({
   id,
   imagea,
-  imageb,
-  imagec,
   category,
   name,
   regularprice,
   specialprice,
-  description,
+  title,
+  product,
   details,
   specification
 }) => {
@@ -76,7 +75,7 @@ const CollectionCard = ({
       price: currentPrice,
       regularprice,
       specialprice,
-      image: imagea,
+      imagea: imagea,
       quantity: 1
     }));
   });
@@ -84,12 +83,12 @@ const CollectionCard = ({
   const handleAddToWishlist = handleIconAction(() => {
     dispatch(addToWishlist({
       id,
-      image: imagea,
+      imagea: imagea,
       category,
       name,
       regularprice,
       specialprice,
-      description
+      title
     }));
   });
 
@@ -99,9 +98,9 @@ const CollectionCard = ({
       name,
       regularprice,
       specialprice,
-      image: imagea,
+      imagea: imagea,
       category,
-      description,
+      title,
       specifications: specification?.split(', ').reduce((acc, spec) => {
         const [key, value] = spec.split(': ');
         return { ...acc, [key?.trim()]: value?.trim() };
@@ -118,13 +117,13 @@ const CollectionCard = ({
           onMouseLeave={() => !isMobile && setIsHovered(false)}
         >
           <div className="relative p-1 md:p-2 overflow-hidden rounded-md">
-            <img
-              src={imagea}
-              alt={name}
-              className="w-full h-40 md:h-48 object-cover rounded-md transition-transform duration-300"
-              loading="lazy"
-            />
-
+          <img
+        src={imagea}
+        alt={name}
+        className="w-full h-40 md:h-48 object-cover rounded-md transition-transform duration-300"
+        loading="lazy"
+    
+    />
             {(isHovered || (isMobile && showMobileIcons)) && (
               <div
                 ref={iconsRef}
@@ -153,8 +152,10 @@ const CollectionCard = ({
           </div>
 
           <div className="mt-2 text-center space-y-1">
-            <h3 className="text-sm font-semibold text-gray-700 truncate">{category}</h3>
-            <p className="text-xs text-gray-600 line-clamp-2 min-h-[2.5rem]">{description}</p>
+            <h3 className="text-sm font-semibold text-gray-700 truncate">{name}</h3>
+            <p className="text-xs text-gray-600 line-clamp-2 min-h-[2 rem]">{category}</p>
+            <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem]">{title}</p>
+            <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem] ">{product}</p>
             <div className="flex flex-col items-center justify-center">
               <span className="text-sm font-bold text-gray-900">{formatPrice(currentPrice)}</span>
               {hasDiscount && (
@@ -182,14 +183,11 @@ const CollectionCard = ({
 
               <div className="grid md:grid-cols-2 gap-6 mt-4">
                 <div className="space-y-3">
-                  {[imagea, imageb, imagec].map((img, idx) => (
-                    <img
-                      key={idx}
-                      src={imagea}
-                      alt={`${name}-${idx}`}
-                      className="w-full h-40 object-contain rounded-lg"
-                    />
-                  ))}
+                  <img
+                    src={imagea} 
+                    alt={name}
+                    className="w-full h-64 object-contain rounded-lg"
+                  />
                 </div>
 
                 <div className="space-y-4">

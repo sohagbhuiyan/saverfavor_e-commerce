@@ -11,7 +11,7 @@ const DesktopMenu = ({ menuItems }) => {
   const remainingItems = menuItems.slice(10);
 
   return (
-    <div className="hidden md:flex items-center justify-center space-x-2 px-2 py-3 font-medium text-sm md:space-x-6 md:px-4 relative z-50">
+    <div className="hidden md:flex items-center justify-center space-x-2 px-2 py-3 font-medium text-sm md:space-x-6 md:px-4 relative z-40">
       {firstTenItems.map((item, index) => (
         <div
           key={index}
@@ -24,7 +24,7 @@ const DesktopMenu = ({ menuItems }) => {
           </Link>
 
           {item.subMenu && item.subMenu.length > 0 && hoverIndex === index && (
-            <div className="absolute top-full left-0 mt-0 w-48 bg-white text-black shadow-lg rounded-md border border-gray-300 z-50">
+            <div className="absolute top-full left-0 mt-0 w-48 bg-white text-black shadow-lg rounded-md border border-gray-300 z-40">
               {item.subMenu
                 .filter(subItem => subItem.name && subItem.path)
                 .map((subItem, subIndex) => (
@@ -56,7 +56,7 @@ const DesktopMenu = ({ menuItems }) => {
           </div>
 
           {showMoreItems && (
-            <div className="absolute top-full left-0 mt-0 w-48 bg-white text-black shadow-lg rounded-md border border-gray-200 z-50">
+            <div className="absolute top-full left-0 mt-0 w-48 bg-white text-black shadow-lg rounded-md border border-gray-200 z-40">
               {remainingItems.map((item, index) => (
                 <div
                   key={index}
@@ -77,7 +77,7 @@ const DesktopMenu = ({ menuItems }) => {
 
                   {/* Show submenu only if exists and hovered */}
                   {item.subMenu?.length > 0 && hoverMoreItemIndex === index && (
-                    <div className="block left-0 w-48 bg-white text-black shadow-lg rounded-md border border-gray-300 z-50">
+                    <div className="block left-0 w-48 bg-white text-black shadow-lg rounded-md border border-gray-300 z-40">
                       {item.subMenu
                         .filter(subItem => subItem.name && subItem.path)
                         .map((subItem, subIndex) => (

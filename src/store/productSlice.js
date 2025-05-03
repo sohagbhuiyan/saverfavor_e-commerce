@@ -52,10 +52,24 @@ export const addProductDetails = createAsyncThunk(
   }
 );
 
+// Async thunk to fetch single product
+export const fetchProductById = createAsyncThunk(
+  'products/fetchById',
+  async (productid, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/productDetails/getall/${productid}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: 'products',
   initialState: {
     products: [],
+    currentProduct: null,
     loading: false,
     error: null,
     successMessage: null,
@@ -70,8 +84,15 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
-      })
+        state.products = action.payload.map(product => ({
+            ...product,
+            imagea: product.imagea ? `${API_BASE_URL}/images/${product.imagea}` : '',
+            imageb: product.imageb ? `${API_BASE_URL}/images/${product.imageb}` : '',
+            imagec: product.imagec ? `${API_BASE_URL}/images/${product.imagec}` : '',
+            regularprice: Number(product.regularprice),
+            specialprice: Number(product.specialprice)
+        }));
+    })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -91,7 +112,21 @@ const productSlice = createSlice({
       .addCase(addProductDetails.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      //fetch product by Id (single product)
+      .addCase(fetchProductById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.currentProduct = null;
+      })
+      .addCase(fetchProductById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentProduct = action.payload;
+      })
+      .addCase(fetchProductById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      }); 
   },
 });
 

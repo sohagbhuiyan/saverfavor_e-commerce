@@ -28,8 +28,8 @@ const Wishlist = ({ isOpen, isMobile, onClose }) => {  // Added onClose prop
     <div
       className={`${
         isMobile
-          ? "fixed bottom-14 left-6 right-6 text-black bg-gray-200 p-3 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto"
-          : "absolute top-8 right-0 text-black bg-gray-100 p-3 rounded-lg shadow-lg w-84 z-50 max-h-96 overflow-y-auto"
+          ? "fixed bottom-14 left-6 right-6 text-black bg-gray-200 p-3 rounded-lg shadow-lg z-60 max-h-64 overflow-y-auto"
+          : "absolute top-8 right-0 text-black bg-gray-100 p-3 rounded-lg shadow-lg w-84 z-60 max-h-96 overflow-y-auto"
       }`}
       onClick={(e) => e.stopPropagation()}
     >

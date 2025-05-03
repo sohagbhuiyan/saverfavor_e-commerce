@@ -266,6 +266,7 @@ import AddProduct from './components/admin/products/AddProduct';
 import Contact from './components/user/footer/Contact';
 import AboutUs from './components/user/footer/AboutUs';
 import AddCategory from './components/admin/products/AddCategory';
+import ProductDetails from './components/user/product/ProductDetails';
 
 function App() {
   return (
@@ -283,8 +284,9 @@ function App() {
 
           {/* User Routes */}
           {/* <Route path="/view-products" element={<ViewProduct />} /> */}
-          <Route path="/product/:name" element={<ProductviewPage />} />
-
+          {/* <Route path="/product/:name" element={<ProductviewPage />} /> */}
+          <Route path="/product/:id" element={<ProductviewPage />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/products" element={<ProductManagement />} />
