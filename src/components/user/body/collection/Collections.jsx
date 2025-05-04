@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../../../store/productSlice";
 import CollectionCard from "./CollectionCard";
-import { API_BASE_URL } from "../../../../store/api";
 
 const Collections = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,7 +35,7 @@ const Collections = () => {
             <CollectionCard 
               key={product.id}
               id={product.id}
-              imagea={`${API_BASE_URL}/images/${product.imagea}`}
+              imagea={product.imagea}
               category={product.catagory?.name || 'Uncategorized'}
               product = {product.product?.name}
               name={product.name}

@@ -19,7 +19,6 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
-
 // Async thunk to add product
 export const addProductDetails = createAsyncThunk(
   'products/addProductDetails',
@@ -55,9 +54,9 @@ export const addProductDetails = createAsyncThunk(
 // Async thunk to fetch single product
 export const fetchProductById = createAsyncThunk(
   'products/fetchById',
-  async (productid, { rejectWithValue }) => {
+  async (name, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/productDetails/getall/${productid}`);
+      const response = await axios.get(`${API_BASE_URL}/api/productDetails/${name}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);

@@ -81,7 +81,7 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
               {/* Product Content */}
               <div className="flex items-center w-full">
                 <img
-                  src={item.images[0]}
+                  src={item.imagea}
                   alt={item.name}
                   className={`${imageSize} object-cover rounded`}
                 />

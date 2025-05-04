@@ -1,6 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'; 
 
-// Helpers to manage cart based on logged-in user
 const getUserEmail = () => {
   const authUser = JSON.parse(localStorage.getItem("authUser"));
   return authUser?.email || "guest";
@@ -50,11 +49,12 @@ const cartSlice = createSlice({
     },
 
     updateQuantity: (state, action) => {
-      const { id, quantity } = action.payload;
-      const existingItem = state.cartItems.find(item => item.id === id);
+      const { productId, quantity } = action.payload;
+      const existingItem = state.items.find(item => item.productId === productId);
       if (existingItem) {
         existingItem.quantity = quantity;
-        saveCartToLocalStorage(state.cartItems);
+        state.count = state.items.reduce((acc, item) => acc + item.quantity, 0);
+        saveCartForUser(state.items);
       }
     },
 
@@ -65,11 +65,7 @@ const cartSlice = createSlice({
     },
   },
 });
-const saveCartToLocalStorage = (cartItems) => {
-  const user = JSON.parse(localStorage.getItem("authUser"));
-  const userEmail = user?.email || "guest";
-  localStorage.setItem(`cart_${userEmail}`, JSON.stringify(cartItems));
-};
 
 export const { addToCart, removeFromCart, updateQuantity, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;
+

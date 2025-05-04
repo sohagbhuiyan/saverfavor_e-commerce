@@ -267,6 +267,8 @@ import Contact from './components/user/footer/Contact';
 import AboutUs from './components/user/footer/AboutUs';
 import AddCategory from './components/admin/products/AddCategory';
 import ProductDetails from './components/user/product/ProductDetails';
+import CartPage from './components/user/navbar/CartPage';
+import OrderManagement from './components/admin/OrderManagement';
 
 function App() {
   return (
@@ -281,21 +283,22 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/about-us" element={<AboutUs />} />
-
+      
           {/* User Routes */}
           {/* <Route path="/view-products" element={<ViewProduct />} /> */}
           {/* <Route path="/product/:name" element={<ProductviewPage />} /> */}
           <Route path="/product/:id" element={<ProductviewPage />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
+          {/* <Route path="/cart" element={ <CartPage /> }/> */}
+          {/* <Route path="/product/:id" element={<ProductDetails />} /> */}
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/products" element={<ProductManagement />} />
+          <Route path="/admin/orders" element={<OrderManagement />} />
           <Route path="/admin/products/view-product" element={<ViewProduct />} />
           <Route path="/admin/products/add-product" element={<AddProduct />} />
           <Route path="/admin/products/add-category" element={<AddCategory />} />
           {/* Catch All */}
           <Route path="*" element={<Navigate to="/" />} />
-
         </Route>
       </Routes>
     </Router>

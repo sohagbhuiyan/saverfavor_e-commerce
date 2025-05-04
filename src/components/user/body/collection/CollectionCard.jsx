@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import { addToWishlist } from "../../../../store/wishlistSlice";
 import { addToCart } from "../../../../store/cartSlice";
 import { addToCompare } from "../../../../store/compareSlice";
-import { API_BASE_URL } from "../../../../store/api";
 
 const CollectionCard = ({
   id,
@@ -118,11 +117,11 @@ const CollectionCard = ({
         >
           <div className="relative p-1 md:p-2 overflow-hidden rounded-md">
           <img
-        src={imagea}
-        alt={name}
-        className="w-full h-40 md:h-48 object-cover rounded-md transition-transform duration-300"
-        loading="lazy"
-    
+            src={imagea}
+            alt={name}
+            className="w-full h-40 md:h-48 object-cover rounded-md transition-transform duration-300"
+            loading="lazy"
+
     />
             {(isHovered || (isMobile && showMobileIcons)) && (
               <div
@@ -132,7 +131,7 @@ const CollectionCard = ({
                 {['cart', 'compare', 'wishlist', 'view'].map((action, idx) => (
                   <button
                     key={action}
-                    className="p-2 bg-white/90 hover:bg-gray-700 rounded-full shadow-sm transition-colors duration-200"
+                    className="p-1 bg-white text-gray-600 border border-gray-600 hover:cursor-pointer rounded-full shadow-sm hover:bg-gray-700 hover:text-white transition-colors duration-200"
                     onClick={(e) => {
                       e.preventDefault();
                       switch (idx) {
@@ -178,7 +177,7 @@ const CollectionCard = ({
                 onClick={() => setIsQuickViewOpen(false)}
                 aria-label="Close quick view"
               >
-                <FaTimes className="text-2xl" />
+                <FaTimes className="text-2xl cursor-pointer" />
               </button>
 
               <div className="grid md:grid-cols-2 gap-6 mt-4">
@@ -204,27 +203,10 @@ const CollectionCard = ({
                     <p className="text-sm text-gray-600">{category}</p>
                   </div>
 
-                  {details && (
-                    <div className="space-y-2">
-                      <h3 className="font-semibold text-gray-900">Details</h3>
-                      <p className="text-sm text-gray-600 whitespace-pre-line">{details}</p>
-                    </div>
-                  )}
-
                   {specification && (
                     <div className="space-y-2">
-                      <h3 className="font-semibold text-gray-900">Specifications</h3>
-                      <ul className="grid grid-cols-2 gap-2 text-sm">
-                        {specification.split(', ').map((spec, index) => {
-                          const [key, value] = spec.split(': ');
-                          return (
-                            <li key={index} className="flex justify-between py-1 border-b">
-                              <span className="text-gray-600">{key}:</span>
-                              <span className="text-gray-900">{value}</span>
-                            </li>
-                          );
-                        })}
-                      </ul>
+                      <h3 className="font-semibold text-gray-900">specification</h3>
+                      <p className="text-sm text-gray-600 whitespace-pre-line">{specification}</p>
                     </div>
                   )}
                 </div>

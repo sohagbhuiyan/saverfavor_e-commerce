@@ -66,10 +66,6 @@ const ProductDetails = () => {
             <p><strong>Brand:</strong> {currentProduct.catagory?.name || "N/A"}</p>
             <p><strong>Model:</strong> {currentProduct.name}</p>
             <p><strong>Product ID:</strong> {currentProduct.productid}</p>
-            <p><strong>Type:</strong> {currentProduct.product?.name || "N/A"}</p>
-            <p><strong>Quantity:</strong> {currentProduct.quantity}</p>
-            <p><strong>Regular Price:</strong> ${currentProduct.regularprice}</p>
-            <p><strong>Special Price:</strong> ${currentProduct.specialprice}</p>
             <p><strong>Specification:</strong> {currentProduct.specification}</p>
           </div>
         ) : (
