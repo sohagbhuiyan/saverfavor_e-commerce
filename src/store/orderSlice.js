@@ -7,15 +7,34 @@ export const placeOrder = createAsyncThunk(
   "order/place",
   async (orderData, { rejectWithValue, getState }) => {
     try {
+      const state = getState();
+      const token = state.auth.token;
+      const profile = state.auth.profile;
+
+      if (!token || !profile?.email) {
+        return rejectWithValue("User not authenticated. Please log in.");
+      }
+
+      // Attach user info to order
+      const orderWithUser = {
+        ...orderData,
+        user: {
+          name: profile.name || "Guest",
+          email: profile.email,
+          phoneNo: profile.phoneNo || "Not provided",
+        },
+      };
+
       const response = await axios.post(
         `${API_BASE_URL}/api/orders/save`,
-        orderData,
+        orderWithUser,
         {
-          // headers: {
-          //   Authorization: `Bearer ${getState().auth.token}`,
-          // },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Order failed");
@@ -23,7 +42,7 @@ export const placeOrder = createAsyncThunk(
   }
 );
 
-// Fetch All Orders
+// Fetch All Orders (for admin)
 export const fetchOrders = createAsyncThunk(
   "order/fetchAll",
   async (_, { rejectWithValue }) => {
@@ -36,12 +55,13 @@ export const fetchOrders = createAsyncThunk(
   }
 );
 
+// Order Slice
 const orderSlice = createSlice({
   name: "order",
-  initialState: { 
-    orders: [], 
-    loading: false, 
-    error: null 
+  initialState: {
+    orders: [],
+    loading: false,
+    error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -59,7 +79,7 @@ const orderSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Failed to place order";
       })
-      
+
       // Fetch Orders
       .addCase(fetchOrders.pending, (state) => {
         state.loading = true;
@@ -71,7 +91,7 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to fetch orders";
+        state.error = action.payload;
       });
   },
 });

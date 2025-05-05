@@ -36,12 +36,13 @@ export const loginUser = createAsyncThunk(
       const { data } = await axios.post(`${API_BASE_URL}/login`, credentials);
 
       const token = data.token;
+      const userId = data.user?.id;
       let role = credentials.email === "admin@example.com" ? "admin" : "user";
 
       // Save to localStorage
-      saveAuthData({ token, email: credentials.email, role });
+      saveAuthData({ token, email: credentials.email, role, userId  });
 
-      return { token, email: credentials.email, role };
+      return { token, email: credentials.email, role, userId  };
     } catch (error) {
       if (!error.response) {
         return rejectWithValue("Network error. Please try again.");
@@ -87,7 +88,7 @@ export const fetchProfile = createAsyncThunk(
 );
 
 // Helper: Save Auth Data to localStorage
-const saveAuthData = ({ token, email, role, profileData }) => {
+const saveAuthData = ({ token, email, role, profileData, }) => {
   localStorage.setItem("authToken", token);
   localStorage.setItem("authUser", JSON.stringify({ email }));
   localStorage.setItem("authRole", role);
@@ -157,7 +158,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.user = { email: payload.email };
+        state.user = { email: payload.email, id: payload.userId };
         state.token = payload.token;
         state.role = payload.role;
       })

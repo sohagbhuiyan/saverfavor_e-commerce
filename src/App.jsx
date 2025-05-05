@@ -261,7 +261,7 @@ import Dashboard from './components/admin/Dashboard';
 import ProductManagement from './components/admin/ProductManagement';
 import ViewProduct from './components/admin/ViewProduct';
 import AddProduct from './components/admin/products/AddProduct';
-
+import ProfileView from './components/user/registration/profile/ProfileView';
 // Others (Footer, Contact, etc.)
 import Contact from './components/user/footer/Contact';
 import AboutUs from './components/user/footer/AboutUs';
@@ -288,8 +288,16 @@ function App() {
           {/* <Route path="/view-products" element={<ViewProduct />} /> */}
           {/* <Route path="/product/:name" element={<ProductviewPage />} /> */}
           <Route path="/product/:id" element={<ProductviewPage />} />
-          {/* <Route path="/cart" element={ <CartPage /> }/> */}
-          {/* <Route path="/product/:id" element={<ProductDetails />} /> */}
+          <Route path="/cart" element={ <CartPage /> }/>
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route
+            path="view-profile"
+            element={
+           
+                <ProfileView />
+              
+            }
+          />
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/products" element={<ProductManagement />} />

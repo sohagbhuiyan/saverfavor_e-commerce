@@ -8,14 +8,16 @@ import { placeOrder } from "../../../store/orderSlice";
 import { API_BASE_URL } from "../../../store/api";
 
 const ProductView = () => {
+
   const { id } = useParams();
   const dispatch = useDispatch();
   const { currentProduct, loading, error } = useSelector((state) => state.products);
-
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState("");
   const [zoomStyle, setZoomStyle] = useState({ display: "none" });
 
+  const { profile } = useSelector((state) => state.auth); // Get user from auth state
+  
   useEffect(() => {
     if (id) {
       dispatch(fetchProductById(id));
@@ -46,49 +48,40 @@ const ProductView = () => {
 
   const handleMouseLeave = () => setZoomStyle({ display: "none" });
 
-  const handleAddToCart = () => {
-    const cartPayload = {
-      productId: currentProduct.productid,
-      name: currentProduct.name,
-      image: currentProduct.imagea,
-      price: currentProduct.specialprice,
-      quantity,
-    };
+  // const handleAddToCart = () => {
+  //   const cartPayload = {
+  //     productId: currentProduct.productid,
+  //     name: currentProduct.name,
+  //     image: currentProduct.imagea,
+  //     price: currentProduct.specialprice,
+  //     quantity,
+  //   };
   
-    dispatch(addToCart(cartPayload));
-    toast.success(`${currentProduct.name} added to cart!`, { duration: 2000, position: "top-right" });
-  };
+  //   dispatch(addToCart(cartPayload));
+  //   toast.success(`${currentProduct.name} added to cart!`, { duration: 2000, position: "top-right" });
+  // };
+ 
   const handlePlaceOrder = () => {
-    // const userId = useSelector((state) => state.auth.user?.id); // assuming `auth.user` holds the logged-in user info
-  
-    if ( !currentProduct?.catagory?.id || !currentProduct?.product?.id || !currentProduct?.id) {
+    if (!currentProduct?.catagory?.id || !currentProduct?.product?.id || !currentProduct?.id) {
       toast.error("Missing order information. Please try again.");
       return;
     }
   
     const orderPayload = {
       quantity,
-      catagory: {
-        id: currentProduct.catagory.id,
-      },
-      product: {
-        id: currentProduct.product.id,
-      },
-      productDetails: {
-        id: currentProduct.id,
-      },
-      // user: {
-      //   id: userId,
-      // },
+      catagory: { id: currentProduct.catagory.id },
+      product: { id: currentProduct.product.id },
+      productDetails: { id: currentProduct.id },
+      price: currentProduct.specialprice,
     };
   
     dispatch(placeOrder(orderPayload))
       .unwrap()
       .then(() => {
-        toast.success("Order placed successfully!", { duration: 2000, position: "top-right" });
+        toast.success("Order placed successfully!");
       })
-      .catch(() => {
-        toast.error("Order failed. Please try again.", { duration: 2000, position: "top-right" });
+      .catch((error) => {
+        toast.error(error.message || "Order failed. Please try again.");
       });
   };
   
@@ -136,12 +129,12 @@ const ProductView = () => {
           <button className="bg-gray-300 text-xs md:text-sm px-3 py-1 rounded" onClick={decreaseQuantity}>-</button>
           <span>{quantity}</span>
           <button className="bg-gray-300 text-xs md:text-sm px-3 py-1 rounded" onClick={increaseQuantity}>+</button>
-          <button
+          {/* <button
             className="bg-red-600 hover:bg-red-700 cursor-pointer text-xs md:text-md font-medium text-white px-3 py-2 rounded"
             onClick={handleAddToCart}
           >
             Add to Cart
-          </button>
+          </button> */}
           <button
             className="bg-green-600 hover:bg-green-700 cursor-pointer text-xs md:text-md font-medium text-white px-3 py-2 rounded"
             onClick={handlePlaceOrder}
