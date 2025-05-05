@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import { fetchProductById } from "../../../store/productSlice";
-import { addToCart } from "../../../store/cartSlice";
 import { placeOrder } from "../../../store/orderSlice";
 import { API_BASE_URL } from "../../../store/api";
 
@@ -47,43 +46,73 @@ const ProductView = () => {
   };
 
   const handleMouseLeave = () => setZoomStyle({ display: "none" });
-
-  // const handleAddToCart = () => {
-  //   const cartPayload = {
-  //     productId: currentProduct.productid,
-  //     name: currentProduct.name,
-  //     image: currentProduct.imagea,
-  //     price: currentProduct.specialprice,
-  //     quantity,
-  //   };
+const handlePlaceOrder = () => {
+    // const userId = useSelector((state) => state.auth.user?.id); // assuming auth.user holds the logged-in user info
   
-  //   dispatch(addToCart(cartPayload));
-  //   toast.success(`${currentProduct.name} added to cart!`, { duration: 2000, position: "top-right" });
-  // };
- 
-  const handlePlaceOrder = () => {
-    if (!currentProduct?.catagory?.id || !currentProduct?.product?.id || !currentProduct?.id) {
+    if ( !currentProduct?.catagory?.id || !currentProduct?.product?.id || !currentProduct?.id) {
       toast.error("Missing order information. Please try again.");
       return;
     }
   
     const orderPayload = {
       quantity,
-      catagory: { id: currentProduct.catagory.id },
-      product: { id: currentProduct.product.id },
-      productDetails: { id: currentProduct.id },
-      price: currentProduct.specialprice,
+      catagory: {
+        id: currentProduct.catagory.id,
+      },
+      product: {
+        id: currentProduct.product.id,
+      },
+      productDetails: {
+        id: currentProduct.id,
+      },
+      // user: {
+      //   id: userId,
+      // },
     };
   
     dispatch(placeOrder(orderPayload))
       .unwrap()
       .then(() => {
-        toast.success("Order placed successfully!");
+        toast.success("Order placed successfully!", { duration: 2000, position: "top-right" });
       })
-      .catch((error) => {
-        toast.error(error.message || "Order failed. Please try again.");
+      .catch(() => {
+        toast.error("Order failed. Please try again.", { duration: 2000, position: "top-right" });
       });
   };
+ 
+// const handlePlaceOrder = () => {
+//   if (!currentProduct?.id) {
+//     toast.error("Missing product information");
+//     return;
+//   }
+
+//   const orderPayload = {
+//     quantity,
+//     productDetails: {
+//       id: currentProduct.id,
+//       name: currentProduct.name,
+//       specialprice: currentProduct.specialprice,
+//       regularprice: currentProduct.regularprice
+//     },
+//     user: {
+//       email: profile?.email,
+//       name: profile?.name || 'Guest',
+//       phoneNo: profile?.phoneNo || 'Not provided'
+//     }
+//   };
+
+//   dispatch(placeOrder(orderPayload))
+//     .unwrap()
+//     .then(() => {
+//       toast.success("Order placed successfully!");
+//     })
+//     .catch((error) => {
+//       toast.error(error.payload || "Order failed. Please try again.");
+//       if (error.payload === "Authentication required") {
+//         // Redirect to login if needed
+//       }
+//     });
+// };
   
 
   if (loading) return <div className="text-center py-4">Loading...</div>;

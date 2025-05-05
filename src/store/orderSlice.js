@@ -9,38 +9,67 @@ export const placeOrder = createAsyncThunk(
     try {
       const state = getState();
       const token = state.auth.token;
-      const profile = state.auth.profile;
 
-      if (!token || !profile?.email) {
-        return rejectWithValue("User not authenticated. Please log in.");
+      if (!token) {
+        return rejectWithValue("Authentication required. Please log in.");
       }
-
-      // Attach user info to order
-      const orderWithUser = {
-        ...orderData,
-        user: {
-          name: profile.name || "Guest",
-          email: profile.email,
-          phoneNo: profile.phoneNo || "Not provided",
-        },
-      };
 
       const response = await axios.post(
         `${API_BASE_URL}/api/orders/save`,
-        orderWithUser,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        orderData,
+        // {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //     'Content-Type': 'application/json'
+        //   }
+        // }
       );
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Order failed");
+      return rejectWithValue(error.response?.data?.message || "Order failed");
     }
   }
 );
+
+// "order/place",
+//   async (orderData, { rejectWithValue, getState }) => {
+//     try {
+//       const state = getState();
+//       const token = state.auth.token;
+//       const profile = state.auth.profile;
+
+//       if (!token || !profile?.email) {
+//         return rejectWithValue("User not authenticated. Please log in.");
+//       }
+
+//       // Attach user info to order
+//       const orderWithUser = {
+//         ...orderData,
+//         user: {
+//           name: profile.name || "Guest",
+//           email: profile.email,
+//           phoneNo: profile.phoneNo || "Not provided",
+//         },
+//       };
+
+//       const response = await axios.post(
+//         `${API_BASE_URL}/api/orders/save`,
+//         orderWithUser,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || "Order failed");
+//     }
+//   }
+// );
+
 
 // Fetch All Orders (for admin)
 export const fetchOrders = createAsyncThunk(
