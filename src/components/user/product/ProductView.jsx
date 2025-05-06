@@ -7,16 +7,14 @@ import { placeOrder } from "../../../store/orderSlice";
 import { API_BASE_URL } from "../../../store/api";
 
 const ProductView = () => {
-
   const { id } = useParams();
   const dispatch = useDispatch();
   const { currentProduct, loading, error } = useSelector((state) => state.products);
+  const { user, profile, token } = useSelector((state) => state.auth);
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState("");
   const [zoomStyle, setZoomStyle] = useState({ display: "none" });
 
-  const { profile } = useSelector((state) => state.auth); // Get user from auth state
-  
   useEffect(() => {
     if (id) {
       dispatch(fetchProductById(id));
@@ -46,74 +44,74 @@ const ProductView = () => {
   };
 
   const handleMouseLeave = () => setZoomStyle({ display: "none" });
-const handlePlaceOrder = () => {
-    // const userId = useSelector((state) => state.auth.user?.id); // assuming auth.user holds the logged-in user info
-  
-    if ( !currentProduct?.catagory?.id || !currentProduct?.product?.id || !currentProduct?.id) {
-      toast.error("Missing order information. Please try again.");
+
+  const handlePlaceOrder = () => {
+    if (!currentProduct?.id || !currentProduct?.catagory?.id || !currentProduct?.product?.id) {
+      toast.error("Missing product information. Please try again.");
       return;
     }
-  
+
+    if (!user?.id || !profile?.email || !token) {
+      toast.error("User not authenticated. Please log in.");
+      return;
+    }
+
     const orderPayload = {
       quantity,
       catagory: {
         id: currentProduct.catagory.id,
+        name: currentProduct.catagory.name,
       },
       product: {
         id: currentProduct.product.id,
+        name: currentProduct.product.name,
+        catagory: {
+          id: currentProduct.catagory.id,
+          name: currentProduct.catagory.name,
+        },
       },
       productDetails: {
         id: currentProduct.id,
+        productid: currentProduct.productid,
+        name: currentProduct.name,
+        quantity: currentProduct.quantity,
+        regularprice: currentProduct.regularprice,
+        specialprice: currentProduct.specialprice,
+        title: currentProduct.title,
+        details: currentProduct.details,
+        specification: currentProduct.specification,
+        imagea: currentProduct.imagea,
+        imageb: currentProduct.imageb,
+        imagec: currentProduct.imagec,
+        catagory: {
+          id: currentProduct.catagory.id,
+          name: currentProduct.catagory.name,
+        },
+        product: {
+          id: currentProduct.product.id,
+          name: currentProduct.product.name,
+          catagory: {
+            id: currentProduct.catagory.id,
+            name: currentProduct.catagory.name,
+          },
+        },
       },
-      // user: {
-      //   id: userId,
-      // },
+      productid: currentProduct.productid,
+      productname: currentProduct.name,
     };
-  
+
+    console.log("Order payload from ProductView:", orderPayload);
+
     dispatch(placeOrder(orderPayload))
       .unwrap()
       .then(() => {
         toast.success("Order placed successfully!", { duration: 2000, position: "top-right" });
       })
-      .catch(() => {
-        toast.error("Order failed. Please try again.", { duration: 2000, position: "top-right" });
+      .catch((error) => {
+        console.error("Place order error:", error);
+        toast.error(`Order failed: ${error}`, { duration: 2000, position: "top-right" });
       });
   };
- 
-// const handlePlaceOrder = () => {
-//   if (!currentProduct?.id) {
-//     toast.error("Missing product information");
-//     return;
-//   }
-
-//   const orderPayload = {
-//     quantity,
-//     productDetails: {
-//       id: currentProduct.id,
-//       name: currentProduct.name,
-//       specialprice: currentProduct.specialprice,
-//       regularprice: currentProduct.regularprice
-//     },
-//     user: {
-//       email: profile?.email,
-//       name: profile?.name || 'Guest',
-//       phoneNo: profile?.phoneNo || 'Not provided'
-//     }
-//   };
-
-//   dispatch(placeOrder(orderPayload))
-//     .unwrap()
-//     .then(() => {
-//       toast.success("Order placed successfully!");
-//     })
-//     .catch((error) => {
-//       toast.error(error.payload || "Order failed. Please try again.");
-//       if (error.payload === "Authentication required") {
-//         // Redirect to login if needed
-//       }
-//     });
-// };
-  
 
   if (loading) return <div className="text-center py-4">Loading...</div>;
   if (error) return <div className="text-center text-red-500 py-4">Error: {error}</div>;
@@ -146,7 +144,7 @@ const handlePlaceOrder = () => {
 
         {/* Details */}
         <h3 className="mt-4 font-semibold text-md md:text-lg">Quick Overview</h3>
-        <ul className="list-disc pl-6 text-xs md:text-sm text-gray-700">
+        <ul className="list-disc pl-6 text-xs md:text-sm text-gray-600">
           {currentProduct.details &&
             currentProduct.details.split(", ").map((detail, index) => (
               <li key={index}>{detail}</li>
@@ -155,20 +153,27 @@ const handlePlaceOrder = () => {
 
         {/* Quantity Selector & Cart */}
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <button className="bg-gray-300 text-xs md:text-sm px-3 py-1 rounded" onClick={decreaseQuantity}>-</button>
-          <span>{quantity}</span>
-          <button className="bg-gray-300 text-xs md:text-sm px-3 py-1 rounded" onClick={increaseQuantity}>+</button>
-          {/* <button
-            className="bg-red-600 hover:bg-red-700 cursor-pointer text-xs md:text-md font-medium text-white px-3 py-2 rounded"
-            onClick={handleAddToCart}
+          <button
+            className="bg-gray-300 text-xs md:text-sm px-3 py-1 rounded"
+            onClick={decreaseQuantity}
+            disabled={loading}
           >
-            Add to Cart
-          </button> */}
+            -
+          </button>
+          <span>{quantity}</span>
+          <button
+            className="bg-gray-300 text-xs md:text-sm px-3 py-1 rounded"
+            onClick={increaseQuantity}
+            disabled={loading}
+          >
+            +
+          </button>
           <button
             className="bg-green-600 hover:bg-green-700 cursor-pointer text-xs md:text-md font-medium text-white px-3 py-2 rounded"
             onClick={handlePlaceOrder}
+            disabled={loading}
           >
-            Place Order
+            {loading ? "Placing Order..." : "Place Order"}
           </button>
         </div>
       </div>

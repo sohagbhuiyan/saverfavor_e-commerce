@@ -1,4 +1,3 @@
-// components/layout/Layout.jsx
 import { useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 
@@ -11,8 +10,12 @@ import UserNavbar from "../user/navbar/UserNavbar";
 import Footer from "../user/footer/Footer";
 
 const Layout = () => {
-  const { role } = useSelector((state) => state.auth);
-console.log(role)
+  const { role, loading } = useSelector((state) => state.auth);
+
+  if (loading) {
+    return <div className="text-center p-8">Loading layout...</div>;
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       {role === "admin" ? (
