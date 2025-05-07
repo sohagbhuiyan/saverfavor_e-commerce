@@ -82,12 +82,12 @@ const DesktopMenu = ({ menuItems }) => {
                         .filter(subItem => subItem.name && subItem.path)
                         .map((subItem, subIndex) => (
                           <Link
-                            key={subIndex}
-                            to={subItem.path}
-                            className="block p-2 rounded-md hover:bg-gray-200 whitespace-nowrap"
-                          >
-                            {subItem.name}
-                          </Link>
+                          key={subIndex}
+                          to={`/collections?search=${encodeURIComponent(subItem.name)}`}
+                          className="block p-2 rounded-md hover:bg-gray-200 whitespace-nowrap"
+                        >
+                          {subItem.name}
+                        </Link>
                         ))}
                     </div>
                   )}

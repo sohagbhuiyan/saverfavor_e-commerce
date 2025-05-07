@@ -27,13 +27,15 @@ const UserNavbar = () => {
         const products = prodRes.data;
   
         if (Array.isArray(categories) && Array.isArray(products)) {
+
           const categoriesWithProducts = categories.map((category) => {
             const relatedProducts = products.filter(
               (product) => product.catagory?.id === category.id
             );
-  
+
             return {
               ...category,
+              path: `/collections?search=${encodeURIComponent(category.name)}`, // 👈 add this
               subMenu: relatedProducts.map((product) => ({
                 name: product.name,
                 path: `/product/${product.title || product.id}`,

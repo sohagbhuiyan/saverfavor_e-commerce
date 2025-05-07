@@ -2,15 +2,24 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../../../store/productSlice";
 import CollectionCard from "./CollectionCard";
+import { useSearchParams } from "react-router-dom";
 
 const Collections = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams] = useSearchParams();
+  const initialSearch = searchParams.get("search") || "";
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
+
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.products);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
+
+  // Sync search query if the URL search param changes (Back/Forward navigation)
+  useEffect(() => {
+    setSearchQuery(initialSearch);
+  }, [initialSearch]);
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -37,7 +46,7 @@ const Collections = () => {
               id={product.id}
               imagea={product.imagea}
               category={product.catagory?.name || 'Uncategorized'}
-              product = {product.product?.name}
+              product={product.product?.name}
               name={product.name}
               regularprice={product.regularprice}
               specialprice={product.specialprice}

@@ -20,19 +20,10 @@ import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
 const UserProtectedRoute = ({ children }) => {
-  const { role, token, isValidating } = useSelector((state) => state.auth);
+  const { role, token } = useSelector((state) => state.auth);
 
-  if (isValidating) {
-    return <div className="text-center p-8">Validating...</div>;
-  }
-
-  if (!token || !role) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (role !== "user") {
-    return <Navigate to="/" replace />;
-  }
+  if (!token) return <Navigate to="/login" replace />;
+  if (role !== "user") return <Navigate to="/" replace />;
 
   return children;
 };

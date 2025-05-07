@@ -8,20 +8,20 @@
 //   async (userData, { rejectWithValue }) => {
 //     try {
 //       const { data } = await axios.post(`${API_BASE_URL}/api/userRegistration`, userData);
-
 //       const token = data.token;
-//       const userId = data.user?.id || null;
+//       const user = data.user;
+
+//       const userId = user?.id || null;
+//       const role = user?.role?.toLowerCase() || "user";
+
 //       const profileData = {
 //         id: userId,
-//         name: data.user?.name || userData.name || 'Not provided',
-//         email: data.user?.email || userData.email,
-//         phoneNo: data.user?.phoneNo || userData.phoneNo || 'Not provided',
+//         name: user?.name || userData.name || "Not provided",
+//         email: user?.email || userData.email,
+//         phoneNo: user?.phoneNo || userData.phoneNo || "Not provided",
 //       };
-//       const role = "user";
 
 //       saveAuthData({ token, email: profileData.email, role, profileData, userId });
-
-//       console.log("Registered User ID:", userId, "Email:", profileData.email);
 
 //       return { token, email: profileData.email, profile: profileData, role, userId };
 //     } catch (error) {
@@ -39,18 +39,24 @@
 //       const { data } = await axios.post(`${API_BASE_URL}/login`, credentials);
 
 //       const token = data?.token;
-//       const userId = data?.user?.id || null;
-//       const role = credentials.email === "admin@example.com" ? "admin" : "user";
+//       const user = data?.user;
+//       const userId = user?.id || null;
+//       const role = user?.role?.toLowerCase() || "user";
 
 //       if (!token) {
 //         return rejectWithValue("Token missing in response. Check backend.");
 //       }
 
-//       saveAuthData({ token, email: credentials.email, role, userId });
+//       const profileData = {
+//         id: userId,
+//         name: user?.name || "Not provided",
+//         email: user?.email,
+//         phoneNo: user?.phoneNo || "Not provided",
+//       };
 
-//       console.log("Logged in User ID:", userId, "Email:", credentials.email);
+//       saveAuthData({ token, email: user?.email, role, profileData, userId });
 
-//       return { token, email: credentials.email, role, userId };
+//       return { token, email: user?.email, profile: profileData, role, userId };
 //     } catch (error) {
 //       console.error("Login error:", error.response?.data);
 //       return rejectWithValue(error.response?.data?.message || "Invalid email or password");
@@ -71,7 +77,6 @@
 //       }
 
 //       const { data } = await axios.get(`${API_BASE_URL}/api/userRegistration/get`);
-
 //       const loggedInUser = data.find((user) => user.email === userEmail);
 
 //       if (!loggedInUser) {
@@ -80,15 +85,13 @@
 
 //       const profileData = {
 //         id: loggedInUser.id,
-//         name: loggedInUser.name || 'Not provided',
+//         name: loggedInUser.name || "Not provided",
 //         email: loggedInUser.email,
-//         phoneNo: loggedInUser.phoneNo || 'Not provided',
+//         phoneNo: loggedInUser.phoneNo || "Not provided",
 //       };
 
 //       localStorage.setItem("authProfile", JSON.stringify(profileData));
 //       localStorage.setItem("authUserId", profileData.id);
-
-//       console.log("Fetched User ID from profile:", profileData.id, "Email:", profileData.email);
 
 //       return profileData;
 //     } catch (error) {
@@ -98,7 +101,7 @@
 //   }
 // );
 
-// // Helper: Save Auth Data to localStorage
+// // Save Auth Data to localStorage
 // const saveAuthData = ({ token, email, role, profileData, userId }) => {
 //   if (token) localStorage.setItem("authToken", token);
 //   if (email || userId) localStorage.setItem("authUser", JSON.stringify({ email, id: userId }));
@@ -107,7 +110,7 @@
 //   if (profileData) localStorage.setItem("authProfile", JSON.stringify(profileData));
 // };
 
-// // Helper: Load Initial State from localStorage
+// // Load Initial State from localStorage
 // const loadInitialState = () => {
 //   const token = localStorage.getItem("authToken");
 //   const user = JSON.parse(localStorage.getItem("authUser")) || {};
@@ -125,7 +128,7 @@
 //   };
 // };
 
-// // Create auth slice
+// // Auth slice
 // const authSlice = createSlice({
 //   name: "auth",
 //   initialState: loadInitialState(),
@@ -145,7 +148,6 @@
 //   },
 //   extraReducers: (builder) => {
 //     builder
-//       // Register
 //       .addCase(registerUser.pending, (state) => {
 //         state.loading = true;
 //         state.error = null;
@@ -162,7 +164,6 @@
 //         state.error = payload;
 //       })
 
-//       // Login
 //       .addCase(loginUser.pending, (state) => {
 //         state.loading = true;
 //         state.error = null;
@@ -171,6 +172,7 @@
 //         state.loading = false;
 //         state.user = { email: payload.email, id: payload.userId };
 //         state.token = payload.token;
+//         state.profile = payload.profile;
 //         state.role = payload.role;
 //       })
 //       .addCase(loginUser.rejected, (state, { payload }) => {
@@ -178,7 +180,6 @@
 //         state.error = payload;
 //       })
 
-//       // Fetch Profile
 //       .addCase(fetchProfile.pending, (state) => {
 //         state.loading = true;
 //         state.error = null;
@@ -201,6 +202,7 @@
 // export const { logout, clearError } = authSlice.actions;
 // export default authSlice.reducer;
 
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { API_BASE_URL } from "./api";
 import axios from "axios";
@@ -213,18 +215,20 @@ export const registerUser = createAsyncThunk(
       const { data } = await axios.post(`${API_BASE_URL}/api/userRegistration`, userData);
 
       const token = data.token;
-      const userId = data.user?.id || null;
+      const userId = data._id || null;
+
       const profileData = {
         id: userId,
-        name: data.user?.name || userData.name || "Not provided",
-        email: data.user?.email || userData.email,
-        phoneNo: data.user?.phoneNo || userData.phoneNo || "Not provided",
+        name: data.name || userData.name || "Not provided",
+        email: data.email || userData.email,
+        phoneNo: data.phoneNo || userData.phoneNo || "Not provided",
       };
-      const role = data.user?.role || "user"; // Backend should return role
+
+      const role = data.role?.toLowerCase() || "admin";
 
       saveAuthData({ token, email: profileData.email, role, profileData, userId });
 
-      console.log("Registered User ID:", userId, "Email:", profileData.email);
+      console.log("Registered User ID:", userId, "Email:", profileData.email, "Role:", role);
 
       return { token, email: profileData.email, profile: profileData, role, userId };
     } catch (error) {
@@ -242,49 +246,29 @@ export const loginUser = createAsyncThunk(
       const { data } = await axios.post(`${API_BASE_URL}/login`, credentials);
 
       const token = data?.token;
-      const userId = data?.user?.id || null;
-      const role = data?.user?.role || (credentials.email === "admin@example.com" ? "admin" : "user");
+      const user = data?.user || {};
+      const userId = user?.id || user?._id || null;
 
       if (!token) {
         return rejectWithValue("Token missing in response. Check backend.");
       }
 
-      saveAuthData({ token, email: credentials.email, role, userId });
+      const email = credentials.email;
 
-      console.log("Logged in User ID:", userId, "Email:", credentials.email);
+      // Extract role from user.authorities or user.role
+      const role =
+        (Array.isArray(user.authorities) && user.authorities[0]?.authority?.toLowerCase()) ||
+        user?.role?.toLowerCase() ||
+        "admin";
 
-      return { token, email: credentials.email, role, userId };
-    } catch (error) {
-      console.error("Login error:", error.response?.data);
-      return rejectWithValue(error.response?.data?.message || "Invalid email or password");
-    }
-  }
-);
+      saveAuthData({ token, email, role, userId });
 
-// Async thunk for validating token
-export const validateToken = createAsyncThunk(
-  "auth/validateToken",
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { auth } = getState();
-      const token = auth.token;
-
-      if (!token) {
-        return rejectWithValue("No token found");
-      }
-
-      const { data } = await axios.get(`${API_BASE_URL}/api/validateToken`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const userId = data.user?.id || null;
-      const email = data.user?.email || auth.user?.email;
-      const role = data.user?.role || auth.role;
+      console.log("Logged in User ID:", userId, "Email:", email, "Role:", role);
 
       return { token, email, role, userId };
     } catch (error) {
-      console.error("Token validation error:", error.response?.data);
-      return rejectWithValue(error.response?.data?.message || "Invalid token");
+      console.error("Login error:", error.response?.data);
+      return rejectWithValue(error.response?.data?.message || "Invalid email or password");
     }
   }
 );
@@ -295,29 +279,39 @@ export const fetchProfile = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const { auth } = getState();
-      const token = auth.token;
+      const userEmail = auth.user?.email;
 
-      if (!token) {
+      if (!userEmail) {
         return rejectWithValue("User not logged in");
       }
 
-      const { data } = await axios.get(`${API_BASE_URL}/api/userRegistration/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { data } = await axios.get(`${API_BASE_URL}/api/userRegistration/get`);
+      const loggedInUser = data.find((user) => user.email === userEmail);
+
+      if (!loggedInUser) {
+        return rejectWithValue("User profile not found");
+      }
 
       const profileData = {
-        id: data.id,
-        name: data.name || "Not provided",
-        email: data.email,
-        phoneNo: data.phoneNo || "Not provided",
+        id: loggedInUser.id || loggedInUser._id || null,
+        name: loggedInUser.name || "Not provided",
+        email: loggedInUser.email,
+        phoneNo: loggedInUser.phoneNo || "Not provided",
       };
+
+      const role =
+        (Array.isArray(loggedInUser.authorities) &&
+          loggedInUser.authorities[0]?.authority?.toLowerCase()) ||
+        loggedInUser?.role?.toLowerCase() ||
+        "user";
 
       localStorage.setItem("authProfile", JSON.stringify(profileData));
       localStorage.setItem("authUserId", profileData.id);
+      localStorage.setItem("authRole", role);
 
-      console.log("Fetched User ID from profile:", profileData.id, "Email:", profileData.email);
+      console.log("Fetched User ID:", profileData.id, "Email:", profileData.email, "Role:", role);
 
-      return profileData;
+      return { ...profileData, role };
     } catch (error) {
       console.error("Fetch profile error:", error.response?.data);
       return rejectWithValue(error.response?.data?.message || "Failed to fetch profile");
@@ -325,7 +319,7 @@ export const fetchProfile = createAsyncThunk(
   }
 );
 
-// Helper: Save Auth Data to localStorage
+// Save Auth Data to localStorage
 const saveAuthData = ({ token, email, role, profileData, userId }) => {
   if (token) localStorage.setItem("authToken", token);
   if (email || userId) localStorage.setItem("authUser", JSON.stringify({ email, id: userId }));
@@ -334,7 +328,7 @@ const saveAuthData = ({ token, email, role, profileData, userId }) => {
   if (profileData) localStorage.setItem("authProfile", JSON.stringify(profileData));
 };
 
-// Helper: Load Initial State from localStorage
+// Load initial state from localStorage
 const loadInitialState = () => {
   const token = localStorage.getItem("authToken");
   const user = JSON.parse(localStorage.getItem("authUser")) || {};
@@ -343,13 +337,12 @@ const loadInitialState = () => {
   const userId = localStorage.getItem("authUserId");
 
   return {
-    user: user.email && userId ? { email: user.email, id: userId } : null,
+    user: user.email ? { email: user.email, id: userId } : null,
     token: token || null,
     profile: profile || null,
     role: role || null,
     loading: false,
     error: null,
-    isValidating: false,
   };
 };
 
@@ -366,7 +359,6 @@ const authSlice = createSlice({
       state.role = null;
       state.loading = false;
       state.error = null;
-      state.isValidating = false;
     },
     clearError: (state) => {
       state.error = null;
@@ -374,7 +366,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Register
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -391,7 +382,6 @@ const authSlice = createSlice({
         state.error = payload;
       })
 
-      // Login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -407,38 +397,24 @@ const authSlice = createSlice({
         state.error = payload;
       })
 
-      // Validate Token
-      .addCase(validateToken.pending, (state) => {
-        state.isValidating = true;
-        state.error = null;
-      })
-      .addCase(validateToken.fulfilled, (state, { payload }) => {
-        state.isValidating = false;
-        state.user = { email: payload.email, id: payload.userId };
-        state.token = payload.token;
-        state.role = payload.role;
-      })
-      .addCase(validateToken.rejected, (state, { payload }) => {
-        state.isValidating = false;
-        state.error = payload;
-        state.user = null;
-        state.token = null;
-        state.role = null;
-        state.profile = null;
-      })
-
-      // Fetch Profile
       .addCase(fetchProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchProfile.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.profile = payload;
+        state.profile = {
+          name: payload.name,
+          email: payload.email,
+          phoneNo: payload.phoneNo,
+          id: payload.id,
+        };
         state.user = {
           ...state.user,
           id: payload.id,
+          email: payload.email,
         };
+        state.role = payload.role || state.role;
       })
       .addCase(fetchProfile.rejected, (state, { payload }) => {
         state.loading = false;

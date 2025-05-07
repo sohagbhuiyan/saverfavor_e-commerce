@@ -60,16 +60,16 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route element={<Layout />}>
+        <Route path="/" element={<Layout />}>
           {/* Public Routes */}
           <Route index path="/" element={<Home />} />
           <Route path="registration" element={<Registration />} />
-          <Route path="login" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route path="all-categories" element={<AllCategories />} />
           <Route path="exclusive-offers" element={<ExclusiveOffer />} />
           <Route path="news-media" element={<NewsMedia />} />
           <Route path="contact" element={<Contact />} />
-          <Route path="product/:name" element={<ProductviewPage />} />
+          <Route path="product/:id" element={<ProductviewPage />} />
           <Route path="wishlist" element={<WishlistPage />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="compare" element={<ComparePage />} />
