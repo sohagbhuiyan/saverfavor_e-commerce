@@ -9,11 +9,10 @@ const ProfileView = () => {
   const { user, profile, loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (user?.email) {
+    if (user?.id) {
       dispatch(fetchProfile());
     }
-  }, [dispatch, user?.email]);
-
+  }, [dispatch, user?.id]);
   if (!user) {
     return (
       <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md text-center">

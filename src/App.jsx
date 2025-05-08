@@ -73,7 +73,7 @@ function App() {
           <Route path="wishlist" element={<WishlistPage />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="compare" element={<ComparePage />} />
-
+          <Route path="view-profile" element={<ProfileView />} />
           {/* Category Routes */}
           <Route path="notebook" element={<Notebook />} />
           <Route path="desktops" element={<Desktop />} />
@@ -99,7 +99,7 @@ function App() {
 
           {/* User Protected Routes */}
           <Route element={<UserProtectedRoute />}>
-            <Route path="view-profile" element={<ProfileView />} />
+      
             <Route path="profileedit" element={<ProfileEdit />} />
           </Route>
 
