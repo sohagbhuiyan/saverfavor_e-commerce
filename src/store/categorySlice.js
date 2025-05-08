@@ -8,15 +8,28 @@ export const fetchCategories = createAsyncThunk('categories/fetch', async () => 
   return response.data;
 });
 
-// Add Category
-export const addCategory = createAsyncThunk('categories/add', async (categoryName, { rejectWithValue }) => {
-  try {
-    const response = await api.post(`${API_BASE_URL}/api/catagories/save`, { name: categoryName }); // Using the API instance
-    return response.data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || 'Adding category failed');
+// Add Category with token and role
+export const addCategory = createAsyncThunk(
+  'categories/add',
+  async ({ name, token, role }, { rejectWithValue }) => {
+    try {
+      const response = await api.post(
+        `${API_BASE_URL}/api/catagories/save`,
+        { name },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Role: role, // optional, only if your backend checks this
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Adding category failed');
+    }
   }
-});
+);
+
 
 const categorySlice = createSlice({
   name: 'categories',
