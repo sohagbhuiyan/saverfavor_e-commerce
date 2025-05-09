@@ -35,7 +35,7 @@ const UserNavbar = () => {
 
             return {
               ...category,
-              path: `/collections?search=${encodeURIComponent(category.name)}`, // 👈 add this
+              path: `/collections?search=${encodeURIComponent(category.name)}`,
               subMenu: relatedProducts.map((product) => ({
                 name: product.name,
                 path: `/product/${product.title || product.id}`,

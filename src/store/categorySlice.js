@@ -19,7 +19,7 @@ export const addCategory = createAsyncThunk(
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            Role: role, // optional, only if your backend checks this
+            Role: role, 
           },
         }
       );

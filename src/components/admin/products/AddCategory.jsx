@@ -16,7 +16,7 @@ const AddCategory = () => {
   const [categoryName, setCategoryName] = useState('');
   const [categorySuccess, setCategorySuccess] = useState('');
   const [categoryError, setCategoryError] = useState('');
-
+  const [itemImage, setItemImage] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [itemName, setItemName] = useState('');
   const [itemSuccess, setItemSuccess] = useState('');
@@ -45,56 +45,66 @@ const AddCategory = () => {
       console.error('Error:', err);
     }
   };
+const handleItemSubmit = async (e) => {
+  e.preventDefault();
+  setItemSuccess('');
+  setItemError('');
 
-  const handleItemSubmit = async (e) => {
-    e.preventDefault();
-    setItemSuccess('');
-    setItemError('');
-  
-    try {
-      // Find the selected category from the categories array
-      const selectedCategory = categories.find(
-        (cat) => String(cat.id) === String(selectedCategoryId)
-      );
-  
-      if (!selectedCategory) {
-        setItemError('Selected category not found.');
-        return;
-      }
-  
-      const payload = {
-        name: itemName,
-        catagory: {
-          id: selectedCategory.id,
-          name: selectedCategory.name,
-        },
-      };
-  
-      const response = await api.post(
-        `${API_BASE_URL}/api/Product/save`,
-        payload,
-        {
-          headers: {
-            Role: userRole,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-  
-      if (response.data) {
-        setItemSuccess('Item (Submenu) added successfully!');
-        setItemName('');
-        setSelectedCategoryId('');
-      } else {
-        setItemError('Failed to add item.');
-      }
-    } catch (err) {
-      setItemError('Failed to add item.');
-      console.error('Error:', err.response?.data || err.message);
+  if (!selectedCategoryId || !itemName || !itemImage) {
+    setItemError('All fields including image are required.');
+    return;
+  }
+
+  try {
+    // Find the selected category object from the Redux state
+    const selectedCategory = categories.find(
+      (cat) => String(cat.id) === String(selectedCategoryId)
+    );
+
+    if (!selectedCategory) {
+      setItemError('Selected category not found.');
+      return;
     }
-  };
-  
-  
+
+    // Create FormData
+    const formData = new FormData();
+
+    // Build dynamic product JSON
+    const productData = {
+      name: itemName,
+      catagory: {
+        id: selectedCategory.id,
+        name: selectedCategory.name
+      }
+    };
+
+    formData.append(
+      "product",
+      new Blob([JSON.stringify(productData)], { type: "application/json" })
+    );
+
+    formData.append("image", itemImage);
+
+    const response = await api.post(`${API_BASE_URL}/api/Product/save`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.data) {
+      setItemSuccess('Item (Submenu) with image added successfully!');
+      setItemName('');
+      setSelectedCategoryId('');
+      setItemImage(null);
+    } else {
+      setItemError('Failed to add item.');
+    }
+  } catch (err) {
+    setItemError('Failed to add item.');
+    console.error('Error:', err.response?.data || err.message);
+  }
+};
+
   return (
     <div className="p-8 max-w-2xl mx-auto space-y-12">
       {userRole === 'admin' ? (
@@ -146,6 +156,13 @@ const AddCategory = () => {
                 placeholder="Enter Item (Submenu) Name"
                 value={itemName}
                 onChange={(e) => setItemName(e.target.value)}
+                required
+                className="border rounded w-full p-2"
+              />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setItemImage(e.target.files[0])}
                 required
                 className="border rounded w-full p-2"
               />
