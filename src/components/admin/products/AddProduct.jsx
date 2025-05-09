@@ -15,9 +15,11 @@ import { addProductDetails } from '../../../store/productSlice';
 import { API_BASE_URL } from '../../../store/api';
 
 const AddProduct = () => {
+
   const dispatch = useDispatch();
   const { loading, error, successMessage } = useSelector((state) => state.products);
-
+  const token = useSelector((state) => state.auth.token) || localStorage.getItem("authToken");
+console.log("token=", token)
   const [formState, setFormState] = useState({
     productid: '',
     name: '',
@@ -128,7 +130,7 @@ const AddProduct = () => {
         imagec,
       };
 
-      await dispatch(addProductDetails({ formDataObject })).unwrap();
+      await dispatch(addProductDetails({ formDataObject, token })).unwrap();
       alert('Product added successfully!');
     } catch (error) {
       console.error('Error adding product:', error);

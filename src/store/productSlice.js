@@ -22,7 +22,7 @@ export const fetchProducts = createAsyncThunk(
 // Async thunk to add product
 export const addProductDetails = createAsyncThunk(
   'products/addProductDetails',
-  async ({ formDataObject }, { rejectWithValue }) => {
+  async ({ formDataObject, token }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
       const jsonBlob = new Blob(
@@ -37,7 +37,12 @@ export const addProductDetails = createAsyncThunk(
       const response = await axios.post(
         `${API_BASE_URL}/api/ProductDetails/save`,
         formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
+        { 
+          headers: {
+          //  'Content-Type': 'multipart/form-data' ,
+           Authorization: `Bearer ${token}`,
+          } 
+        }
         
       );
       return { 
