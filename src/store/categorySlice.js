@@ -11,7 +11,7 @@ export const fetchCategories = createAsyncThunk('categories/fetch', async () => 
 // Add Category with token and role
 export const addCategory = createAsyncThunk(
   'categories/add',
-  async ({ name, token, role }, { rejectWithValue }) => {
+  async ({ name, token }, { rejectWithValue }) => {
     try {
       const response = await api.post(
         `${API_BASE_URL}/api/catagories/save`,
@@ -19,7 +19,7 @@ export const addCategory = createAsyncThunk(
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            Role: role, 
+        
           },
         }
       );

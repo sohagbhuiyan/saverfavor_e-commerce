@@ -2,13 +2,14 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Dashboard,
-  Inventory,
   AddBox,
   ViewList,
   ShoppingCart,
   People,
   Payment,
   Category,
+
+  BuildCircleRounded,
 } from "@mui/icons-material";
 
 const AdminSidebar = () => {
@@ -17,36 +18,20 @@ const AdminSidebar = () => {
   const isActive = (path) => location.pathname === `/` + path;
 
   return (
-    <div className="w-64 bg-gray-800 text-white min-h-screen p-4">
+    <div className="w-48 bg-gray-800 text-white min-h-screen p-2">
       <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
       <ul className="space-y-4">
-
         {/* Dashboard */}
-        <li>
-          <Link
-            to="/admin/dashboard"
-            className={`flex items-center p-2 rounded-md ${
-              isActive("admin/dashboard") ? "bg-gray-700 text-blue-400" : "hover:text-gray-400"
-            }`}
-          >
-            <Dashboard className="mr-2" /> Dashboard
-          </Link>
-        </li>
-
-        {/* Products */}
-        <li>
-          <div className="text-sm font-semibold text-gray-400 px-2">Products</div>
-          <ul className="pl-4 mt-1 space-y-2">
-            <li>
-              <Link
-                to="/admin/products"
-                className={`flex items-center p-2 rounded-md ${
-                  isActive("admin/products") ? "bg-gray-700 text-blue-400" : "hover:text-gray-400"
-                }`}
-              >
-                <Inventory className="mr-2" /> All Products
-              </Link>
-            </li>
+          <li>
+            <Link
+              to="/admin/dashboard"
+              className={`flex items-center p-2 rounded-md ${
+                isActive("admin/dashboard") ? "bg-gray-700 text-blue-400" : "hover:text-gray-400"
+              }`}
+            >
+              <Dashboard className="mr-2" /> Dashboard
+            </Link>
+          </li>
             <li>
               <Link
                 to="/admin/products/add-category"
@@ -83,9 +68,6 @@ const AdminSidebar = () => {
                 <AddBox className="mr-2" /> Add Product
               </Link>
             </li>
-          </ul>
-        </li>
-
         {/* Orders */}
         <li>
           <Link
@@ -119,6 +101,18 @@ const AdminSidebar = () => {
             }`}
           >
             <Payment className="mr-2" /> Payments
+          </Link>
+        </li>
+        
+        {/* PC Builder */}
+        <li>
+          <Link
+            to="/admin/Pc-Builder"
+            className={`flex items-center p-2 rounded-md ${
+              isActive("admin/Pc-Builder") ? "bg-gray-700 text-blue-400" : "hover:text-gray-400"
+            }`}
+          >
+            <BuildCircleRounded className="mr-2" /> PC Builder
           </Link>
         </li>
       </ul>

@@ -44,7 +44,6 @@ import ProfileView from './components/user/registration/profile/ProfileView';
 
 // Admin Pages
 import Dashboard from './components/admin/Dashboard';
-import ProductManagement from './components/admin/ProductManagement';
 import OrderManagement from './components/admin/OrderManagement';
 import CustomerManagement from './components/admin/CustomerManagement';
 import ViewProduct from './components/admin/ViewProduct';
@@ -55,6 +54,8 @@ import PaymentManagement from './components/admin/PaymentManagement';
 // Protected Routes
 import UserProtectedRoute from './components/Protected/UserProtectedRoute';
 import AdminProtectedRoute from './components/Protected/AdminProtectedRoute';
+import Collections from './components/user/body/collection/Collections';
+import PCBuilder from './components/admin/PCBuilder';
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           {/* Public Routes */}
           <Route index path="/" element={<Home />} />
+          <Route path="/collections" element={<Collections />} />
           <Route path="registration" element={<Registration />} />
           <Route path="/login" element={<Login />} />
           <Route path="all-categories" element={<AllCategories />} />
@@ -105,14 +107,14 @@ function App() {
 
           {/* Admin Protected Routes */}
           <Route element={<AdminProtectedRoute />}>
-            <Route path="admin/dashboard" element={<Dashboard />} />
-            <Route path="admin/products" element={<ProductManagement />} />
+            <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="admin/products/add-category" element={<AddCategory />} />
             <Route path="admin/products/view-product" element={<ViewProduct />} />
             <Route path="admin/products/add-product" element={<AddProduct />} />
             <Route path="admin/orders" element={<OrderManagement />} />
             <Route path="admin/customers" element={<CustomerManagement />} />
             <Route path="admin/payments" element={<PaymentManagement />} />
+            <Route path="admin/Pc-Builder" element={<PCBuilder />} />
           </Route>
 
           {/* Fallback Route */}

@@ -28,22 +28,22 @@ const UserNavbar = () => {
   
         if (Array.isArray(categories) && Array.isArray(products)) {
 
-          const categoriesWithProducts = categories.map((category) => {
-            const relatedProducts = products.filter(
-              (product) => product.catagory?.id === category.id
-            );
-
-            return {
-              ...category,
-              path: `/collections?search=${encodeURIComponent(category.name)}`,
-              subMenu: relatedProducts.map((product) => ({
-                name: product.name,
-                path: `/product/${product.title || product.id}`,
-              })),
-            };
-          });
-  
-          setCategoriesWithSub(categoriesWithProducts);
+       // In UserNavbar, inside fetchCategoriesAndProducts
+       const categoriesWithProducts = categories.map((category) => {
+        const relatedProducts = products.filter(
+          (product) => product.catagory?.id === category.id
+        );
+      
+        return {
+          ...category,
+          path: `/collections?category=${encodeURIComponent(category.name)}`,
+          subMenu: relatedProducts.map((product) => ({
+            name: product.name,
+            path: `/collections?category=${encodeURIComponent(category.name)}&product=${encodeURIComponent(product.product?.name || product.name)}`,
+          })),
+        };
+      });
+      setCategoriesWithSub(categoriesWithProducts);
           // console.log("Fetched Categories With Submenus:", categoriesWithProducts);
         } else {
           console.error("API did not return arrays:", { categories, products });
@@ -55,6 +55,7 @@ const UserNavbar = () => {
   
     fetchCategoriesAndProducts();
   }, []);
+  
   const toggleDropdown = (dropdownName) => {
     setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
   };

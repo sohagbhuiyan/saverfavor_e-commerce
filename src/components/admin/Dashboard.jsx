@@ -1,191 +1,158 @@
-import React from "react";
-import { FiTrendingUp, FiShoppingCart, FiUsers, FiDollarSign, FiPackage } from "react-icons/fi";
-// import { Bar, Line } from "react-chartjs-2";
-// import {
-//   Chart as ChartJS,
-//   CategoryScale,
-//   LinearScale,
-//   BarElement,
-//   LineElement,
-//   PointElement,
-//   Title,
-//   Tooltip,
-//   Legend
-// } from 'chart.js';
-
-// ChartJS.register(
-//   CategoryScale,
-//   LinearScale,
-//   BarElement,
-//   LineElement,
-//   PointElement,
-//   Title,
-//   Tooltip,
-//   Legend
-// );
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProfile } from "../../store/authSlice";
+import { fetchOrders } from "../../store/orderSlice";
+import { fetchProducts } from "../../store/productSlice";
+import {
+  Box,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
+import { People, ShoppingCart, Inventory, Storefront } from "@mui/icons-material";
 
 const Dashboard = () => {
-  // Sample data for charts
-  // const salesData = {
-  //   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-  //   datasets: [
-  //     {
-  //       label: 'Monthly Sales ($)',
-  //       data: [5000, 8000, 12000, 9000, 15000, 18000],
-  //       backgroundColor: 'rgba(99, 102, 241, 0.2)',
-  //       borderColor: 'rgba(99, 102, 241, 1)',
-  //       borderWidth: 2,
-  //       tension: 0.4,
-  //     },
-  //   ],
-  // };
+  const dispatch = useDispatch();
+  const { profile, loading: authLoading, error: authError } = useSelector((state) => state.auth);
+  const { orders, loading: orderLoading, error: orderError } = useSelector((state) => state.order);
+  const { products, loading: productLoading, error: productError } = useSelector((state) => state.products);
 
-  // const ordersData = {
-  //   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-  //   datasets: [
-  //     {
-  //       label: 'Monthly Orders',
-  //       data: [120, 180, 210, 190, 250, 300],
-  //       backgroundColor: 'rgba(16, 185, 129, 0.2)',
-  //       borderColor: 'rgba(16, 185, 129, 1)',
-  //       borderWidth: 2,
-  //       tension: 0.4,
-  //     },
-  //   ],
-  // };
+  useEffect(() => {
+    dispatch(fetchProfile()); // Fetches all users
+    dispatch(fetchOrders()); // Fetches all orders
+    dispatch(fetchProducts()); // Fetches all products
+  }, [dispatch]);
+
+  // Calculate metrics
+  const totalUsers = Array.isArray(profile) ? profile.length : 0;
+  const activeUsers = orders
+    ? [...new Set(orders.map((order) => order.user?.email || order.user?.id))].length
+    : 0;
+  const totalOrders = orders ? orders.length : 0;
+  const totalProducts = products ? products.length : 0;
+
+  // Get recent orders (last 5)
+  const recentOrders = orders ? orders.slice(0, 5) : [];
+
+  // Loading and error states
+  const isLoading = authLoading || orderLoading || productLoading;
+  const error = authError || orderError || productError;
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Dashboard Overview</h1>
-      
-      {/* Key Metrics */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Sales</p>
-              <p className="text-2xl font-semibold mt-1">$24,345</p>
-            </div>
-            <div className="p-3 rounded-lg bg-indigo-50 text-indigo-600">
-              <FiDollarSign className="h-5 w-5" />
-            </div>
-          </div>
-          <div className="mt-2 text-sm text-green-600 flex items-center">
-            <FiTrendingUp className="mr-1" /> 12.5% from last month
-          </div>
-        </div>
-        
-        <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Orders</p>
-              <p className="text-2xl font-semibold mt-1">1,245</p>
-            </div>
-            <div className="p-3 rounded-lg bg-green-50 text-green-600">
-              <FiShoppingCart className="h-5 w-5" />
-            </div>
-          </div>
-          <div className="mt-2 text-sm text-green-600 flex items-center">
-            <FiTrendingUp className="mr-1" /> 8.3% from last month
-          </div>
-        </div>
-        
-        <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Customers</p>
-              <p className="text-2xl font-semibold mt-1">586</p>
-            </div>
-            <div className="p-3 rounded-lg bg-blue-50 text-blue-600">
-              <FiUsers className="h-5 w-5" />
-            </div>
-          </div>
-          <div className="mt-2 text-sm text-green-600 flex items-center">
-            <FiTrendingUp className="mr-1" /> 5.2% from last month
-          </div>
-        </div>
-        
-        <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Products</p>
-              <p className="text-2xl font-semibold mt-1">128</p>
-            </div>
-            <div className="p-3 rounded-lg bg-purple-50 text-purple-600">
-              <FiPackage className="h-5 w-5" />
-            </div>
-          </div>
-          <div className="mt-2 text-sm text-green-600 flex items-center">
-            <FiTrendingUp className="mr-1" /> 3 new this month
-          </div>
-        </div> */}
-      {/* </div> */}
-      
-      {/* Charts Section
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-          <h2 className="text-lg font-semibold mb-4">Sales Performance</h2>
-          <div className="h-72">
-            <Bar 
-              data={salesData} 
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false
-                  },
-                },
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    grid: {
-                      drawBorder: false
-                    }
-                  },
-                  x: {
-                    grid: {
-                      display: false
-                    }
-                  }
-                }
-              }} 
-            />
-          </div>
-        </div>
-        
-        <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-          <h2 className="text-lg font-semibold mb-4">Order Trends</h2>
-          <div className="h-72">
-            <Line 
-              data={ordersData} 
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false
-                  },
-                },
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    grid: {
-                      drawBorder: false
-                    }
-                  },
-                  x: {
-                    grid: {
-                      display: false
-                    }
-                  }
-                }
-              }} 
-            />
-          </div>
-        </div>
-      </div> */}
-    </div>
+    <Box className="p-6 bg-gray-50 min-h-screen">
+      <Typography variant="h4" fontWeight={600} sx={{ mb: 4 }}>
+        Dashboard 
+      </Typography>
+
+      {isLoading && (
+        <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+          <CircularProgress />
+        </Box>
+      )}
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 4 }}>
+          Error: {error}
+        </Alert>
+      )}
+
+      {!isLoading && !error && (
+        <>
+          {/* Metrics Cards */}
+          <Grid container spacing={3} sx={{ mb: 6 }}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ display: "flex", alignItems: "center", p: 1 }}>
+                <People sx={{ fontSize: 30, color: "primary.main", mr: 1 }} />
+                <CardContent>
+                  <Typography variant="h6" fontWeight={600}>
+                    Total Users
+                  </Typography>
+                  <Typography variant="h4" ml={3}>{totalUsers}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ display: "flex", alignItems: "center", p: 1 }}>
+                <ShoppingCart sx={{ fontSize: 30, color: "primary.main", mr: 1 }} />
+                <CardContent>
+                  <Typography variant="h6" fontWeight={600}>
+                    Active Users
+                  </Typography>
+                  <Typography variant="h4"  ml={3}>{activeUsers}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ display: "flex", alignItems: "center", p:1 }}>
+                <Inventory sx={{ fontSize: 30, color: "primary.main", mr: 1 }} />
+                <CardContent>
+                  <Typography variant="h6" fontWeight={600}>
+                    Total Products
+                  </Typography>
+                  <Typography variant="h4"  ml={3}>{totalProducts}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={5} md={3}>
+              <Card sx={{ display: "flex", alignItems: "center", p: 1 }}>
+                <Storefront sx={{ fontSize: 30, color: "primary.main", mr: 1 }} />
+                <CardContent>
+                  <Typography variant="h6" fontWeight={600}>
+                    Total Orders
+                  </Typography>
+                  <Typography variant="h4"  ml={3}>{totalOrders}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+
+          {/* Recent Orders Table */}
+          <Typography variant="h5" fontWeight={600} sx={{ mb: 2 }}>
+            Recent Orders
+          </Typography>
+          {recentOrders.length === 0 ? (
+            <Typography>No orders available.</Typography>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="recent orders table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: "bold" }}>Order ID</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>User</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>Product</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>Quantity</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>Price</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {recentOrders.map((order) => (
+                    <TableRow key={order.id || order._id}>
+                      <TableCell>{order.id || order._id || "N/A"}</TableCell>
+                      <TableCell>{order.profile?.email || order.profile?.name || "N/A"}</TableCell>
+                      <TableCell>{order.productDetails?.name || "N/A"}</TableCell>
+                      <TableCell>{order.quantity || "N/A"}</TableCell>
+                      <TableCell>${(order.price || 0).toFixed(2)}</TableCell>
+                      <TableCell>{order.status || "Pending"}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </>
+      )}
+    </Box>
   );
 };
 

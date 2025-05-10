@@ -6,6 +6,7 @@ import orderReducer from "./orderSlice";
 import wishlistReducer from "./wishlistSlice";
 import compareReducer from "./compareSlice";
 import categoryReducer from "./categorySlice";
+import pcBuilderReducer from "./pcbuilderSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     wishlist: wishlistReducer,
     compare: compareReducer,
     categories: categoryReducer,
+    pcBuilder: pcBuilderReducer,
   },
 });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FiSearch, FiFilter, FiPrinter, FiEye } from "react-icons/fi";
+import { FiSearch, FiFilter, FiPrinter, FiEye, FiShoppingCart } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders } from "../../store/orderSlice";
 
@@ -10,7 +10,7 @@ const OrderManagement = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const orderState = useSelector((state) => state.order) || {};
   const { orders = [], loading = false, error = null } = orderState;
-  
+
   useEffect(() => {
     dispatch(fetchOrders());
   }, [dispatch]);
@@ -18,8 +18,13 @@ const OrderManagement = () => {
   const filteredOrders = orders.filter((order) => {
     const searchLower = searchTerm.toLowerCase();
     return (
-      (order.productDetails?.productid?.toLowerCase().includes(searchLower) ||
-        order.productDetails?.name?.toLowerCase().includes(searchLower)) &&
+      // Search by Order ID, Category, Customer (name or email), and Product (name or product ID)
+      (order.id?.toString().toLowerCase().includes(searchLower) ||
+        order.productDetails?.name?.toLowerCase().includes(searchLower) ||
+        order.productDetails?.productid?.toLowerCase().includes(searchLower) ||
+        order.productDetails?.catagory?.name?.toLowerCase().includes(searchLower) ||
+        order.user?.name?.toLowerCase().includes(searchLower) ||
+        order.user?.email?.toLowerCase().includes(searchLower)) &&
       (statusFilter === "all" || order.status === statusFilter)
     );
   });
@@ -27,7 +32,7 @@ const OrderManagement = () => {
   const handleStatusChange = (orderId, newStatus) => {
     // Assuming you have an async thunk to update order status
     // dispatch(updateOrderStatus({ orderId, status: newStatus }))
-    dispatch(({ orderId, status: newStatus }))
+    dispatch({ type: "order/updateOrderStatus", payload: { orderId, status: newStatus } }) // Placeholder; replace with actual action
       .unwrap()
       .then(() => {
         dispatch(fetchOrders()); // Refresh the orders list
@@ -61,6 +66,19 @@ const OrderManagement = () => {
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Order Management</h1>
 
+      {/* Total Orders Card */}
+      <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100 mb-6 w-full md:w-1/3">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-500">Total Orders</p>
+            <p className="text-2xl font-semibold mt-1">{orders.length}</p>
+          </div>
+          <div className="p-3 rounded-lg bg-blue-50 text-blue-600">
+            <FiShoppingCart className="h-5 w-5" />
+          </div>
+        </div>
+      </div>
+
       {/* Search and Filter Section */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="relative flex-1">
@@ -69,8 +87,8 @@ const OrderManagement = () => {
           </div>
           <input
             type="text"
-            className="w-full pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-            placeholder="Search by Product ID or Name..."
+            className="w-xl pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+            placeholder="Search by Order ID, Category, Customer, or Product..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -95,24 +113,24 @@ const OrderManagement = () => {
 
       {/* Orders Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Qty</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Qty</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {filteredOrders.map((order) => (
               <tr key={order.id}>
-                <td className="px-6 py-4">
+                <td className="px-4 py-4">
                   <button
                     onClick={() => setSelectedOrder(order)}
                     className="text-blue-600 hover:underline"
@@ -120,7 +138,7 @@ const OrderManagement = () => {
                     #{order.id}
                   </button>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-4">
                   <div className="text-sm font-medium text-gray-900">
                     {order.user?.name || 'Guest'}
                   </div>
@@ -133,19 +151,19 @@ const OrderManagement = () => {
                     </div>
                   )}
                 </td>
-                <td className="px-6 py-4">{order.productDetails?.name}</td>
-                <td className="px-6 py-4">{order.productDetails?.catagory?.name || 'N/A'}</td>
-                <td className="px-6 py-4">{order.quantity}</td>
-                <td className="px-6 py-4">৳{order.productDetails?.specialprice?.toLocaleString()}</td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-4">{order.productDetails?.name}</td>
+                <td className="px-4 py-4">{order.productDetails?.catagory?.name || 'N/A'}</td>
+                <td className="px-4 py-4">{order.quantity}</td>
+                <td className="px-4 py-4">৳{order.productDetails?.specialprice?.toLocaleString()}</td>
+                <td className="px-4 py-4">
                   ৳{(order.quantity * order.productDetails?.specialprice)?.toLocaleString()}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-4">
                   <span className={`px-2 py-1 rounded text-sm ${getStatusColor(order.status)}`}>
                     {order.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-4 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
                     <button
                       onClick={() => setSelectedOrder(order)}
@@ -182,7 +200,7 @@ const OrderManagement = () => {
                 onClick={() => setSelectedOrder(null)}
                 className="text-gray-500 hover:text-gray-700 text-2xl"
               >
-                &times;
+                ×
               </button>
             </div>
 
