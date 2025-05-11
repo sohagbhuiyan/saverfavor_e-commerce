@@ -111,18 +111,17 @@ const CollectionCard = ({
     <>
       <Link to={`/product/${id}`} className="block" onClick={handleProductClick}>
         <div
-          className={`border border-gray-300 rounded-lg p-3 shadow-md hover:shadow-xl transition-all duration-300 bg-white relative ${isHovered ? "md:scale-105" : "scale-100"}`}
+          className={`border border-gray-400 rounded-lg p-3 shadow-md hover:shadow-xl transition-all duration-400 bg-white relative ${isHovered ? "md:scale-105" : "scale-100"}`}
           onMouseEnter={() => !isMobile && setIsHovered(true)}
           onMouseLeave={() => !isMobile && setIsHovered(false)}
         >
           <div className="relative p-1 md:p-2 overflow-hidden rounded-md">
-          <img
-            src={imagea}
-            alt={name}
-            className="w-full h-40 md:h-48 object-cover rounded-md transition-transform duration-300"
-            loading="lazy"
-
-    />
+            <img
+              src={imagea}
+              alt={name}
+              className={`w-full h-40 md:h-48 object-cover rounded-md transition-transform duration-600 ${isHovered ? "scale-118" : "scale-100"}`}
+              loading="lazy"
+            />
             {(isHovered || (isMobile && showMobileIcons)) && (
               <div
                 ref={iconsRef}
@@ -152,9 +151,9 @@ const CollectionCard = ({
 
           <div className="mt-2 text-center space-y-1">
             <h3 className="text-sm font-semibold text-gray-700 truncate">{name}</h3>
-            <p className="text-xs text-gray-600 line-clamp-2 min-h-[2 rem]">{category}</p>
+            <p className="text-xs text-gray-600 line-clamp-2 min-h-[2rem]">{category}</p>
             <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem]">{title}</p>
-            <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem] ">{product}</p>
+            <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem]">{product}</p>
             <div className="flex flex-col items-center justify-center">
               <span className="text-sm font-bold text-gray-900">{formatPrice(currentPrice)}</span>
               {hasDiscount && (
@@ -183,7 +182,7 @@ const CollectionCard = ({
               <div className="grid md:grid-cols-2 gap-6 mt-4">
                 <div className="space-y-3">
                   <img
-                    src={imagea} 
+                    src={imagea}
                     alt={name}
                     className="w-full h-64 object-contain rounded-lg"
                   />

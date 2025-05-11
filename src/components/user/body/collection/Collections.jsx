@@ -52,7 +52,7 @@ const Collections = () => {
   if (error) return <div className="text-center text-red-500 py-4">Error: {error}</div>;
 
   return (
-    <div className="py-1 px-3 md:px-10">
+    <div className="py-5 px-3 md:px-10">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 md:gap-6 lg:gap-8 mb-4">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (

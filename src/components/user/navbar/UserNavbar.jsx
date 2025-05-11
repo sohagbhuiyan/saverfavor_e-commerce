@@ -1,61 +1,34 @@
-import { useState, useEffect } from "react";
-import { logo } from "../../../Utils/images";
-import TopBar from "./TopBar";
-import NavIcons from "./NavIcons";
-import DesktopMenu from "./DesktopMenu";
-import MobileMenu from "./MobileMenu";
-import SearchBar from "./SearchBar";
-import { FaBars, FaTimes } from "react-icons/fa";
-import api, { API_BASE_URL } from "../../../store/api";
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { logo } from '../../../Utils/images';
+import TopBar from './TopBar';
+import NavIcons from './NavIcons';
+import DesktopMenu from './DesktopMenu';
+import MobileMenu from './MobileMenu';
+import SearchBar from './SearchBar';
+import { FaBars, FaTimes } from 'react-icons/fa';
+import { fetchCategoriesAndProducts } from '../../../store/categorySlice';
 
 const UserNavbar = () => {
+  const dispatch = useDispatch();
+  const { categoriesWithSub, error } = useSelector((state) => state.categories);
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-  const [categoriesWithSub, setCategoriesWithSub] = useState([]);
-  useEffect(() => {
-    const fetchCategoriesAndProducts = async () => {
-      try {
-        const [catRes, prodRes] = await Promise.all([
-          api.get(`${API_BASE_URL}/api/catagories/get`),   // 👈 uses baseURL
-          api.get(`${API_BASE_URL}/api/Product/getall`),
-        ]);
-  
-        const categories = catRes.data;
-        const products = prodRes.data;
-  
-        if (Array.isArray(categories) && Array.isArray(products)) {
 
-       // In UserNavbar, inside fetchCategoriesAndProducts
-       const categoriesWithProducts = categories.map((category) => {
-        const relatedProducts = products.filter(
-          (product) => product.catagory?.id === category.id
-        );
-      
-        return {
-          ...category,
-          path: `/collections?category=${encodeURIComponent(category.name)}`,
-          subMenu: relatedProducts.map((product) => ({
-            name: product.name,
-            path: `/collections?category=${encodeURIComponent(category.name)}&product=${encodeURIComponent(product.product?.name || product.name)}`,
-          })),
-        };
-      });
-      setCategoriesWithSub(categoriesWithProducts);
-          // console.log("Fetched Categories With Submenus:", categoriesWithProducts);
-        } else {
-          console.error("API did not return arrays:", { categories, products });
-        }
-      } catch (error) {
-        console.error("Error fetching categories or products:", error);
-      }
-    };
-  
-    fetchCategoriesAndProducts();
-  }, []);
-  
+  useEffect(() => {
+    dispatch(fetchCategoriesAndProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      console.error('Error fetching categories or products:', error);
+    }
+  }, [error]);
+
   const toggleDropdown = (dropdownName) => {
     setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
   };
@@ -87,7 +60,7 @@ const UserNavbar = () => {
               src={logo}
               className="h-6 md:h-9.5 cursor-pointer"
               onClick={() => {
-                window.location.href = "/";
+                window.location.href = '/';
                 closeAllDropdowns();
               }}
               alt="Techno shop"

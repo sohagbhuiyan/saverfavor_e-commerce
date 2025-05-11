@@ -1,18 +1,15 @@
-
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addCategory, fetchCategories } from '../../../store/categorySlice';
-import api, { API_BASE_URL } from '../../../store/api';
+import { addCategory, addItem, fetchCategories } from '../../../store/categorySlice';
 
 const AddCategory = () => {
-  
   const dispatch = useDispatch();
   const { items: categories } = useSelector((state) => state.categories);
 
-  const token = useSelector((state) => state.auth.token) || localStorage.getItem("authToken");
-  const userRole = useSelector((state) => state.auth.role) || localStorage.getItem("authRole");
-  console.log("Role --> ",userRole,"\nToken -->",token)
-  
+  const token = useSelector((state) => state.auth.token) || localStorage.getItem('authToken');
+  const userRole = useSelector((state) => state.auth.role) || localStorage.getItem('authRole');
+  console.log('Role --> ', userRole, '\nToken -->', token);
+
   const [categoryName, setCategoryName] = useState('');
   const [categorySuccess, setCategorySuccess] = useState('');
   const [categoryError, setCategoryError] = useState('');
@@ -30,7 +27,7 @@ const AddCategory = () => {
     e.preventDefault();
     setCategorySuccess('');
     setCategoryError('');
-  
+
     try {
       const resultAction = await dispatch(addCategory({ name: categoryName, token }));
       if (resultAction.meta.requestStatus === 'fulfilled') {
@@ -45,65 +42,41 @@ const AddCategory = () => {
       console.error('Error:', err);
     }
   };
-const handleItemSubmit = async (e) => {
-  e.preventDefault();
-  setItemSuccess('');
-  setItemError('');
 
-  if (!selectedCategoryId || !itemName || !itemImage) {
-    setItemError('All fields including image are required.');
-    return;
-  }
+  const handleItemSubmit = async (e) => {
+    e.preventDefault();
+    setItemSuccess('');
+    setItemError('');
 
-  try {
-    // Find the selected category object from the Redux state
-    const selectedCategory = categories.find(
-      (cat) => String(cat.id) === String(selectedCategoryId)
-    );
-
-    if (!selectedCategory) {
-      setItemError('Selected category not found.');
+    if (!selectedCategoryId || !itemName || !itemImage) {
+      setItemError('All fields including image are required.');
       return;
     }
 
-    // Create FormData
-    const formData = new FormData();
+    try {
+      const resultAction = await dispatch(
+        addItem({
+          itemName,
+          categoryId: selectedCategoryId,
+          itemImage,
+          token,
+          categories,
+        })
+      );
 
-    // Build dynamic product JSON
-    const productData = {
-      name: itemName,
-      catagory: {
-        id: selectedCategory.id,
-        name: selectedCategory.name
+      if (resultAction.meta.requestStatus === 'fulfilled') {
+        setItemSuccess('Item (Submenu) with image added successfully!');
+        setItemName('');
+        setSelectedCategoryId('');
+        setItemImage(null);
+      } else {
+        setItemError(resultAction.payload || 'Failed to add item.');
       }
-    };
-
-    formData.append(
-      "product",
-      new Blob([JSON.stringify(productData)], { type: "application/json" })
-    );
-
-    formData.append("image", itemImage);
-
-    const response = await api.post(`${API_BASE_URL}/api/Product/save`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.data) {
-      setItemSuccess('Item (Submenu) with image added successfully!');
-      setItemName('');
-      setSelectedCategoryId('');
-      setItemImage(null);
-    } else {
+    } catch (err) {
       setItemError('Failed to add item.');
+      console.error('Error:', err);
     }
-  } catch (err) {
-    setItemError('Failed to add item.');
-    console.error('Error:', err.response?.data || err.message);
-  }
-};
+  };
 
   return (
     <div className="p-8 max-w-2xl mx-auto space-y-12">
