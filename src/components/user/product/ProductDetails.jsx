@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom"; // if using route like /product/:id
+import { useParams } from "react-router-dom";
 import { fetchProductById } from "../../../store/productSlice";
 import QuestionAnswer from "./QuestionAnswer";
 import ReviewForm from "./ReviewForm";
 
 const ProductDetails = () => {
-  const { id } = useParams(); // Product ID from route
+  const { id } = useParams(); 
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("specifications");
 
@@ -60,7 +60,10 @@ const ProductDetails = () => {
       </div>
 
       {/* Product Specifications */}
-      <section ref={sectionsRef.specifications} className="px-6 py-6">
+      <section ref={sectionsRef.specifications} className=" py-6">
+      <h2 className="text-md md:text-xl font-bold bg-gray-300 w-fit p-1">
+      Specifications
+        </h2>
         {currentProduct ? (
           <div className="text-sm md:text-lg space-y-1">
             <p><strong>Brand:</strong> {currentProduct.catagory?.name || "N/A"}</p>

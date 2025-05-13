@@ -1,264 +1,6 @@
-// import React, { useEffect, useState } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { fetchPCBuilder, addPCBuilder } from '../../store/pcbuilderSlice';
-// import api, { API_BASE_URL } from '../../store/api';
-
-// const PCBuilder = () => {
-//   const dispatch = useDispatch();
-//   const { items: pcbuilders } = useSelector((state) => state.pcBuilder);
-//   const token = useSelector((state) => state.auth.token) || localStorage.getItem("authToken");
-//   const userRole = useSelector((state) => state.auth.role) || localStorage.getItem("authRole");
-
-//   const [componentName, setComponentName] = useState('');
-//   const [componentSuccess, setComponentSuccess] = useState('');
-//   const [componentError, setComponentError] = useState('');
-
-//   const [selectedComponentId, setSelectedComponentId] = useState('');
-//   const [partName, setPartName] = useState('');
-//   const [partDescription, setPartDescription] = useState('');
-//   const [partPerformance, setPartPerformance] = useState('');
-//   const [partAbility, setPartAbility] = useState('');
-//   const [partRegularPrice, setPartRegularPrice] = useState('');
-//   const [partDiscountPrice, setPartDiscountPrice] = useState('');
-//   const [partQuantity, setPartQuantity] = useState('');
-//   const [partImage, setPartImage] = useState(null);
-//   const [partSuccess, setPartSuccess] = useState('');
-//   const [partError, setPartError] = useState('');
-
-//   useEffect(() => {
-//     dispatch(fetchPCBuilder());
-//   }, [dispatch]);
-
-//   const handleComponentSubmit = async (e) => {
-//     e.preventDefault();
-//     setComponentSuccess('');
-//     setComponentError('');
-
-//     try {
-//       const resultAction = await dispatch(addPCBuilder({ name: componentName, token }));
-//       if (resultAction.meta.requestStatus === 'fulfilled') {
-//         setComponentSuccess('PC Component added successfully!');
-//         setComponentName('');
-//         dispatch(fetchPCBuilder());
-//       } else {
-//         setComponentError('Failed to add component.');
-//       }
-//     } catch (err) {
-//       setComponentError('Error adding component.',err);
-//     }
-//   };
-
-//   const handlePartSubmit = async (e) => {
-//     e.preventDefault();
-//     setPartSuccess('');
-//     setPartError('');
-
-//     if (
-//       !selectedComponentId ||
-//       !partName ||
-//       !partDescription ||
-//       !partPerformance ||
-//       !partAbility ||
-//       !partRegularPrice ||
-//       !partDiscountPrice ||
-//       !partQuantity ||
-//       !partImage
-//     ) {
-//       setPartError('All fields including image are required.');
-//       return;
-//     }
-
-//     try {
-//       const selectedPCBuilder = pcbuilders.find(
-//         (comp) => String(comp.id) === String(selectedComponentId)
-//       );
-
-//       if (!selectedPCBuilder) {
-//         setPartError('Selected component not found.');
-//         return;
-//       }
-
-//       const formData = new FormData();
-
-//       const partData = {
-//         name: partName,
-//         description: partDescription,
-//         performance: partPerformance,
-//         ability: partAbility,
-//         regular_price: partRegularPrice,
-//         discount_price: partDiscountPrice,
-//         quantity: partQuantity,
-//         pcforpartadd: {
-//           id: selectedPCBuilder.id,
-//           name: selectedPCBuilder.name,
-//         },
-//       };
-
-//       formData.append(
-//         'pcpartadd',
-//         new Blob([JSON.stringify(partData)], { type: 'application/json' })
-//       );
-//       formData.append('image', partImage);
-
-//       const response = await api.post(`${API_BASE_URL}/api/pcparts/save`, formData, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
-
-//       if (response.data) {
-//         setPartSuccess('PC Part added successfully!');
-//         setPartName('');
-//         setPartDescription('');
-//         setPartPerformance('');
-//         setPartAbility('');
-//         setPartRegularPrice('');
-//         setPartDiscountPrice('');
-//         setPartQuantity('');
-//         setPartImage(null);
-//         setSelectedComponentId('');
-//       } else {
-//         setPartError('Failed to add part.');
-//       }
-//     } catch (err) {
-//       setPartError('Error adding part.');
-//       console.error(err);
-//     }
-//   };
-
-//   return (
-//     <div className="p-8 max-w-3xl mx-auto space-y-12">
-//       {userRole === 'admin' ? (
-//         <>
-//           {/* Add Component Form */}
-//           <div>
-//             <h2 className="text-2xl font-bold mb-6">Add PC Builder Component</h2>
-//             <form onSubmit={handleComponentSubmit} className="space-y-4">
-//               <input
-//                 type="text"
-//                 placeholder="Component Name (e.g. Motherboard)"
-//                 value={componentName}
-//                 onChange={(e) => setComponentName(e.target.value)}
-//                 required
-//                 className="border rounded w-full p-2"
-//               />
-//               <button
-//                 type="submit"
-//                 className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-//               >
-//                 Add Component
-//               </button>
-//             </form>
-//             {componentSuccess && <p className="text-green-600 mt-4">{componentSuccess}</p>}
-//             {componentError && <p className="text-red-600 mt-4">{componentError}</p>}
-//           </div>
-
-//           {/* Add PC Part Form */}
-//           <div>
-//             <h2 className="text-2xl font-bold mb-6">Add PC Part under Component</h2>
-//             <form onSubmit={handlePartSubmit} className="space-y-4">
-//               <select
-//                 value={selectedComponentId}
-//                 onChange={(e) => setSelectedComponentId(e.target.value)}
-//                 required
-//                 className="border rounded w-full p-2"
-//               >
-//                 <option value="">Select Component</option>
-//                 {pcbuilders?.map((component) => (
-//                   <option key={component.id} value={component.id}>
-//                     {component.name}
-//                   </option>
-//                 ))}
-//               </select>
-
-//               <input
-//                 type="text"
-//                 placeholder="Part Name"
-//                 value={partName}
-//                 onChange={(e) => setPartName(e.target.value)}
-//                 required
-//                 className="border rounded w-full p-2"
-//               />
-//               <input
-//                 type="text"
-//                 placeholder="Description"
-//                 value={partDescription}
-//                 onChange={(e) => setPartDescription(e.target.value)}
-//                 required
-//                 className="border rounded w-full p-2"
-//               />
-//               <input
-//                 type="text"
-//                 placeholder="Performance"
-//                 value={partPerformance}
-//                 onChange={(e) => setPartPerformance(e.target.value)}
-//                 required
-//                 className="border rounded w-full p-2"
-//               />
-//               <input
-//                 type="text"
-//                 placeholder="Ability"
-//                 value={partAbility}
-//                 onChange={(e) => setPartAbility(e.target.value)}
-//                 required
-//                 className="border rounded w-full p-2"
-//               />
-//               <input
-//                 type="number"
-//                 placeholder="Regular Price"
-//                 value={partRegularPrice}
-//                 onChange={(e) => setPartRegularPrice(e.target.value)}
-//                 required
-//                 className="border rounded w-full p-2"
-//               />
-//               <input
-//                 type="number"
-//                 placeholder="Discount Price"
-//                 value={partDiscountPrice}
-//                 onChange={(e) => setPartDiscountPrice(e.target.value)}
-//                 required
-//                 className="border rounded w-full p-2"
-//               />
-//               <input
-//                 type="number"
-//                 placeholder="Quantity"
-//                 value={partQuantity}
-//                 onChange={(e) => setPartQuantity(e.target.value)}
-//                 required
-//                 className="border rounded w-full p-2"
-//               />
-//               <input
-//                 type="file"
-//                 accept="image/*"
-//                 onChange={(e) => setPartImage(e.target.files[0])}
-//                 required
-//                 className="border rounded w-full p-2"
-//               />
-//               <button
-//                 type="submit"
-//                 className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
-//               >
-//                 Add PC Part
-//               </button>
-//             </form>
-//             {partSuccess && <p className="text-green-600 mt-4">{partSuccess}</p>}
-//             {partError && <p className="text-red-600 mt-4">{partError}</p>}
-//           </div>
-//         </>
-//       ) : (
-//         <p className="text-red-600 text-center text-xl font-semibold">
-//           You do not have permission to access this page.
-//         </p>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default PCBuilder;
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addPCComponent } from "../../store/pcbuilderSlice";
+import { addPCComponent, fetchPCComponents, addPCPart } from "../../store/pcbuilderSlice";
 import {
   Box,
   TextField,
@@ -266,87 +8,298 @@ import {
   Typography,
   Alert,
   CircularProgress,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 
 const PCBuilder = () => {
   const dispatch = useDispatch();
-  const { loading, error, successMessage } = useSelector((state) => state.pcBuilder);
+  const { components, parts, loading, error, successMessage } = useSelector((state) => state.pcBuilder);
+  const userRole = useSelector((state) => state.auth.role) || localStorage.getItem("authRole");
 
-  const [name, setName] = useState("");
-  const [image, setImage] = useState(null);
+  // State for PC Component form
+  const [componentName, setComponentName] = useState("");
+  const [componentImage, setComponentImage] = useState(null);
 
-  const handleSubmit = (e) => {
+  // State for PC Part form
+  const [selectedComponentId, setSelectedComponentId] = useState("");
+  const [partName, setPartName] = useState("");
+  const [partDescription, setPartDescription] = useState("");
+  const [partPerformance, setPartPerformance] = useState("");
+  const [partAbility, setPartAbility] = useState("");
+  const [partRegularPrice, setPartRegularPrice] = useState("");
+  const [partSpecialPrice, setPartSpecialPrice] = useState("");
+  const [partQuantity, setPartQuantity] = useState("");
+  const [partImage, setPartImage] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchPCComponents());
+  }, [dispatch]);
+
+  const handleComponentSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !image) return;
+    if (!componentName || !componentImage) return;
 
-    dispatch(addPCComponent({ name, image }));
+    const result = await dispatch(addPCComponent({ name: componentName, image: componentImage }));
+    if (addPCComponent.fulfilled.match(result)) {
+      setComponentName("");
+      setComponentImage(null);
+      window.location.reload(); // Reload page to refresh component list
+    }
   };
 
+  const handlePartSubmit = (e) => {
+    e.preventDefault();
+    if (
+      !selectedComponentId ||
+      !partName ||
+      !partDescription ||
+      !partPerformance ||
+      !partAbility ||
+      !partRegularPrice ||
+      !partSpecialPrice ||
+      !partQuantity ||
+      !partImage
+    ) return;
+
+    dispatch(
+      addPCPart({
+        name: partName,
+        description: partDescription,
+        performance: partPerformance,
+        ability: partAbility,
+        regularprice: partRegularPrice,
+        specialprice: partSpecialPrice,
+        quantity: partQuantity,
+        pcbuilder: { id: selectedComponentId },
+        image: partImage,
+      })
+    );
+
+    // Clear form
+    setSelectedComponentId("");
+    setPartName("");
+    setPartDescription("");
+    setPartPerformance("");
+    setPartAbility("");
+    setPartRegularPrice("");
+    setPartSpecialPrice("");
+    setPartQuantity("");
+    setPartImage(null);
+  };
+
+  if (userRole !== "admin") {
+    return (
+      <Box maxWidth={600} mx="auto" mt={5} p={3} textAlign="center">
+        <Typography variant="h6" color="error">
+          You do not have permission to access this page.
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
-    <Box
-      maxWidth={400}
-      mx="auto"
-      mt={5}
-      p={3}
-      borderRadius={2}
-      boxShadow={3}
-      bgcolor="white"
-    >
-      <Typography variant="h5" mb={3} fontWeight="bold">
-        Add PC Component
+    <Box maxWidth={600} mx="auto" mt={5} p={3} borderRadius={2} boxShadow={3} bgcolor="white">
+      <Typography variant="h5" mb={3} fontWeight="bold" textAlign="center">
+        PC Builder Management
       </Typography>
 
-      <form onSubmit={handleSubmit}>
-        <Box mb={2}>
-          <TextField
-            fullWidth
-            label="Component Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </Box>
-
-        <Box mb={2}>
-          <Button variant="contained" component="label" fullWidth>
-            Upload Image
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={(e) => setImage(e.target.files[0])}
+      {/* Add PC Component Form */}
+      <Box mb={6}>
+        <Typography variant="h6" mb={2} fontWeight="medium">
+          Add System Category
+        </Typography>
+        <form onSubmit={handleComponentSubmit}>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Category Name"
+              value={componentName}
+              onChange={(e) => setComponentName(e.target.value)}
               required
+              variant="outlined"
             />
+          </Box>
+          <Box mb={2}>
+            <Button variant="contained" component="label" fullWidth>
+              Upload Image
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => setComponentImage(e.target.files[0])}
+                required
+              />
+            </Button>
+            {componentImage && (
+              <Typography variant="body2" mt={1}>
+                Selected: {componentImage.name}
+              </Typography>
+            )}
+          </Box>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={loading.component}
+            startIcon={loading.component && <CircularProgress size={20} />}
+          >
+            {loading.component ? "Saving..." : "Add System Category"}
           </Button>
-          {image && (
-            <Typography variant="body2" mt={1}>
-              Selected: {image.name}
-            </Typography>
-          )}
-        </Box>
+        </form>
+        {successMessage.component && (
+          <Alert severity="success" sx={{ mt: 2 }}>
+            {successMessage.component}
+          </Alert>
+        )}
+        {error.component && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {error.component}
+          </Alert>
+        )}
+      </Box>
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          disabled={loading}
-          startIcon={loading && <CircularProgress size={20} />}
-        >
-          {loading ? "Saving..." : "Add Component"}
-        </Button>
-      </form>
-
-      {successMessage && (
-        <Alert severity="success" sx={{ mt: 2 }}>
-          {successMessage}
-        </Alert>
-      )}
-      {error && (
-        <Alert severity="error" sx={{ mt: 2 }}>
-          {error}
-        </Alert>
-      )}
+      {/* Add PC Part Form */}
+      <Box>
+        <Typography variant="h6" mb={2} fontWeight="medium">
+          Add System Items
+        </Typography>
+        <form onSubmit={handlePartSubmit}>
+          <Box mb={2}>
+            <FormControl fullWidth required>
+              <InputLabel>Select a Category</InputLabel>
+              <Select
+                value={selectedComponentId}
+                onChange={(e) => setSelectedComponentId(e.target.value)}
+                label="Select Category"
+              >
+                <MenuItem value="">Select Category</MenuItem>
+                {components.map((component) => (
+                  <MenuItem key={component.id} value={component.id}>
+                    {component.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Part Name"
+              value={partName}
+              onChange={(e) => setPartName(e.target.value)}
+              required
+              variant="outlined"
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Description"
+              value={partDescription}
+              onChange={(e) => setPartDescription(e.target.value)}
+              required
+              variant="outlined"
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Performance"
+              value={partPerformance}
+              onChange={(e) => setPartPerformance(e.target.value)}
+              required
+              variant="outlined"
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Others info"
+              value={partAbility}
+              onChange={(e) => setPartAbility(e.target.value)}
+              required
+              variant="outlined"
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Regular Price"
+              type="number"
+              value={partRegularPrice}
+              onChange={(e) => setPartRegularPrice(e.target.value)}
+              required
+              variant="outlined"
+              inputProps={{ step: "0.01" }}
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Special Price"
+              type="number"
+              value={partSpecialPrice}
+              onChange={(e) => setPartSpecialPrice(e.target.value)}
+              required
+              variant="outlined"
+              inputProps={{ step: "0.01" }}
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Quantity"
+              type="number"
+              value={partQuantity}
+              onChange={(e) => setPartQuantity(e.target.value)}
+              required
+              variant="outlined"
+              inputProps={{ min: "0" }}
+            />
+          </Box>
+          <Box mb={2}>
+            <Button variant="contained" component="label" fullWidth>
+              Upload Image
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => setPartImage(e.target.files[0])}
+                required
+              />
+            </Button>
+            {partImage && (
+              <Typography variant="body2" mt={1}>
+                Selected: {partImage.name}
+              </Typography>
+            )}
+          </Box>
+          <Button
+            type="submit"
+            variant="contained"
+            color="success"
+            fullWidth
+            disabled={loading.part}
+            startIcon={loading.part && <CircularProgress size={20} />}
+          >
+            {loading.part ? "Saving..." : "Add System Items"}
+          </Button>
+        </form>
+        {successMessage.part && (
+          <Alert severity="success" sx={{ mt: 2 }}>
+            {successMessage.part}
+          </Alert>
+        )}
+        {error.part && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {error.part}
+          </Alert>
+        )}
+      </Box>
     </Box>
   );
 };

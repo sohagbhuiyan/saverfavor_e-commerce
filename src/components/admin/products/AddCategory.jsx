@@ -8,12 +8,12 @@ const AddCategory = () => {
 
   const token = useSelector((state) => state.auth.token) || localStorage.getItem('authToken');
   const userRole = useSelector((state) => state.auth.role) || localStorage.getItem('authRole');
-  console.log('Role --> ', userRole, '\nToken -->', token);
+  
+  // console.log('Role --> ', userRole, '\nToken -->', token);
 
   const [categoryName, setCategoryName] = useState('');
   const [categorySuccess, setCategorySuccess] = useState('');
   const [categoryError, setCategoryError] = useState('');
-  const [itemImage, setItemImage] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [itemName, setItemName] = useState('');
   const [itemSuccess, setItemSuccess] = useState('');
@@ -48,8 +48,8 @@ const AddCategory = () => {
     setItemSuccess('');
     setItemError('');
 
-    if (!selectedCategoryId || !itemName || !itemImage) {
-      setItemError('All fields including image are required.');
+    if (!selectedCategoryId || !itemName) {
+      setItemError('All fields are required.');
       return;
     }
 
@@ -58,17 +58,15 @@ const AddCategory = () => {
         addItem({
           itemName,
           categoryId: selectedCategoryId,
-          itemImage,
           token,
           categories,
         })
       );
 
       if (resultAction.meta.requestStatus === 'fulfilled') {
-        setItemSuccess('Item (Submenu) with image added successfully!');
+        setItemSuccess('Item (Submenu) added successfully!');
         setItemName('');
         setSelectedCategoryId('');
-        setItemImage(null);
       } else {
         setItemError(resultAction.payload || 'Failed to add item.');
       }
@@ -129,13 +127,6 @@ const AddCategory = () => {
                 placeholder="Enter Item (Submenu) Name"
                 value={itemName}
                 onChange={(e) => setItemName(e.target.value)}
-                required
-                className="border rounded w-full p-2"
-              />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setItemImage(e.target.files[0])}
                 required
                 className="border rounded w-full p-2"
               />

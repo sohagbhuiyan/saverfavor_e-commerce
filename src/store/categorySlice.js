@@ -140,6 +140,7 @@
 //       });
 //   },
 // });
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api, { API_BASE_URL } from './api';
 
@@ -170,10 +171,10 @@ export const addCategory = createAsyncThunk(
   }
 );
 
-// Add Item (Product) with token and FormData
+// Add Item (Product) with token
 export const addItem = createAsyncThunk(
   'categories/addItem',
-  async ({ itemName, categoryId, itemImage, token, categories }, { rejectWithValue }) => {
+  async ({ itemName, categoryId, token, categories }, { rejectWithValue }) => {
     try {
       // Find the selected category
       const selectedCategory = categories.find(
@@ -184,10 +185,7 @@ export const addItem = createAsyncThunk(
         return rejectWithValue('Selected category not found.');
       }
 
-      // Create FormData
-      const formData = new FormData();
-
-      // Build dynamic product JSON
+      // Build product JSON
       const productData = {
         name: itemName,
         catagory: {
@@ -196,17 +194,15 @@ export const addItem = createAsyncThunk(
         },
       };
 
-      formData.append(
-        'product',
-        new Blob([JSON.stringify(productData)], { type: 'application/json' })
+      const response = await api.post(
+        `${API_BASE_URL}/api/Product/save`,
+        productData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        }
       );
-      formData.append('image', itemImage);
-
-      const response = await api.post(`${API_BASE_URL}/api/Product/save`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
 
       return response.data;
     } catch (error) {
@@ -240,7 +236,6 @@ export const fetchCategoriesAndProducts = createAsyncThunk(
           .map((product) => ({
             name: product.name,
             path: `/collections?category=${encodeURIComponent(category.name)}&product=${encodeURIComponent(product.product?.name || product.name)}`,
-            image: product.imagea || product.image || '',
           })),
       }));
 
@@ -264,7 +259,8 @@ const categorySlice = createSlice({
         state.items.push(action.payload);
       })
       .addCase(addItem.fulfilled, (state, action) => {
-        // Optionally, update state if needed
+        // Refresh products after adding
+        // Note: Actual refresh happens in component via dispatch
       })
       .addCase(addItem.rejected, (state, action) => {
         state.error = action.payload || 'Failed to add item';
@@ -285,4 +281,3 @@ const categorySlice = createSlice({
 });
 
 export default categorySlice.reducer;
-
