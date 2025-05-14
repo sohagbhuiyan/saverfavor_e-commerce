@@ -10,6 +10,7 @@ import { FaBars, FaTimes } from 'react-icons/fa';
 import { fetchCategoriesAndProducts } from '../../../store/categorySlice';
 
 const UserNavbar = () => {
+
   const dispatch = useDispatch();
   const { categoriesWithSub, error } = useSelector((state) => state.categories);
 
@@ -43,7 +44,7 @@ const UserNavbar = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="sticky top-0 z-[90] flex flex-col">
       <div className="bg-[#CF212B] text-white">
         <TopBar />
 
@@ -55,7 +56,7 @@ const UserNavbar = () => {
             {mobileMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
           </button>
 
-          <div className="flex flex-1 items-center justify-center gap-3 px-2 md:gap-15">
+          <div className="flex flex-1 items-center justify-center gap-3 px-2 md:gap-15 ">
             <img
               src={logo}
               className="h-6 md:h-9.5 cursor-pointer"

@@ -302,8 +302,12 @@ export const fetchProfile = createAsyncThunk(
         return rejectWithValue("User not logged in");
       }
 
-      const { data } = await axios.get(`${API_BASE_URL}/api/userRegistration/get`, {
-        headers: { Authorization: `Bearer ${auth.token}` },
+      const { data } = await axios.get(`${API_BASE_URL}/api/userRegistration/get`,{
+        
+        headers:
+         {
+           Authorization: `Bearer ${auth.token}`
+         },
       });
       const loggedInUser = data.find((user) => user.email === userEmail);
 

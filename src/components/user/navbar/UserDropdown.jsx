@@ -68,21 +68,12 @@ export const UserDropdown = ({ position = "desktop" }) => {
               </div>
               
               <Link
-                to="/view-profile"
-                className="block text-sm font-medium text-gray-600 hover:text-gray-500 mb-1 hover:bg-gray-100 p-1 rounded"
+                to="/profile"
+                className="block text-sm font-medium text-gray-600 hover:text-gray-500 mb-1 hover:bg-gray-100 py-1 rounded"
                 onClick={() => setIsOpen(false)}
               >
-                View Profile
+                My Account
               </Link>
-              
-              <Link
-                to="/profile/edit"
-                className="block text-sm font-medium text-gray-600 hover:text-gray-500 mb-1 hover:bg-gray-100 p-1 rounded"
-                onClick={() => setIsOpen(false)}
-              >
-                Edit Profile
-              </Link>
-              
               <button
                 className=" text-left text-sm font-medium cursor-pointer text-red-600 hover:text-red-500 mt-2 hover:bg-gray-100 p-1 rounded"
                 onClick={handleLogout}

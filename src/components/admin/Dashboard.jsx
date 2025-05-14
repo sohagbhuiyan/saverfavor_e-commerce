@@ -22,6 +22,7 @@ import {
 import { People, ShoppingCart, Inventory, Storefront } from "@mui/icons-material";
 
 const Dashboard = () => {
+  
   const dispatch = useDispatch();
   const { profile, loading: authLoading, error: authError } = useSelector((state) => state.auth);
   const { orders, loading: orderLoading, error: orderError } = useSelector((state) => state.order);

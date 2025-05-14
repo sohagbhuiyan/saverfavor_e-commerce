@@ -45,6 +45,8 @@ import ViewCategories from './components/admin/products/ViewCategories';
 import ViewSystemBuilder from './components/admin/ViewSystemBuilder';
 import CheckoutPage from './components/user/product/CheckOutPage';
 import OrderConfirmation from './components/user/product/OrderConfirmation';
+import UserOrders from './components/user/product/UserOrders';
+import AdminProfileView from './components/admin/AdminProfileView';
 
 function App() {    
   return (
@@ -75,14 +77,17 @@ function App() {
 
           {/* User Protected Routes */}
           <Route element={<UserProtectedRoute />}>
+            <Route path="profile" element={<ProfileView />} />
             <Route path="profileedit" element={<ProfileEdit />} />
-            <Route path="view-profile" element={<ProfileView />} />
+            <Route path="/view-orders" element={<UserOrders />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
           </Route>
 
           {/* Admin Protected Routes */}
           <Route element={<AdminProtectedRoute />}>
+
+            <Route path="/admin/view-profile" element={<AdminProfileView />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="admin/products/add-category" element={<AddCategory />} />
             <Route path="/admin/products/view-categories" element={<ViewCategories />} />
