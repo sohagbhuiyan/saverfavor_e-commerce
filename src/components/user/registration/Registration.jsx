@@ -3,6 +3,7 @@ import { TextField, Button, Box, Container, Typography, Paper, Alert } from "@mu
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, clearError } from "../../../store/authSlice";
 import { useNavigate, Link } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const Registration = () => {
   const [formData, setFormData] = useState({ name: "", email: "", phoneNo: "", password: "" });
@@ -35,6 +36,10 @@ const Registration = () => {
     if (registerUser.fulfilled.match(result)) {
       setSuccessMessage("Registration successful!");
       navigate("/login");
+      toast.success("Registration successful!", {
+            duration: 3000,
+            style: { background: "#10B981", color: "#FFFFFF", fontWeight: "bold" },
+          });
     }
   };
 
@@ -67,6 +72,7 @@ const Registration = () => {
           </Link>
         </Typography>
       </Paper>
+       <Toaster position="top-right" />
     </Container>
   );
 };

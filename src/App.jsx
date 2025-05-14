@@ -77,8 +77,8 @@ function App() {
 
           {/* User Protected Routes */}
           <Route element={<UserProtectedRoute />}>
-            <Route path="profile" element={<ProfileView />} />
-            <Route path="profileedit" element={<ProfileEdit />} />
+            <Route path="/profile" element={<ProfileView />} />
+            <Route path="/profile/edit" element={<ProfileEdit />} />
             <Route path="/view-orders" element={<UserOrders />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />

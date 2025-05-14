@@ -16,7 +16,7 @@ const Breadcrumb = () => {
   return (
     <div className="bg-white mb-6">
       <nav className="flex" aria-label="Breadcrumb">
-        <ol className="flex items-center space-x-2 text-sm sm:text-base">
+        <ol className="flex items-center space-x-2 text-xs sm:text-base">
           {breadcrumbs.map((crumb, index) => (
             <li key={crumb.path} className="flex items-center">
               {index === breadcrumbs.length - 1 ? (
@@ -100,7 +100,7 @@ const UserOrders = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6">
+    <div className="max-w-4xl mx-auto p-1 sm:p-6">
       <Breadcrumb />
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Your Orders</h1>
 
@@ -245,7 +245,7 @@ const UserOrders = () => {
                 </p>
                 <p>
                   <span className="font-medium">Category:</span>{" "}
-                  {selectedOrder.productDetails?.category?.name || "N/A"}
+                  {selectedOrder.productDetails?.catagory?.name || "N/A"}
                 </p>
               </div>
 

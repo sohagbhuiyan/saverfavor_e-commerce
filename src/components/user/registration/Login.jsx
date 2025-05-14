@@ -4,6 +4,7 @@ import { loginUser, clearError } from "../../../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box, Typography, Container, Paper, Alert } from "@mui/material";
 import { Link } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -41,6 +42,10 @@ const Login = () => {
 
     if (loginUser.fulfilled.match(result)) {
       navigate("/");
+          toast.success("Login successfully", {
+            duration: 3000,
+            style: { background: "#10B981", color: "#FFFFFF", fontWeight: "bold" },
+          });
     } else if (loginUser.rejected.match(result)) {
       setLocalError(result.payload || "Login failed");
     }
@@ -90,7 +95,9 @@ const Login = () => {
           </Link>
         </Typography>
       </Paper>
+    
     </Container>
+    
   );
 };
 

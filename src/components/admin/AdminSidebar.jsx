@@ -20,7 +20,7 @@ const AdminSidebar = () => {
 
   return (
     <div className="w-48 bg-gray-800 text-white min-h-screen p-2">
-      <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
+      <h1 className="text-2xl font-bold z-90 mb-6">Admin Panel</h1>
       <ul className="space-y-4">
         {/* Dashboard */}
         <li>

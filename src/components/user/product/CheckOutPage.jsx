@@ -476,7 +476,10 @@ const CheckoutPage = () => {
       .unwrap()
       .then((response) => {
         console.log("Order placed successfully:", response);
-        toast.success("Order placed successfully!", { duration: 2000 });
+      toast.success("Order placed successfully!", {
+      duration: 3000,
+      style: { background: "#10B981", color: "#FFFFFF", fontWeight: "bold" },
+    });
         navigate("/order-confirmation", { state: { order: { ...orderPayload, orderId: response.orderId || response.id } }});
       })
       .catch((error) => {
@@ -598,7 +601,7 @@ const CheckoutPage = () => {
           </form>
         </div>
       </div>
-      <Toaster />
+      <Toaster position="top-right"/>
     </div>
   );
 };

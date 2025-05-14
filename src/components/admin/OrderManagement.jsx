@@ -3,7 +3,7 @@ import { FiSearch, FiFilter, FiPrinter, FiEye, FiShoppingCart } from "react-icon
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders, updateOrderStatus } from "../../store/orderSlice";
 import toast, { Toaster } from "react-hot-toast";
-import { FaPhone, FaPhoneAlt, FaPhoneSquare } from "react-icons/fa";
+import { FaPhoneAlt } from "react-icons/fa";
 
 const OrderManagement = () => {
   const dispatch = useDispatch();
@@ -35,7 +35,7 @@ const OrderManagement = () => {
       dispatch(updateOrderStatus({ orderId, status: newStatus }))
         .unwrap()
         .then(() => {
-          toast.success(`Order #${orderId} status updated to ${newStatus}`, {
+          toast.success(`Order #${orderId} status successfully updated to ${newStatus}`, {
             duration: 3000,
             style: {
               background: "#10B981",

@@ -4,6 +4,7 @@ import { fetchProfile, logout } from "../../../store/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { clearCart } from "../../../store/cartSlice"; 
+import { Toaster } from "react-hot-toast";
 
 export const UserDropdown = ({ position = "desktop" }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -94,7 +95,9 @@ export const UserDropdown = ({ position = "desktop" }) => {
             </>
           )}
         </div>
+        
       )}
+       <Toaster position="top-right" />
     </div>
   );
 };

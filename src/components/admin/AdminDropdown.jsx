@@ -34,7 +34,7 @@ export const AdminDropdown = ({ position = "desktop" }) => {
     dispatch(logout());
     setIsOpen(false);
     navigate("/");
-    toast.success("Logged out successfully", {
+    toast.success("Admin Logged out successfully", {
       duration: 3000,
       style: { background: "#10B981", color: "#FFFFFF", fontWeight: "bold" },
     });
