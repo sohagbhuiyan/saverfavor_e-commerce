@@ -1,13 +1,15 @@
 
 import Categories from "../../user/body/Categories";
-import Slider from "../../user/body/Slider";
+import HeroSection from "../body/HeroSection";
 import Collections from "../../user/body/collection/Collections";
+import UserInfo from "../body/UserInfo";
 
 const Home = ()=> {
 
     return (
         <>
-        <Slider/>
+        <HeroSection/>
+        <UserInfo/>
         <Categories/>
         <Collections/>
         </>

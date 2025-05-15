@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllUsers } from "../../store/authSlice";
-import { fetchOrders, fetchUserOrders } from "../../store/orderSlice";
+import { fetchAllUsers } from "../../../store/authSlice";
+import { fetchOrders, fetchUserOrders } from "../../../store/orderSlice";
 import {
   Box,
   Typography,

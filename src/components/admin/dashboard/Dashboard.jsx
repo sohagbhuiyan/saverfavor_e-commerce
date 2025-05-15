@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProfile } from "../../store/authSlice";
-import { fetchOrders } from "../../store/orderSlice";
-import { fetchProducts } from "../../store/productSlice";
+import { fetchProfile } from "../../../store/authSlice";
+import { fetchOrders } from "../../../store/orderSlice";
+import { fetchProducts } from "../../../store/productSlice";
 import {
   Box,
   Typography,

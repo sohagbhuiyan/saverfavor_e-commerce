@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 
 // Admin Components
-import AdminSidebar from "../admin/AdminSidebar";
-import AdminNavbar from "../admin/AdminNavbar";
+import AdminSidebar from "../admin/adminProfile/AdminSidebar";
+import AdminNavbar from "../admin/adminProfile/AdminNavbar";
 
 // User Components
 import UserNavbar from "../user/navbar/UserNavbar";

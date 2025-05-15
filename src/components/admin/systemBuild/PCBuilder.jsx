@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addPCComponent, fetchPCComponents, addPCPart } from "../../store/pcbuilderSlice";
+import { addPCComponent, fetchPCComponents, addPCPart } from "../../../store/pcbuilderSlice";
 import {
   Box,
   TextField,

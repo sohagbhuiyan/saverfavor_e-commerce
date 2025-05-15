@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FiSearch, FiFilter, FiPrinter, FiEye, FiShoppingCart } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrders, updateOrderStatus } from "../../store/orderSlice";
+import { fetchOrders, updateOrderStatus } from "../../../store/orderSlice";
 import toast, { Toaster } from "react-hot-toast";
 import { FaPhoneAlt } from "react-icons/fa";
 

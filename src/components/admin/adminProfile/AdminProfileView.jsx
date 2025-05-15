@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProfile } from '../../store/authSlice';
+import { fetchProfile } from '../../../store/authSlice';
 import { useNavigate, Link } from 'react-router-dom';
 
 const AdminProfileView = () => {

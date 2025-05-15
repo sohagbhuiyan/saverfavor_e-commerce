@@ -220,7 +220,7 @@ export const placeOrder = createAsyncThunk(
       console.log("Sending order payload to backend:", orderWithUser);
 
       const response = await axios.post(
-        `${API_BASE_URL}/api/orders/save`,
+        `${API_BASE_URL}/api/productdetails/orders/save`,
         orderWithUser,
         {
           headers: {

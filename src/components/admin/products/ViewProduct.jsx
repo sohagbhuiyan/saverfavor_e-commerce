@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts, fetchProductById } from '../../store/productSlice';
+import { fetchProducts, fetchProductById } from '../../../store/productSlice';
 import { 
   Box, 
   Typography, 

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPCComponents, fetchPCParts } from "../../store/pcbuilderSlice";
+import { fetchPCComponents, fetchPCParts } from "../../../store/pcbuilderSlice";
 import {
   Box,
   Typography,

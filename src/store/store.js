@@ -7,6 +7,8 @@ import wishlistReducer from "./wishlistSlice";
 import compareReducer from "./compareSlice";
 import categoryReducer from "./categorySlice";
 import pcBuilderReducer from "./pcbuilderSlice";
+import heroReducer from "./heroSlice";
+import infoReducer from "./infoSlice";
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +20,7 @@ export const store = configureStore({
     compare: compareReducer,
     categories: categoryReducer,
     pcBuilder: pcBuilderReducer,
+    hero: heroReducer,
+    info: infoReducer,
   },
 });

@@ -26,27 +26,30 @@ import ProfileEdit from './components/user/registration/profile/ProfileEdit';
 import ProfileView from './components/user/registration/profile/ProfileView';
 
 // Admin Pages
-import Dashboard from './components/admin/Dashboard';
-import OrderManagement from './components/admin/OrderManagement';
-import CustomerManagement from './components/admin/CustomerManagement';
-import ViewProduct from './components/admin/ViewProduct';
+import Dashboard from './components/admin/dashboard/Dashboard';
+import OrderManagement from './components/admin/management/OrderManagement';
+import CustomerManagement from './components/admin/management/CustomerManagement';
+import ViewProduct from './components/admin/products/ViewProduct';
 import AddProduct from './components/admin/products/AddProduct';
 import AddCategory from './components/admin/products/AddCategory';
-import PaymentManagement from './components/admin/PaymentManagement';
+import PaymentManagement from './components/admin/management/PaymentManagement';
 
 // Protected Routes
 import UserProtectedRoute from './components/Protected/UserProtectedRoute';
 import AdminProtectedRoute from './components/Protected/AdminProtectedRoute';
 import Collections from './components/user/body/collection/Collections';
-import PCBuilder from './components/admin/PCBuilder';
+import PCBuilder from './components/admin/systemBuild/PCBuilder';
 import PCBuilderPage from './components/user/pcbuilder/PCBuilderPage';
 // import ComponentProductsPage from './components/user/pcbuilder/ComponentProductsPage';
 import ViewCategories from './components/admin/products/ViewCategories';
-import ViewSystemBuilder from './components/admin/ViewSystemBuilder';
+import ViewSystemBuilder from './components/admin/systemBuild/ViewSystemBuilder';
 import CheckoutPage from './components/user/product/CheckOutPage';
 import OrderConfirmation from './components/user/product/OrderConfirmation';
 import UserOrders from './components/user/product/UserOrders';
-import AdminProfileView from './components/admin/AdminProfileView';
+import AdminProfileView from './components/admin/adminProfile/AdminProfileView';
+import AddSlider from './components/admin/hero/AddSlider';
+import Addinfo from './components/admin/hero/Addinfo';
+// import ComponentProductsPage from './components/user/pcbuilder/ComponentProductsPage';
 
 function App() {    
   return (
@@ -86,7 +89,8 @@ function App() {
 
           {/* Admin Protected Routes */}
           <Route element={<AdminProtectedRoute />}>
-
+            <Route path="/admin/add-slider" element={<AddSlider />} />  
+            <Route path="/admin/add-info" element={<Addinfo />} />   
             <Route path="/admin/view-profile" element={<AdminProfileView />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="admin/products/add-category" element={<AddCategory />} />

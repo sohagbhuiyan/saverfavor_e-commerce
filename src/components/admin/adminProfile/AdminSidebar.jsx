@@ -11,6 +11,8 @@ import {
   BuildCircleRounded,
   ListAlt,
   BuildCircleTwoTone,
+  AddAPhoto,
+  Info,
 } from "@mui/icons-material";
 
 const AdminSidebar = () => {
@@ -19,9 +21,12 @@ const AdminSidebar = () => {
   const isActive = (path) => location.pathname === `/${path}`;
 
   return (
-    <div className="w-48 bg-gray-800 text-white min-h-screen p-2">
-      <h1 className="text-2xl font-bold z-90 mb-6">Admin Panel</h1>
-      <ul className="space-y-4">
+    <div
+      className="w-50 bg-gray-800 text-white min-h-screen p-1"
+      style={{ maxHeight: "calc(100vh - 16px)" }} // Adjust for padding/margin if needed
+    >
+      <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
+      <ul className="space-y-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 70px)" }}>
         {/* Dashboard */}
         <li>
           <Link
@@ -31,6 +36,27 @@ const AdminSidebar = () => {
             }`}
           >
             <Dashboard className="mr-2" /> Dashboard
+          </Link>
+        </li>
+        {/* Add Slider Image */}
+        <li>
+          <Link
+            to="/admin/add-slider"
+            className={`flex items-center p-2 rounded-md ${
+              isActive("admin/add-slider") ? "bg-gray-700 text-blue-400" : "hover:text-gray-400"
+            }`}
+          >
+            <AddAPhoto className="mr-2" /> Add Slider
+          </Link>
+        </li>
+          <li>
+          <Link
+            to="/admin/add-info"
+            className={`flex items-center p-2 rounded-md ${
+              isActive("admin/add-info") ? "bg-gray-700 text-blue-400" : "hover:text-gray-400"
+            }`}
+          >
+            <Info className="mr-2" /> Add Info
           </Link>
         </li>
         {/* Categories and Products */}
@@ -130,7 +156,9 @@ const AdminSidebar = () => {
           <Link
             to="/admin/Pc-builder/ViewSystemBuilder"
             className={`flex items-center p-2 rounded-md ${
-              isActive("admin/Pc-builder/ViewSystemBuilder") ? "bg-gray-700 text-blue-400" : "hover:text-gray-400"
+              isActive("admin/Pc-builder/ViewSystemBuilder")
+                ? "bg-gray-700 text-blue-400"
+                : "hover:text-gray-400"
             }`}
           >
             <BuildCircleTwoTone className="mr-2" /> View System Builder

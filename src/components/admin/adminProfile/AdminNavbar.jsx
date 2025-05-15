@@ -1,7 +1,7 @@
 // src/components/admin/AdminNavbar.js
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProfile } from "../../store/authSlice";
+import { fetchProfile } from "../../../store/authSlice";
 import { AdminDropdown } from "./AdminDropdown";
 
 const AdminNavbar = () => {

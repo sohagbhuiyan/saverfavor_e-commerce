@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProfile, logout } from "../../store/authSlice";
+import { fetchProfile, logout } from "../../../store/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
-import { clearCart } from "../../store/cartSlice";
+import { clearCart } from "../../../store/cartSlice";
 import toast, { Toaster } from "react-hot-toast";
 
 export const AdminDropdown = ({ position = "desktop" }) => {
