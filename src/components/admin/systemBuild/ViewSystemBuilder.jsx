@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPCComponents, fetchPCParts } from "../../../store/pcbuilderSlice";
+import { fetchPCComponents, fetchPCParts, clearPCBError } from "../../../store/pcbuilderSlice";
 import {
   Box,
   Typography,
@@ -13,7 +13,11 @@ import {
   Paper,
   Alert,
   CircularProgress,
+  Button,
 } from "@mui/material";
+import { API_BASE_URL } from "../../../store/api";
+
+const FALLBACK_IMAGE = "/images/placeholder.png";
 
 const ViewSystemBuilder = () => {
   const dispatch = useDispatch();
@@ -25,9 +29,15 @@ const ViewSystemBuilder = () => {
     dispatch(fetchPCParts());
   }, [dispatch]);
 
+  const handleRetry = () => {
+    dispatch(clearPCBError());
+    dispatch(fetchPCComponents());
+    dispatch(fetchPCParts());
+  };
+
   if (userRole !== "admin") {
     return (
-      <Box minWidth={900} mx="auto" mt={5} p={1} textAlign="center">
+      <Box sx={{ maxWidth: 1200, mx: "auto", mt: 5, p: { xs: 1, sm: 2 }, textAlign: "center" }}>
         <Typography variant="h6" color="error">
           You do not have permission to access this page.
         </Typography>
@@ -36,7 +46,17 @@ const ViewSystemBuilder = () => {
   }
 
   return (
-    <Box minWidth={900} mx="auto" mt={5} p={1} borderRadius={2} boxShadow={3} bgcolor="white">
+    <Box
+      sx={{
+        maxWidth: 1200,
+        mx: "auto",
+        mt: 5,
+        p: { xs: 1, sm: 2 },
+        borderRadius: 2,
+        boxShadow: 3,
+        bgcolor: "background.paper",
+      }}
+    >
       <Typography variant="h5" mb={4} fontWeight="bold" textAlign="center">
         System Builder Admin Panel
       </Typography>
@@ -51,18 +71,24 @@ const ViewSystemBuilder = () => {
             <CircularProgress />
           </Box>
         ) : error.component ? (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error.component}
-          </Alert>
+          <Box mb={2}>
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error.component}
+            </Alert>
+            <Button variant="contained" color="primary" onClick={handleRetry}>
+              Retry
+            </Button>
+          </Box>
         ) : components.length === 0 ? (
           <Typography>No PC components found.</Typography>
         ) : (
           <TableContainer component={Paper}>
-            <Table>
+            <Table sx={{ minWidth: { xs: 300, sm: 650 } }}>
               <TableHead>
                 <TableRow>
                   <TableCell>ID</TableCell>
                   <TableCell>Name</TableCell>
+                  <TableCell>Image</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -70,6 +96,15 @@ const ViewSystemBuilder = () => {
                   <TableRow key={component.id}>
                     <TableCell>{component.id}</TableCell>
                     <TableCell>{component.name}</TableCell>
+                    <TableCell>
+                      <img
+                        src={component.imagea ? `${API_BASE_URL}/images/${component.imagea}` : FALLBACK_IMAGE}
+                        alt={component.name}
+                        style={{ width: 50, height: 50, objectFit: "contain", borderRadius: 4 }}
+                        onError={(e) => (e.target.src = FALLBACK_IMAGE)}
+                        loading="lazy"
+                      />
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -88,14 +123,19 @@ const ViewSystemBuilder = () => {
             <CircularProgress />
           </Box>
         ) : error.part ? (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error.part}
-          </Alert>
+          <Box mb={2}>
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error.part}
+            </Alert>
+            <Button variant="contained" color="primary" onClick={handleRetry}>
+              Retry
+            </Button>
+          </Box>
         ) : parts.length === 0 ? (
           <Typography>No PC parts found.</Typography>
         ) : (
           <TableContainer component={Paper}>
-            <Table>
+            <Table sx={{ minWidth: { xs: 300, sm: 650 } }}>
               <TableHead>
                 <TableRow>
                   <TableCell>ID</TableCell>
@@ -106,7 +146,8 @@ const ViewSystemBuilder = () => {
                   <TableCell>Ability</TableCell>
                   <TableCell>Regular Price</TableCell>
                   <TableCell>Special Price</TableCell>
-                  <TableCell>Quantity</TableCell>                
+                  <TableCell>Quantity</TableCell>
+                  <TableCell>Image</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -115,12 +156,21 @@ const ViewSystemBuilder = () => {
                     <TableCell>{part.id}</TableCell>
                     <TableCell>{part.name}</TableCell>
                     <TableCell>{part.pcbuilder?.name || part.pcbuilder?.id || "N/A"}</TableCell>
-                    <TableCell>{part.description}</TableCell>
-                    <TableCell>{part.performance}</TableCell>
-                    <TableCell>{part.ability}</TableCell>
-                    <TableCell>${part.regularprice.toFixed(2)}</TableCell>
-                    <TableCell>${part.specialprice.toFixed(2)}</TableCell>
-                    <TableCell>{part.quantity}</TableCell>
+                    <TableCell>{part.description || "N/A"}</TableCell>
+                    <TableCell>{part.performance || "N/A"}</TableCell>
+                    <TableCell>{part.ability || "N/A"}</TableCell>
+                    <TableCell>${part.regularprice?.toFixed(2) || "N/A"}</TableCell>
+                    <TableCell>${part.specialprice?.toFixed(2) || "N/A"}</TableCell>
+                    <TableCell>{part.quantity || "N/A"}</TableCell>
+                    <TableCell>
+                      <img
+                        src={part.image ? `${API_BASE_URL}/images/${part.image}` : FALLBACK_IMAGE}
+                        alt={part.name}
+                        style={{ width: 50, height: 50, objectFit: "contain", borderRadius: 4 }}
+                        onError={(e) => (e.target.src = FALLBACK_IMAGE)}
+                        loading="lazy"
+                      />
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

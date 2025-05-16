@@ -15,7 +15,7 @@ const UserInfo = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" my={4}>
+      <Box display="flex" justifyContent="center" my={2}>
         <CircularProgress />
       </Box>
     );
@@ -41,17 +41,11 @@ const UserInfo = () => {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: { xs: 'column', sm: 'row' }, // Stack on mobile, row on larger screens
+        flexDirection: { xs:'row' },
         justifyContent: 'space-around',
         alignItems: 'center',
         gap: 2,
-        p: 2,
-        backgroundColor: '#f5f5f5',
-        borderRadius: 2,
-        boxShadow: 1,
-        mx: 'auto',
-        maxWidth: 800,
-        mt: 4,
+        backgroundColor: '#c8a071',
       }}
     >
       <Box sx={{ textAlign: 'center' }}>

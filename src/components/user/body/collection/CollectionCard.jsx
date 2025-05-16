@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { FaShoppingCart, FaExchangeAlt, FaHeart, FaEye, FaTimes } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist } from "../../../../store/wishlistSlice";
-import { addToCart } from "../../../../store/cartSlice";
+import { addToCartAsync } from "../../../../store/cartSlice";
 import { addToCompare } from "../../../../store/compareSlice";
+import { toast } from 'react-toastify';
 
 const CollectionCard = ({
   id,
@@ -24,6 +25,9 @@ const CollectionCard = ({
   const [isMobile, setIsMobile] = useState(false);
   const iconsRef = useRef(null);
   const dispatch = useDispatch();
+  const cartStatus = useSelector(state => state.cart.status);
+  const cartError = useSelector(state => state.cart.error);
+  const authState = useSelector(state => state.auth);
 
   const discount = regularprice - specialprice;
   const hasDiscount = specialprice > 0 && discount > 0;
@@ -51,6 +55,12 @@ const CollectionCard = ({
     return () => document.removeEventListener('click', handleClickOutside);
   }, [isMobile, showMobileIcons]);
 
+  useEffect(() => {
+    if (cartStatus === 'failed' && cartError) {
+      toast.error(cartError, { position: "top-right" });
+    }
+  }, [cartStatus, cartError]);
+
   const handleProductClick = (e) => {
     if (isMobile) {
       if (!showMobileIcons) {
@@ -68,27 +78,36 @@ const CollectionCard = ({
   };
 
   const handleAddToCart = handleIconAction(() => {
-    dispatch(addToCart({
-      productId: id,
+    dispatch(addToCartAsync({
+      productDetailsId: id,
+      quantity: 1,
       name,
       price: currentPrice,
-      regularprice,
-      specialprice,
-      imagea: imagea,
-      quantity: 1
-    }));
+      imagea
+    }))
+      .then(() => {
+        toast.success("Added to cart!", { position: "top-right" });
+      })
+      .catch(() => {
+        // Error toast is handled in the useEffect above
+      });
   });
 
   const handleAddToWishlist = handleIconAction(() => {
+    if (!authState.user) {
+      toast.warn("Please log in to add to wishlist!", { position: "top-right" });
+      return;
+    }
     dispatch(addToWishlist({
       id,
-      imagea: imagea,
+      imagea,
       category,
       name,
       regularprice,
       specialprice,
       title
     }));
+    toast.success("Added to wishlist!", { position: "top-right" });
   });
 
   const handleAddToCompare = handleIconAction(() => {
@@ -97,7 +116,7 @@ const CollectionCard = ({
       name,
       regularprice,
       specialprice,
-      imagea: imagea,
+      imagea,
       category,
       title,
       specifications: specification?.split(', ').reduce((acc, spec) => {
@@ -105,6 +124,7 @@ const CollectionCard = ({
         return { ...acc, [key?.trim()]: value?.trim() };
       }, {}) || { details }
     }));
+    toast.success("Added to compare!", { position: "top-right" });
   });
 
   return (
@@ -114,7 +134,7 @@ const CollectionCard = ({
           className={`border border-gray-400 rounded-lg p-3 shadow-md hover:shadow-xl transition-all duration-400 bg-white relative ${isHovered ? "md:scale-105" : "scale-100"}`}
           onMouseEnter={() => !isMobile && setIsHovered(true)}
           onMouseLeave={() => !isMobile && setIsHovered(false)}
-        >
+        > 
           <div className="relative p-1 md:p-2 overflow-hidden rounded-md">
             <img
               src={imagea}
@@ -204,10 +224,17 @@ const CollectionCard = ({
 
                   {specification && (
                     <div className="space-y-2">
-                      <h3 className="font-semibold text-gray-900">specification</h3>
+                      <h3 className="font-semibold text-gray-900">Specifications</h3>
                       <p className="text-sm text-gray-600 whitespace-pre-line">{specification}</p>
                     </div>
                   )}
+                  
+                  <button 
+                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                    onClick={handleAddToCart}
+                  >
+                    <FaShoppingCart /> Add to Cart
+                  </button>
                 </div>
               </div>
             </div>

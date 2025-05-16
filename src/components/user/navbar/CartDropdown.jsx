@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { Trash } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart, updateQuantity } from "../../../store/cartSlice";
-import { Link } from "react-router-dom"; // Add this import
+import { Link } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 
 export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRef }) => {
@@ -19,7 +19,8 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        isOpen && dropdownRef.current && !dropdownRef.current.contains(event.target) && cartIconRef.current && !cartIconRef.current.contains(event.target)
+        isOpen && dropdownRef.current && !dropdownRef.current.contains(event.target) && 
+        cartIconRef.current && !cartIconRef.current.contains(event.target)
       ) {
         onClose();
       }
@@ -38,19 +39,21 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
 
   const handleQuantityChange = (productId, newQuantity, event) => {
     event.stopPropagation();
-    dispatch(updateQuantity({ productId, quantity: parseInt(newQuantity, 10) }));
+    const quantity = parseInt(newQuantity, 10);
+    if (quantity >= 1) {
+      dispatch(updateQuantity({ productId, quantity }));
+    }
   };
 
-  const handleItemClick = (item, event) => {
+  const handleItemClick = (event) => {
     event.stopPropagation();
-    onClose(); // Close dropdown when navigating
+    onClose();
   };
 
   if (!isOpen) return null;
 
   return (
     <div className={containerClasses} ref={dropdownRef} onClick={(e) => e.stopPropagation()}>
-      {/* Keep header section */}
       <div className="flex justify-between items-center border-b border-gray-400">
         <h3 className="text-lg font-semibold">Cart ({cartItems.length})</h3>
         <button 
@@ -61,7 +64,6 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
         </button>
       </div>
 
-      {/* Modified items section */}
       <div className={`mt-2 ${position === "desktop" ? "max-h-90" : ""} overflow-y-auto`}>
         {cartItems.length === 0 ? (
           <p className="text-center text-gray-500">Your cart is empty</p>
@@ -71,14 +73,11 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
               key={item.productId}
               className="group relative flex items-center justify-between p-2 border-b border-gray-200"
             >
-              {/* Product Link Wrapper */}
               <Link
-                to={`/product/${item.name}`}
+                to={`/product/${item.productId}`} // Changed from item.name to item.productId
                 className="absolute inset-0 z-10"
-                onClick={(e) => handleItemClick(item, e)}
+                onClick={handleItemClick}
               />
-
-              {/* Product Content */}
               <div className="flex items-center w-full">
                 <img
                   src={item.imagea}
@@ -90,7 +89,7 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
                     {item.name}
                   </p>
                   <div className="flex items-center space-x-2 text-xs text-gray-500">
-                    <span>Tk {item.specialprice}</span>
+                    <span>Tk {item.price}</span> {/* Changed from specialprice to price */}
                     <span>x</span>
                     <input
                       type="number"
@@ -103,8 +102,6 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
                   </div>
                 </div>
               </div>
-
-              {/* Remove Button */}
               <button
                 onClick={(event) => handleRemove(item.productId, event)}
                 className="text-red-500 hover:text-red-700 z-20 relative"
@@ -116,7 +113,6 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
         )}
       </div>
 
-      {/* Keep footer buttons */}
       {cartItems.length > 0 && (
         <div className="p-2">
           <Link
@@ -134,3 +130,5 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
     </div>
   );
 };
+
+export default CartDropdown;

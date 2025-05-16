@@ -177,38 +177,6 @@ const HeroSection = () => {
             />
           </Box>
         </Box>
-
-        {/* Navigation for image sets */}
-        <IconButton
-          onClick={handlePrevSet}
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: 8,
-            transform: 'translateY(-50%)',
-            zIndex: 50,
-            bgcolor: 'rgba(0, 0, 0, 0.5)',
-            color: 'white',
-            '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.7)' },
-          }}
-        >
-          <ArrowBackIos />
-        </IconButton>
-        <IconButton
-          onClick={handleNextSet}
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            right: 8,
-            transform: 'translateY(-50%)',
-            zIndex: 50,
-            bgcolor: 'rgba(0, 0, 0, 0.5)',
-            color: 'white',
-            '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.7)' },
-          }}
-        >
-          <ArrowForwardIos />
-        </IconButton>
       </Box>
 
       {/* Mobile View */}
@@ -303,36 +271,6 @@ const HeroSection = () => {
             />
           </Box>
         </Box>
-
-        {/* Navigation for image sets */}
-        <IconButton
-          onClick={handlePrevSet}
-          sx={{
-            position: 'absolute',
-            top: '50px',
-            left: 8,
-            zIndex: 50,
-            bgcolor: 'rgba(0, 0, 0, 0.5)',
-            color: 'white',
-            '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.7)' },
-          }}
-        >
-          <ArrowBackIos />
-        </IconButton>
-        <IconButton
-          onClick={handleNextSet}
-          sx={{
-            position: 'absolute',
-            top: '50px',
-            right: 8,
-            zIndex: 50,
-            bgcolor: 'rgba(0, 0, 0, 0.5)',
-            color: 'white',
-            '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.7)' },
-          }}
-        >
-          <ArrowForwardIos />
-        </IconButton>
       </Box>
     </Box>
   );
