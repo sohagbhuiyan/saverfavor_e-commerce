@@ -1,13 +1,163 @@
+// import React, { useEffect } from "react";
+// import { useDispatch, useSelector } from "react-redux";
+// import { useParams } from "react-router-dom";
+// import { fetchPCComponents, fetchPCPartsByBuilderId } from "../../../store/pcbuilderSlice";
+// import {
+//   Box,
+//   Typography,
+//   CircularProgress,
+//   Alert,
+//   Button,
+//   Card,
+//   CardContent,
+//   CardMedia,
+// } from "@mui/material";
+// import { API_BASE_URL } from "../../../store/api";
+
+// const FALLBACK_IMAGE = "/images/placeholder.png";
+
+// const ComponentProductsPage = () => {
+//   const dispatch = useDispatch();
+//   const { categoryName } = useParams();
+//   const { components, categoryParts, loading, error } = useSelector((state) => state.pcBuilder);
+
+//   const selectedCategory = components.find(
+//     (component) => component.name.toLowerCase() === categoryName.toLowerCase()
+//   );
+
+//   useEffect(() => {
+//     if (components.length === 0) {
+//       dispatch(fetchPCComponents());
+//     }
+//     if (selectedCategory?.id) {
+//       dispatch(fetchPCPartsByBuilderId(selectedCategory.id));
+//     }
+//   }, [dispatch, components, selectedCategory]);
+
+//   useEffect(() => {
+//     if (categoryParts.length > 0) {
+//       console.log("Fetched parts for category", categoryName, ":", categoryParts);
+//       categoryParts.forEach((part) => {
+//         console.log(
+//           "Image URL for",
+//           part.name,
+//           ":",
+//           part.imagea ? `${API_BASE_URL}/images/${part.imagea}` : FALLBACK_IMAGE
+//         );
+//       });
+//     }
+//   }, [categoryParts, categoryName]);
+
+//   return (
+//     <Box sx={{ maxWidth: "1200px", mx: "auto", px: { xs: 2, sm: 3 }, py: 4 }}>
+//       <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center">
+//         {selectedCategory ? `${selectedCategory.name} Parts` : "Category Not Found"}
+//       </Typography>
+//       {loading.categoryParts ? (
+//         <Box display="flex" justifyContent="center" my={4}>
+//           <CircularProgress />
+//         </Box>
+//       ) : error.categoryParts ? (
+//         <Alert severity="error" sx={{ mb: 4, justifyContent: "center" }}>
+//           {error.categoryParts}
+//         </Alert>
+//       ) : !selectedCategory ? (
+//         <Typography variant="h6" textAlign="center" my={4}>
+//           Category not found.
+//         </Typography>
+//       ) : categoryParts.length === 0 ? (
+//         <Typography variant="h6" textAlign="center" my={4}>
+//           No parts found for this category.
+//         </Typography>
+//       ) : (
+//         <Box
+//           sx={{
+//             display: "grid",
+//             gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
+//             gap: 3,
+//           }}
+//         >
+//           {categoryParts.map((part) => (
+//             <Card
+//               key={part.id}
+//               sx={{
+//                 maxWidth: 345,
+//                 mx: "auto",
+//                 borderRadius: 2,
+//                 boxShadow: 3,
+//                 transition: "0.3s",
+//                 "&:hover": {
+//                   boxShadow: 6,
+//                   transform: "translateY(-4px)",
+//                 },
+//                 display: "flex",
+//                 flexDirection: "column",
+//               }}
+//             >
+//               <CardMedia
+//                 component="img"
+//                 height="200"
+//                 image={
+//                   part.imagea ? `${API_BASE_URL}/images/${part.imagea}` : FALLBACK_IMAGE
+//                 }
+//                 alt={part.name}
+//                 sx={{ objectFit: "contain", p: 2 }}
+//                 onError={(e) => (e.target.src = FALLBACK_IMAGE)}
+//                 loading="lazy"
+//               />
+//               <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+//                 <Typography variant="h6" fontWeight="bold" mb={1}>
+//                   {part.name}
+//                 </Typography>
+//                 <Typography variant="body2" color="text.secondary" mb={2}>
+//                   {part.description || "No description available"}
+//                 </Typography>
+//                 <Typography variant="body2" mb={1}>
+//                   <strong>Performance:</strong> {part.performance || "N/A"}
+//                 </Typography>
+//                 <Typography variant="body2" mb={1}>
+//                   <strong>Other Info:</strong> {part.ability || "N/A"}
+//                 </Typography>
+//                 <Typography variant="body2" mb={1} color="text.secondary" sx={{ textDecoration: part.specialprice ? "line-through" : "none" }}>
+//                   <strong>Regular Price:</strong> ${part.regularprice?.toFixed(2) || "N/A"}
+//                 </Typography>
+//                 {part.specialprice && (
+//                   <Typography variant="body1" color="success.main" mb={1}>
+//                     <strong>Special Price:</strong> ${part.specialprice.toFixed(2)}
+//                   </Typography>
+//                 )}
+//                 <Typography variant="body2" mb={2}>
+//                   <strong>Quantity:</strong> {part.quantity || "N/A"}
+//                 </Typography>
+//                 <Button
+//                   variant="contained"
+//                   color="primary"
+//                   sx={{ mt: "auto", borderRadius: 1 }}
+//                   onClick={() => console.log(`Add ${part.name} to cart`)} // Placeholder
+//                 >
+//                   Add to Cart
+//                 </Button>
+//               </CardContent>
+//             </Card>
+//           ))}
+//         </Box>
+//       )}
+//     </Box>
+//   );
+// };
+
+// export default ComponentProductsPage;
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { fetchPCComponents, fetchPCPartsByBuilderId } from "../../../store/pcbuilderSlice";
-import { Box, Typography, CircularProgress, Alert } from "@mui/material";
+import { fetchPCComponents, fetchPCPartsByBuilderId, clearPCBError } from "../../../store/pcbuilderSlice";
+import { Box, Typography, CircularProgress, Alert, Button } from "@mui/material";
 import { API_BASE_URL } from "../../../store/api";
 
 const FALLBACK_IMAGE = "/images/placeholder.png";
 
 const ComponentProductsPage = () => {
+
   const dispatch = useDispatch();
   const { categoryName } = useParams();
   const { components, categoryParts, loading, error } = useSelector((state) => state.pcBuilder);
@@ -15,7 +165,7 @@ const ComponentProductsPage = () => {
   const selectedCategory = components.find(
     (component) => component.name.toLowerCase() === categoryName.toLowerCase()
   );
-
+ 
   useEffect(() => {
     if (components.length === 0) {
       dispatch(fetchPCComponents());
@@ -28,12 +178,19 @@ const ComponentProductsPage = () => {
   useEffect(() => {
     console.log("Fetched parts for category", categoryName, ":", categoryParts);
     categoryParts.forEach((part) => {
-      console.log("Image URL for", part.name, ":", `${API_BASE_URL}/images/${part.image}`);
+      console.log("Image URL for", part.name, ":", `${API_BASE_URL}/images/${part.imagea}`);
     });
   }, [categoryParts, categoryName]);
 
+  const handleRetry = () => {
+    dispatch(clearPCBError());
+    if (selectedCategory?.id) {
+      dispatch(fetchPCPartsByBuilderId(selectedCategory.id));
+    }
+  };
+
   return (
-    <Box sx={{ maxWidth: "1200px", mx: "auto", px: 2, py: 4 }}>
+    <Box sx={{ maxWidth: "1200px", mx: "auto", px: { xs: 1, sm: 2 }, py: 4 }}>
       <Typography variant="h4" fontWeight="bold" mb={4}>
         {selectedCategory ? `${selectedCategory.name} Parts` : "Category Not Found"}
       </Typography>
@@ -42,9 +199,14 @@ const ComponentProductsPage = () => {
           <CircularProgress />
         </Box>
       ) : error.categoryParts ? (
-        <Alert severity="error" sx={{ mb: 4 }}>
-          {error.categoryParts}
-        </Alert>
+        <Box mb={4}>
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error.categoryParts}
+          </Alert>
+          <Button variant="contained" color="primary" onClick={handleRetry}>
+            Retry
+          </Button>
+        </Box>
       ) : !selectedCategory ? (
         <Typography variant="h6" textAlign="center" my={4}>
           Category not found.
@@ -76,7 +238,7 @@ const ComponentProductsPage = () => {
               }}
             >
               <img
-                src={part.image ? `${API_BASE_URL}/images/${part.image}` : FALLBACK_IMAGE}
+                src={part.imagea ? `${API_BASE_URL}/images/${part.imagea}` : FALLBACK_IMAGE}
                 alt={part.name}
                 style={{ width: "100%", height: 160, objectFit: "contain", borderRadius: 4, mb: 2 }}
                 onError={(e) => (e.target.src = FALLBACK_IMAGE)}

@@ -23,23 +23,50 @@ const removeCartForUser = (state) => {
   localStorage.removeItem(`cart_${email}`);
 };
 
+// Async thunk for fetching cart items
+export const fetchCartItemsAsync = createAsyncThunk(
+  'cart/fetchCartItemsAsync',
+  async (_, { getState, rejectWithValue }) => {
+    const state = getState();
+    const token = state.auth.token || localStorage.getItem('authToken');
+    const userId = state.auth.profile?.id;
+
+    if (!userId || !token) {
+      return rejectWithValue('User not authenticated');
+    }
+
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/api/addcart/user/get/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data || [];
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch cart items');
+    }
+  }
+);
+
 // Async thunk for adding to cart
 export const addToCartAsync = createAsyncThunk(
   'cart/addToCartAsync',
-  async ({ productDetailsId, quantity }, { getState, rejectWithValue }) => {
+  async ({ productDetailsId, quantity, name, price, imagea }, { getState, rejectWithValue }) => {
     const state = getState();
     const token = state.auth.token || localStorage.getItem('authToken');
     const profile = state.auth.profile;
-    const user = state.auth.user;
-    
-    if (!token || !profile?.email || !user?.id) {
-      // For guest users, just return the item without API call
-      return { productDetailsId, quantity, isGuest: true };
+    const userId = profile?.id;
+
+    if (!token || !profile?.email || !userId) {
+      return { productDetailsId, quantity, name, price, imagea, isGuest: true };
     }
 
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/productdetails/AddTocart/save?userId=${user.id}&productDetailsId=${productDetailsId}&quantity=${quantity}`,
+        `${API_BASE_URL}/api/productdetails/AddTocart/save?userId=${userId}&productDetailsId=${productDetailsId}&quantity=${quantity}`,
         {},
         {
           headers: {
@@ -47,37 +74,84 @@ export const addToCartAsync = createAsyncThunk(
           },
         }
       );
-      return response.data;
+      return { ...response.data, name, price, imagea };
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to add to cart');
     }
   }
 );
 
-// Async thunk for fetching cart items from API
-export const fetchCartItems = createAsyncThunk(
-  'cart/fetchCartItems',
-  async (_, { getState, rejectWithValue }) => {
+// Async thunk for removing from cart
+export const removeFromCartAsync = createAsyncThunk(
+  'cart/removeFromCartAsync',
+  async ({ cartId, productId }, { getState, rejectWithValue }) => {
     const state = getState();
     const token = state.auth.token || localStorage.getItem('authToken');
-    const user = state.auth.user;
-    
-    if (!token || !user?.id) {
-      return getCartForUser(state); // Return local cart for guests
-    }
 
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/api/productdetails/cart/${user.id}`,
+      await axios.delete(
+        `${API_BASE_URL}/api/addcart/remove/${cartId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      return response.data;
+      return productId;
     } catch (error) {
-      return rejectWithValue(error.response?.data || 'Failed to fetch cart items');
+      return rejectWithValue(error.response?.data || 'Failed to remove from cart');
+    }
+  }
+);
+
+export const placeOrderFromCartAsync = createAsyncThunk(
+  'cart/placeOrderFromCartAsync',
+  async (orderData, { getState, rejectWithValue }) => {
+    const state = getState();
+    const token = state.auth.token || localStorage.getItem('authToken');
+    const userId = state.auth.profile?.id;
+    const cartItems = state.cart.items;
+
+    if (!token || !userId) {
+      return rejectWithValue('User not authenticated');
+    }
+
+    if (!cartItems || cartItems.length === 0) {
+      return rejectWithValue('Cart is empty');
+    }
+
+    try {
+      // API expects one item per request based on Postman params
+      const orderPromises = cartItems.map(async (item) => {
+        const response = await axios.post(
+          `${API_BASE_URL}/api/orders/AddToCadrt/productdetails/save?userId=${userId}&addToCartId=${item.cartId}&productDetailsId=${item.productId}`,
+          {
+            ...orderData,
+            quantity: item.quantity,
+            productname: item.name,
+            price: item.price * item.quantity,
+            productDetails: {
+              id: item.productId,
+              name: item.name,
+              regularprice: item.price,
+              specialprice: item.price,
+              imagea: item.imagea,
+            },
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        return response.data;
+      });
+
+      const results = await Promise.all(orderPromises);
+      return results; // Array of order responses
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to place order');
     }
   }
 );
@@ -85,9 +159,9 @@ export const fetchCartItems = createAsyncThunk(
 const cartSlice = createSlice({
   name: 'cart',
   initialState: {
-    items: [], // Initialize empty; populated on first access
+    items: [],
     count: 0,
-    status: 'idle', // for async thunk status
+    status: 'idle',
     error: null,
   },
   reducers: {
@@ -130,25 +204,45 @@ const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchCartItemsAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchCartItemsAsync.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.items = action.payload.map((item) => ({
+          cartId: item.cartId,
+          productId: item.productId || item.productDetailsId,
+          name: item.name || 'Unknown Product',
+          price: item.price || 0 ,
+          quantity: item.quantity || 1,
+          imagea: item.imagea || '',
+        }));
+        state.count = state.items.reduce((acc, item) => acc + item.quantity, 0);
+        saveCartForUser(state, state.items);
+      })
+      .addCase(fetchCartItemsAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+        state.items = getCartForUser(state);
+        state.count = state.items.reduce((acc, item) => acc + item.quantity, 0);
+      })
       .addCase(addToCartAsync.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(addToCartAsync.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        
-        // Handle guest user or API response
         const newItem = action.payload;
         const isGuest = newItem.isGuest;
-        
-        // Format item for local storage
+
         const localItem = {
+          cartId: newItem.cartId,
           productId: newItem.productDetailsId || newItem.productId,
-          name: newItem.name || action.meta.arg.name || 'Unknown Product',
-          price: newItem.price || action.meta.arg.price || 0,
-          quantity: newItem.quantity || action.meta.arg.quantity || 1,
-          imagea: newItem.imagea || action.meta.arg.imagea || '',
+          name: newItem.name || 'Unknown Product',
+          price: newItem.price || 0,
+          quantity: newItem.quantity || 1,
+          imagea: newItem.imagea || '',
         };
-        
+
         const existingItem = state.items.find((item) => item.productId === localItem.productId);
 
         if (existingItem) {
@@ -158,8 +252,7 @@ const cartSlice = createSlice({
         }
 
         state.count = state.items.reduce((acc, item) => acc + item.quantity, 0);
-        
-        // Only save to local storage for guest users
+
         if (isGuest) {
           saveCartForUser(state, state.items);
         }
@@ -167,8 +260,7 @@ const cartSlice = createSlice({
       .addCase(addToCartAsync.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
-        
-        // Fallback to local cart
+
         const newItem = action.meta.arg;
         const localItem = {
           productId: newItem.productDetailsId,
@@ -177,7 +269,7 @@ const cartSlice = createSlice({
           quantity: newItem.quantity,
           imagea: newItem.imagea || '',
         };
-        
+
         const existingItem = state.items.find((item) => item.productId === localItem.productId);
 
         if (existingItem) {
@@ -189,20 +281,31 @@ const cartSlice = createSlice({
         state.count = state.items.reduce((acc, item) => acc + item.quantity, 0);
         saveCartForUser(state, state.items);
       })
-      .addCase(fetchCartItems.pending, (state) => {
+      .addCase(removeFromCartAsync.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(fetchCartItems.fulfilled, (state, action) => {
+      .addCase(removeFromCartAsync.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.items = action.payload;
+        const productId = action.payload;
+        state.items = state.items.filter((item) => item.productId !== productId);
         state.count = state.items.reduce((acc, item) => acc + item.quantity, 0);
+        saveCartForUser(state, state.items);
       })
-      .addCase(fetchCartItems.rejected, (state, action) => {
+      .addCase(removeFromCartAsync.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
-        // Fallback to local storage
-        state.items = getCartForUser(state);
-        state.count = state.items.reduce((acc, item) => acc + item.quantity, 0);
+      }).addCase(placeOrderFromCartAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(placeOrderFromCartAsync.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.items = []; // Clear cart
+        state.count = 0;
+        removeCartForUser(state); // Clear local storage
+      })
+      .addCase(placeOrderFromCartAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
       });
   },
 });

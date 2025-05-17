@@ -40,7 +40,7 @@ import AdminProtectedRoute from './components/Protected/AdminProtectedRoute';
 import Collections from './components/user/body/collection/Collections';
 import PCBuilder from './components/admin/systemBuild/PCBuilder';
 import PCBuilderPage from './components/user/pcbuilder/PCBuilderPage';
-// import ComponentProductsPage from './components/user/pcbuilder/ComponentProductsPage';
+import ComponentProductsPage from './components/user/pcbuilder/ComponentProductsPage';
 import ViewCategories from './components/admin/products/ViewCategories';
 import ViewSystemBuilder from './components/admin/systemBuild/ViewSystemBuilder';
 import CheckoutPage from './components/user/product/CheckOutPage';
@@ -49,7 +49,7 @@ import UserOrders from './components/user/product/UserOrders';
 import AdminProfileView from './components/admin/adminProfile/AdminProfileView';
 import AddSlider from './components/admin/hero/AddSlider';
 import Addinfo from './components/admin/hero/Addinfo';
-// import ComponentProductsPage from './components/user/pcbuilder/ComponentProductsPage';
+
 
 function App() {    
   return (
@@ -67,10 +67,10 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="product/:id" element={<ProductviewPage />} />
           <Route path="wishlist" element={<WishlistPage />} />
-          <Route path="cart" element={<CartPage />} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="compare" element={<ComparePage />} />
           <Route path="/pc-builder" element={<PCBuilderPage />} />
-          {/* <Route path="/pc-builder/:componentType" element={<ComponentProductsPage />} /> */}
+          <Route path="/pc-builder/:categoryName" element={<ComponentProductsPage />} />
 
           {/* About Routes */}
           <Route path="about-us" element={<AboutUs />} />

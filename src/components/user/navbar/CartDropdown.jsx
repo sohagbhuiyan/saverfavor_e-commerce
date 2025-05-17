@@ -1,26 +1,36 @@
 import { useRef, useEffect } from "react";
 import { Trash } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart, updateQuantity } from "../../../store/cartSlice";
-import { Link } from "react-router-dom";
+import { removeFromCart, removeFromCartAsync, updateQuantity } from "../../../store/cartSlice";
+import { Link, useNavigate } from "react-router-dom"; // Added useNavigate
 import { FaTimes } from "react-icons/fa";
 
 export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRef }) => {
   const dropdownRef = useRef(null);
+  const navigate = useNavigate(); // For navigation to CartPage
   const cartItems = useSelector((state) => state.cart.items);
+  const { profile, token } = useSelector((state) => state.auth);
+  const { error } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
- 
+
   const containerClasses = position === "desktop"
     ? "absolute md:-left-15 right-0 top-8 w-60 md:w-80 bg-white shadow-lg rounded-lg p-2 z-50 text-black"
     : "fixed bottom-14 left-8 right-8 bg-gray-100 shadow-lg rounded-lg p-2 z-50 text-black max-h-100 overflow-y-auto";
 
   const imageSize = position === "desktop" ? "w-16 h-16" : "w-12 h-12";
 
+  // Limit to 5 items for display
+  const displayedItems = cartItems.slice(0, 5);
+  const hasMoreItems = cartItems.length > 5;
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        isOpen && dropdownRef.current && !dropdownRef.current.contains(event.target) && 
-        cartIconRef.current && !cartIconRef.current.contains(event.target)
+        isOpen &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        cartIconRef.current &&
+        !cartIconRef.current.contains(event.target)
       ) {
         onClose();
       }
@@ -32,9 +42,13 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
     };
   }, [isOpen, onClose, cartIconRef]);
 
-  const handleRemove = (productId, event) => {
+  const handleRemove = (cartId, productId, event) => {
     event.stopPropagation();
-    dispatch(removeFromCart(productId));
+    if (profile?.id && token && cartId) {
+      dispatch(removeFromCartAsync({ cartId, productId }));
+    } else {
+      dispatch(removeFromCart(productId));
+    }
   };
 
   const handleQuantityChange = (productId, newQuantity, event) => {
@@ -50,31 +64,38 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
     onClose();
   };
 
+  const handleViewCartClick = () => {
+    onClose();
+    navigate("/cart"); // Navigate to CartPage
+  };
+
   if (!isOpen) return null;
 
   return (
     <div className={containerClasses} ref={dropdownRef} onClick={(e) => e.stopPropagation()}>
       <div className="flex justify-between items-center border-b border-gray-400">
         <h3 className="text-lg font-semibold">Cart ({cartItems.length})</h3>
-        <button 
-          onClick={onClose} 
+        <button
+          onClick={onClose}
           className="p-1 hover:bg-gray-200 rounded-full"
         >
           <FaTimes className="text-lg cursor-pointer text-gray-600" />
         </button>
       </div>
 
+      {error && <p className="text-red-500 text-center text-sm mt-2">{error}</p>}
+
       <div className={`mt-2 ${position === "desktop" ? "max-h-90" : ""} overflow-y-auto`}>
         {cartItems.length === 0 ? (
           <p className="text-center text-gray-500">Your cart is empty</p>
         ) : (
-          cartItems.map((item) => (
+          displayedItems.map((item) => (
             <div
               key={item.productId}
               className="group relative flex items-center justify-between p-2 border-b border-gray-200"
             >
               <Link
-                to={`/product/${item.productId}`} // Changed from item.name to item.productId
+                to={`/product/${item.productId}`}
                 className="absolute inset-0 z-10"
                 onClick={handleItemClick}
               />
@@ -89,7 +110,7 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
                     {item.name}
                   </p>
                   <div className="flex items-center space-x-2 text-xs text-gray-500">
-                    <span>Tk {item.price}</span> {/* Changed from specialprice to price */}
+                    <span>Tk {item.price}</span>
                     <span>x</span>
                     <input
                       type="number"
@@ -103,28 +124,41 @@ export const CartDropdown = ({ isOpen, onClose, position = "desktop", cartIconRe
                 </div>
               </div>
               <button
-                onClick={(event) => handleRemove(item.productId, event)}
+                onClick={(event) => handleRemove(item.cartId, item.productId, event)}
                 className="text-red-500 hover:text-red-700 z-20 relative"
               >
-                <Trash className="w-5 cursor-pointer h-5" />
+                <Trash className="w-5 cursor-pointer h-5 ml-3" />
               </button>
             </div>
           ))
+        )}
+        {hasMoreItems && (
+          <div className="text-center mt-2">
+            <button
+              onClick={handleViewCartClick}
+              className="text-blue-600 hover:underline text-sm"
+            >
+              View all {cartItems.length} items
+            </button>
+          </div>
         )}
       </div>
 
       {cartItems.length > 0 && (
         <div className="p-2">
-          <Link
-            to="/cart"
+          <button
+            onClick={handleViewCartClick}
             className="block w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded text-center"
-            onClick={onClose}
           >
             View Cart
-          </Link>
-          <button className="w-full mt-2 bg-green-500 hover:bg-green-600 text-white py-2 rounded">
-            Checkout
           </button>
+          <Link
+            to="/checkout"
+            className="block w-full mt-2 bg-green-500 hover:bg-green-600 text-white py-2 rounded text-center"
+            onClick={onClose}
+          >
+            Checkout
+          </Link>
         </div>
       )}
     </div>

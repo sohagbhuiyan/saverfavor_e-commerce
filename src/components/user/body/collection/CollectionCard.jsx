@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist } from "../../../../store/wishlistSlice";
 import { addToCartAsync } from "../../../../store/cartSlice";
 import { addToCompare } from "../../../../store/compareSlice";
-import { toast } from 'react-toastify';
+import toast,{ Toaster } from "react-hot-toast";
 
 const CollectionCard = ({
   id,
@@ -239,6 +239,7 @@ const CollectionCard = ({
               </div>
             </div>
           </div>
+          <Toaster/>
         </div>
       )}
     </>
