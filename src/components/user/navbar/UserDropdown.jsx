@@ -20,7 +20,7 @@ export const UserDropdown = ({ position = "desktop" }) => {
     if (isOpen && user?.email) {
       dispatch(fetchProfile());
     }
-  }, [isOpen, user, dispatch]);
+  }, [isOpen, dispatch]);
 
   const handleLogout = () => {
     dispatch(clearCart()); // 👈 Clear user's cart before logging out

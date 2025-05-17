@@ -120,7 +120,7 @@ const HeroSection = () => {
             </div>
 
             {/* Circle navigation for slides */}
-            <div className="absolute z-50 bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
               {imagesArray.map((_, index) => (
                 <div
                   key={index}
@@ -223,7 +223,7 @@ const HeroSection = () => {
               loading="lazy"
             />
           </div>
-          <div className="absolute bottom-1 z-50 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex space-x-2">
             {imagesArray.map((_, index) => (
               <div
                 key={index}

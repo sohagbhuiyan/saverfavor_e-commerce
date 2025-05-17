@@ -4,7 +4,7 @@ import { API_BASE_URL } from './api';
 
 // Helper functions for local storage
 const getUserEmail = (state) => {
-  return state.auth.profile?.email || 'guest';
+  return state.auth?.profile?.email || 'guest';
 };
 
 const getCartForUser = (state) => {
@@ -200,6 +200,7 @@ const cartSlice = createSlice({
       state.items = [];
       state.count = 0;
       removeCartForUser(state);
+      console.log("3\n\n\n\n\n\n\n", state);
     },
   },
   extraReducers: (builder) => {

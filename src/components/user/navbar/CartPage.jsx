@@ -93,7 +93,7 @@ const CartPage = () => {
             <div className="text-right">
               <p className="text-lg font-semibold">Total: Tk {calculateTotal()}</p>
               <Link
-                to="/checkout"
+                href="/checkout"
                 className="inline-block mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded"
               >
                 Proceed to Checkout

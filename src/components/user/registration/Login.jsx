@@ -41,6 +41,7 @@ const Login = () => {
     const result = await dispatch(loginUser(formData));
 
     if (loginUser.fulfilled.match(result)) {
+      
       navigate("/");
           toast.success("Login successfully", {
             duration: 3000,

@@ -164,7 +164,7 @@ const ViewSystemBuilder = () => {
                     <TableCell>{part.quantity || "N/A"}</TableCell>
                     <TableCell>
                       <img
-                        src={part.image ? `${API_BASE_URL}/images/${part.image}` : FALLBACK_IMAGE}
+                        src={part.imagea ? `${API_BASE_URL}/images/${part.imagea}` : FALLBACK_IMAGE}
                         alt={part.name}
                         style={{ width: 50, height: 50, objectFit: "contain", borderRadius: 4 }}
                         onError={(e) => (e.target.src = FALLBACK_IMAGE)}
