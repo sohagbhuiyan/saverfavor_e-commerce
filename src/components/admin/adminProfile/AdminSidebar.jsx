@@ -77,7 +77,7 @@ const AdminSidebar = () => {
           <Link
             to="/admin/products/view-brand"
             className={`flex items-center p-2 rounded-md ${
-              isActive("admin/products/add-brand")
+              isActive("admin/products/view-brand")
                 ? "bg-gray-700 text-blue-400"
                 : "hover:text-gray-400"
             }`}

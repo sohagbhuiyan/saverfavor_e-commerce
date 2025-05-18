@@ -212,6 +212,7 @@ const CollectionCard = ({
 
                 <div className="space-y-4">
                   <h2 className="text-2xl font-bold text-gray-900">{name}</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">{brandname}</h2>
                   <div className="space-y-2">
                     <p className="text-lg font-semibold text-gray-900">
                       {formatPrice(currentPrice)}
@@ -231,12 +232,7 @@ const CollectionCard = ({
                     </div>
                   )}
                   
-                  <button 
-                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                    onClick={handleAddToCart}
-                  >
-                    <FaShoppingCart /> Add to Cart
-                  </button>
+            
                 </div>
               </div>
             </div>

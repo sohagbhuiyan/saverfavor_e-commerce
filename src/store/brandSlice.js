@@ -1,4 +1,3 @@
-// brandSlice.js
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api, { API_BASE_URL } from './api';
 
@@ -47,6 +46,18 @@ export const fetchBrandById = createAsyncThunk(
   }
 );
 
+export const fetchProductsByBrand = createAsyncThunk(
+  'brands/fetchProductsByBrand',
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${API_BASE_URL}/api/productDetails/Brand/get/ById/${id}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch products by brand');
+    }
+  }
+);
+
 export const updateBrand = createAsyncThunk(
   'brands/update',
   async ({ id, brandname, token }, { rejectWithValue }) => {
@@ -78,7 +89,7 @@ export const deleteBrand = createAsyncThunk(
           'Content-Type': 'application/json'
         }
       });
-      return id; // Return the id of the deleted brand
+      return id;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Deleting brand failed');
     }
@@ -90,12 +101,16 @@ const brandSlice = createSlice({
   initialState: {
     items: [],
     selectedBrand: null,
+    productsByBrand: [],
     loading: false,
     error: null,
   },
   reducers: {
     clearSelectedBrand: (state) => {
       state.selectedBrand = null;
+    },
+    clearProductsByBrand: (state) => {
+      state.productsByBrand = [];
     }
   },
   extraReducers: (builder) => {
@@ -136,6 +151,18 @@ const brandSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(fetchProductsByBrand.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProductsByBrand.fulfilled, (state, action) => {
+        state.loading = false;
+        state.productsByBrand = action.payload;
+      })
+      .addCase(fetchProductsByBrand.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       .addCase(updateBrand.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -167,5 +194,5 @@ const brandSlice = createSlice({
   },
 });
 
-export const { clearSelectedBrand } = brandSlice.actions;
+export const { clearSelectedBrand, clearProductsByBrand } = brandSlice.actions;
 export const brandReducer = brandSlice.reducer;

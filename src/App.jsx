@@ -52,6 +52,7 @@ import Addinfo from './components/admin/hero/Addinfo';
 import AddBrand from './components/admin/products/AddBrand';
 import ViewBrand from './components/admin/products/ViewBrand';
 import BrandSection from './components/user/body/BrandSection';
+import BrandProductsPage from './components/user/body/BrandProductsPage';
 
 
 function App() {    
@@ -68,8 +69,9 @@ function App() {
           <Route path="exclusive-offers" element={<ExclusiveOffer />} />
           <Route path="news-media" element={<NewsMedia />} />
           <Route path="contact" element={<Contact />} />
-               <Route path="/brandname" element={<BrandSection />} />
-      <Route path="/brandname/:name" element={<BrandSection />} />
+          <Route path="/brandname" element={<BrandSection />} />
+          {/* <Route path="/brand/:id" element={<BrandProductsPage />} /> */}
+          {/* <Route path="/brandname/:name" element={<BrandSection />} /> */}
           <Route path="product/:id" element={<ProductviewPage />} />
           <Route path="wishlist" element={<WishlistPage />} />
           <Route path="/cart" element={<CartPage />} />

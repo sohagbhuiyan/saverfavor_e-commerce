@@ -41,7 +41,8 @@ const Collections = () => {
       return (
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.catagory?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.product?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+        product.product?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.title?.name?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
     // If no params, show all products
@@ -65,7 +66,7 @@ const Collections = () => {
               name={product.name}
               regularprice={product.regularprice}
               specialprice={product.specialprice}
-              brand = {product.brandname}
+              brandname = {product.brand?.brandname}
               title={product.title}
               details={product.details}
               specification={product.specification}
