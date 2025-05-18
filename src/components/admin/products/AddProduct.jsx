@@ -15,11 +15,10 @@ import { addProductDetails } from '../../../store/productSlice';
 import { API_BASE_URL } from '../../../store/api';
 
 const AddProduct = () => {
-
   const dispatch = useDispatch();
   const { loading, error, successMessage } = useSelector((state) => state.products);
   const token = useSelector((state) => state.auth.token) || localStorage.getItem("authToken");
-console.log("token=", token)
+
   const [formState, setFormState] = useState({
     productid: '',
     name: '',
@@ -31,34 +30,37 @@ console.log("token=", token)
     specification: '',
     catagory: { id: '' },
     product: { id: '' },
+    brand: { id: '' }, // Added brand field
   });
 
   const [imagea, setImageA] = useState(null);
   const [imageb, setImageB] = useState(null);
   const [imagec, setImageC] = useState(null);
-
   const [mainImagePreview, setMainImagePreview] = useState(null);
   const [additionalImagesPreviews, setAdditionalImagesPreviews] = useState([null, null]);
-
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [brands, setBrands] = useState([]); // Added brands state
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [catRes, prodRes] = await Promise.all([
+        const [catRes, prodRes, brandsRes] = await Promise.all([
           fetch(`${API_BASE_URL}/api/catagories/get`),
           fetch(`${API_BASE_URL}/api/Product/getall`),
+          fetch(`${API_BASE_URL}/api/brands/get/all`), // Fetch brands
         ]);
 
         const catData = await catRes.json();
         const prodData = await prodRes.json();
+        const brandsData = await brandsRes.json();
 
         setCategories(catData);
         setProducts(prodData);
+        setBrands(brandsData);
       } catch (err) {
-        console.error('Failed to fetch categories/products:', err);
+        console.error('Failed to fetch data:', err);
       }
     };
 
@@ -74,13 +76,17 @@ console.log("token=", token)
         catagory: { id: value },
         product: { id: '' },
       }));
-
       const filtered = products.filter((prod) => prod.catagory?.id === parseInt(value));
       setFilteredProducts(filtered);
     } else if (name === 'product.id') {
       setFormState((prev) => ({
         ...prev,
         product: { id: value },
+      }));
+    } else if (name === 'brand.id') { // Handle brand selection
+      setFormState((prev) => ({
+        ...prev,
+        brand: { id: value },
       }));
     } else {
       setFormState((prev) => ({
@@ -182,10 +188,25 @@ console.log("token=", token)
         </Select>
       </FormControl>
 
+      <FormControl fullWidth required>
+        <InputLabel>Brand</InputLabel>
+        <Select
+          name="brand.id"
+          value={formState.brand.id}
+          onChange={handleChange}
+          label="Brand"
+        >
+          <MenuItem value="">-- Select Brand --</MenuItem>
+          {brands.map((brand) => (
+            <MenuItem key={brand.id} value={brand.id}>{brand.brandname}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
       <TextField name="quantity" type="number" label="Quantity" onChange={handleChange} required />
       <TextField name="regularprice" type="number" label="Regular Price" onChange={handleChange} required />
       <TextField name="specialprice" type="number" label="Special Price" onChange={handleChange} required />
-      <TextField name="title" label="Title" onChange={handleChange} required/>
+      <TextField name="title" label="Title" onChange={handleChange} required />
       <TextField name="details" label="Details" fullWidth multiline rows={4} required onChange={handleChange} />
       <TextField name="specification" label="Specification" fullWidth multiline required rows={3} onChange={handleChange} />
 

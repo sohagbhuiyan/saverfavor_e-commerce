@@ -23,10 +23,6 @@ const ComponentProductsPage = () => {
     }
   }, [dispatch, components, selectedCategory]);
 
-  useEffect(() => {
-    console.log("Fetched parts for category", categoryName, ":", categoryParts);
-  }, [categoryParts, categoryName]);
-
   const handleRetry = () => {
     dispatch(clearPCBError());
     if (selectedCategory?.id) {
@@ -35,7 +31,7 @@ const ComponentProductsPage = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: "500px", mx: "auto", px: { xs: 1, sm: 2 }, py: 4 }}>
+    <Box sx={{ maxWidth: "1200px", px: { xs: 1, sm: 2 }, py: 4 }}>
       <Typography variant="h4" fontWeight="bold" mb={4}>
         {selectedCategory ? `${selectedCategory.name} Parts` : "Category Not Found"}
       </Typography>
@@ -64,7 +60,7 @@ const ComponentProductsPage = () => {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
+            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr 1fr 1fr" },
             gap: 2,
             px: { xs: 1, md: 5 },
           }}
@@ -74,7 +70,6 @@ const ComponentProductsPage = () => {
               key={part.id}
               id={part.id}
               imagea={part.imagea}
-              category={part.pcbuilder?.name || "Uncategorized"}
               name={part.name}
               regularprice={part.regularprice}
               specialprice={part.specialprice}

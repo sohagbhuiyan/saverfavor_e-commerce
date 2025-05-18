@@ -16,6 +16,7 @@ const CollectionCard = ({
   specialprice,
   title,
   product,
+  brandname,
   details,
   specification
 }) => {
@@ -173,6 +174,7 @@ const CollectionCard = ({
             <h3 className="text-sm font-semibold text-gray-700 truncate">{name}</h3>
             <p className="text-xs text-gray-600 line-clamp-2 min-h-[2rem]">{category}</p>
             <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem]">{title}</p>
+             <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem]">{brandname}</p>
             <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem]">{product}</p>
             <div className="flex flex-col items-center justify-center">
               <span className="text-sm font-bold text-gray-900">{formatPrice(currentPrice)}</span>

@@ -22,6 +22,7 @@ import {
   FaBatteryFull,
 } from "react-icons/fa";
 import { fetchCategoriesAndProducts } from "../../../store/categorySlice";
+import { FileBarChart, Gamepad2Icon, Printer } from "lucide-react";
 
 // Mapping of category name keywords to icons (case-insensitive)
 const iconMapping = {
@@ -32,7 +33,7 @@ const iconMapping = {
   monitor: <FaTv size={30} />,
   camera: <FaCamera size={30} />,
   photocopier: <FaPrint size={30} />,
-  printer: <FaPrint size={30} />,
+  printer: <Printer size={30} />,
   soundsystem: <FaSpeakerDeck size={30} />,
   sound: <FaSpeakerDeck size={30} />,
   store: <FaStore size={30} />,
@@ -52,6 +53,8 @@ const iconMapping = {
   tools: <FaTools size={30} />,
   battery: <FaBatteryFull size={30} />,
   power: <FaBatteryFull size={30} />,
+  gaming: <Gamepad2Icon size = {30} />,
+  office: <FileBarChart size = {30}/>
 };
 
 // Function to get icon based on category name

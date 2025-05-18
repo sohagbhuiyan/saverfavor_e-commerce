@@ -49,6 +49,9 @@ import UserOrders from './components/user/product/UserOrders';
 import AdminProfileView from './components/admin/adminProfile/AdminProfileView';
 import AddSlider from './components/admin/hero/AddSlider';
 import Addinfo from './components/admin/hero/Addinfo';
+import AddBrand from './components/admin/products/AddBrand';
+import ViewBrand from './components/admin/products/ViewBrand';
+import BrandSection from './components/user/body/BrandSection';
 
 
 function App() {    
@@ -65,6 +68,8 @@ function App() {
           <Route path="exclusive-offers" element={<ExclusiveOffer />} />
           <Route path="news-media" element={<NewsMedia />} />
           <Route path="contact" element={<Contact />} />
+               <Route path="/brandname" element={<BrandSection />} />
+      <Route path="/brandname/:name" element={<BrandSection />} />
           <Route path="product/:id" element={<ProductviewPage />} />
           <Route path="wishlist" element={<WishlistPage />} />
           <Route path="/cart" element={<CartPage />} />
@@ -90,7 +95,9 @@ function App() {
           {/* Admin Protected Routes */}
           <Route element={<AdminProtectedRoute />}>
             <Route path="/admin/add-slider" element={<AddSlider />} />  
-            <Route path="/admin/add-info" element={<Addinfo />} />   
+            <Route path="/admin/add-info" element={<Addinfo />} /> 
+            <Route path="/admin/products/add-brand" element={<AddBrand />} />
+            <Route path="/admin/products/view-brand" element={<ViewBrand />} /> 
             <Route path="/admin/view-profile" element={<AdminProfileView />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="admin/products/add-category" element={<AddCategory />} />

@@ -65,6 +65,7 @@ const Collections = () => {
               name={product.name}
               regularprice={product.regularprice}
               specialprice={product.specialprice}
+              brand = {product.brandname}
               title={product.title}
               details={product.details}
               specification={product.specification}

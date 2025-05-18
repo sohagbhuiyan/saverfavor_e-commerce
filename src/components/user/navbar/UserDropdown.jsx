@@ -42,8 +42,8 @@ export const UserDropdown = ({ position = "desktop" }) => {
   }, []);
 
   const containerClasses = position === "desktop"
-    ? "absolute top-8 -left-15 z-50 bg-gray-100 text-black px-3 py-2 rounded-lg shadow-lg min-w-[200px]"
-    : "fixed bottom-14 right-0 bg-gray-100 text-black px-3 py-2 rounded-lg shadow-lg min-w-[200px]";
+    ? "absolute top-8 -left-15 z-99 bg-gray-100 text-black px-3 py-2 rounded-lg shadow-lg min-w-[200px]"
+    : "fixed bottom-14 right-0 z-99 bg-gray-100 text-black px-3 py-2 rounded-lg shadow-lg min-w-[200px]";
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -54,7 +54,6 @@ export const UserDropdown = ({ position = "desktop" }) => {
         <FaUser className="text-lg hover:text-gray-300" />
         {position === "mobile" && <span className="text-xs ml-1">Profile</span>}
       </div>
-      
       {isOpen && (
         <div className={containerClasses}>
           {user ? (
@@ -83,7 +82,7 @@ export const UserDropdown = ({ position = "desktop" }) => {
               </button>
             </>
           ) : (
-            <>
+            <div className="z-99">
               <p className="text-sm text-gray-800 mb-2">Not logged in</p>
               <Link
                 to="/login"
@@ -92,7 +91,7 @@ export const UserDropdown = ({ position = "desktop" }) => {
               >
                 Log In
               </Link>
-            </>
+            </div>
           )}
         </div>
         

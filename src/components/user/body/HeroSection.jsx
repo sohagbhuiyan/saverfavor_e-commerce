@@ -71,7 +71,7 @@ const HeroSection = () => {
           flexDirection: 'row',
           gap: 1,
           alignItems: 'stretch',
-          height: { md: '384px' },
+          height: { md: '412px' },
           position: 'relative',
         }}
       >
@@ -120,12 +120,12 @@ const HeroSection = () => {
             </div>
 
             {/* Circle navigation for slides */}
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            <div className="absolute bottom-2 left-1/2 z-12 transform -translate-x-1/2 flex space-x-2">
               {imagesArray.map((_, index) => (
                 <div
                   key={index}
                   onClick={() => setCurrentSlideIndex(index)}
-                  className={`w-10 h-1 rounded-full cursor-pointer transition-all duration-300 ease-in ${
+                  className={`w-10 h-1  rounded-full cursor-pointer transition-all duration-300 ease-in ${
                     currentSlideIndex === index ? 'bg-gray-500' : 'bg-white'
                   }`}
                 />
@@ -141,6 +141,7 @@ const HeroSection = () => {
             maxWidth: '25%',
             display: 'flex',
             flexDirection: 'column',
+      
             gap: 2,
           }}
         >
@@ -193,7 +194,7 @@ const HeroSection = () => {
         <Box sx={{ position: 'relative', height: '200px', overflow: 'hidden', borderRadius: 1 }}>
           <div
             className={`absolute w-full h-full transition-transform duration-1000 ease-in-out ${
-              currentSlideIndex === 0 ? 'translate-x-0 z-10' : '-translate-x-full z-0'
+              currentSlideIndex === 0 ? 'translate-x-0 z-10' : '-translate-x-full z-10'
             }`}
             style={{ zIndex: currentSlideIndex === 0 ? 10 : 0 }}
           >
@@ -209,7 +210,7 @@ const HeroSection = () => {
           </div>
           <div
             className={`absolute w-full h-full transition-transform duration-1000 ease-in-out ${
-              currentSlideIndex === 1 ? 'translate-x-0 z-10' : 'translate-x-full z-0'
+              currentSlideIndex === 1 ? 'translate-x-0 z-10' : 'translate-x-full z-10'
             }`}
             style={{ zIndex: currentSlideIndex === 1 ? 10 : 0 }}
           >
@@ -261,7 +262,7 @@ const HeroSection = () => {
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover',
+        
                 borderRadius: '5px',
               }}
               onError={(e) => {

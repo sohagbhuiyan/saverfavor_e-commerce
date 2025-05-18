@@ -13,6 +13,7 @@ import {
   BuildCircleTwoTone,
   AddAPhoto,
   Info,
+  BrandingWatermarkRounded,
 } from "@mui/icons-material";
 
 const AdminSidebar = () => {
@@ -59,6 +60,31 @@ const AdminSidebar = () => {
             <Info className="mr-2" /> Add Info
           </Link>
         </li>
+
+        <li>
+          <Link
+            to="/admin/products/add-brand"
+            className={`flex items-center p-2 rounded-md ${
+              isActive("admin/products/add-brand")
+                ? "bg-gray-700 text-blue-400"
+                : "hover:text-gray-400"
+            }`}
+          >
+            <BrandingWatermarkRounded className="mr-2" /> Add Brand
+          </Link>
+        </li>
+                <li>
+          <Link
+            to="/admin/products/view-brand"
+            className={`flex items-center p-2 rounded-md ${
+              isActive("admin/products/add-brand")
+                ? "bg-gray-700 text-blue-400"
+                : "hover:text-gray-400"
+            }`}
+          >
+            <BrandingWatermarkRounded className="mr-2" /> View Brand
+          </Link>
+        </li>
         {/* Categories and Products */}
         <li>
           <Link
@@ -72,6 +98,7 @@ const AdminSidebar = () => {
             <Category className="mr-2" /> Add Category
           </Link>
         </li>
+
         <li>
           <Link
             to="/admin/products/view-categories"

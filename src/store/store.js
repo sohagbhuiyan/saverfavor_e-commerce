@@ -9,6 +9,7 @@ import categoryReducer from "./categorySlice";
 import pcBuilderReducer from "./pcbuilderSlice";
 import heroReducer from "./heroSlice";
 import infoReducer from "./infoSlice";
+import { brandReducer } from "./brandSlice"
 
 export const store = configureStore({
   reducer: {
@@ -18,9 +19,11 @@ export const store = configureStore({
     order: orderReducer,
     wishlist: wishlistReducer,
     compare: compareReducer,
+    brands: brandReducer,
     categories: categoryReducer,
     pcBuilder: pcBuilderReducer,
     hero: heroReducer,
     info: infoReducer,
+
   },
 });

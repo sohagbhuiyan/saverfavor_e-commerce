@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addCategory, addItem, fetchCategories } from '../../../store/categorySlice';
 
 const AddCategory = () => {
+  
   const dispatch = useDispatch();
   const { items: categories } = useSelector((state) => state.categories);
 

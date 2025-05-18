@@ -13,7 +13,6 @@ const FALLBACK_IMAGE = "/images/placeholder.png";
 const PCBuilderCard = ({
   id,
   imagea,
-  category,
   name,
   regularprice,
   specialprice,
@@ -107,7 +106,6 @@ const PCBuilderCard = ({
       addToWishlist({
         id,
         imagea: imagea ? `${API_BASE_URL}/images/${imagea}` : FALLBACK_IMAGE,
-        category,
         name,
         regularprice,
         specialprice,
@@ -125,7 +123,6 @@ const PCBuilderCard = ({
         regularprice,
         specialprice,
         imagea: imagea ? `${API_BASE_URL}/images/${imagea}` : FALLBACK_IMAGE,
-        category,
         description,
         specifications: { performance, ability, quantity },
       })
@@ -190,7 +187,6 @@ const PCBuilderCard = ({
 
           <div className="mt-2 text-center space-y-1">
             <h3 className="text-sm font-semibold text-gray-700 truncate">{name}</h3>
-            <p className="text-xs text-gray-600 line-clamp-2 min-h-[2rem]">{category}</p>
             <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem]">
               {description || "No description available"}
             </p>
@@ -223,7 +219,7 @@ const PCBuilderCard = ({
                 <FaTimes className="text-2xl cursor-pointer" />
               </button>
 
-              <div className="grid md:grid-cols-2 gap-6 mt-4">
+              <div className="grid md:grid-cols-2 gap-6 mt-2">
                 <div className="space-y-3">
                   <img
                     src={imagea ? `${API_BASE_URL}/images/${imagea}` : FALLBACK_IMAGE}
@@ -244,7 +240,6 @@ const PCBuilderCard = ({
                         </span>
                       )}
                     </p>
-                    <p className="text-sm text-gray-600">{category}</p>
                   </div>
 
                   <div className="space-y-2">
@@ -256,17 +251,7 @@ const PCBuilderCard = ({
                     <p className="text-sm text-gray-600">
                       <strong>Ability:</strong> {ability || "N/A"}
                     </p>
-                    <p className="text-sm text-gray-600">
-                      <strong>Quantity:</strong> {quantity || "N/A"}
-                    </p>
                   </div>
-
-                  <button
-                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                    onClick={handleAddToCart}
-                  >
-                    <FaShoppingCart /> Add to Cart
-                  </button>
                 </div>
               </div>
             </div>
