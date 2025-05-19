@@ -148,8 +148,6 @@ const CartCheckoutPage = () => {
     const requestDate = new Date().toISOString();
     let orderPayload;
 
-    if (cartItems) {
-      // Multiple items from cart
       orderPayload = {
         userId: user.id,
         items: cartItems.map((item) => ({
@@ -172,47 +170,7 @@ const CartCheckoutPage = () => {
         requestDate,
         status: 'Pending',
         total: calculateTotal(),
-      };
-    } else {
-      // Single product from ProductView
-      orderPayload = {
-        userId: user.id,
-        quantity,
-        productDetails: {
-          id: product.id,
-          productid: product.productid,
-          name: product.name,
-          quantity: product.quantity,
-          regularprice: product.regularprice,
-          specialprice: product.specialprice,
-          title: product.title,
-          details: product.details,
-          specification: product.specification,
-          imagea: product.imagea,
-          imageb: product.imageb,
-          imagec: product.imagec,
-          catagory: {
-            id: product.catagory.id,
-            name: product.catagory.name,
-          },
-          product: {
-            id: product.product.id,
-            name: product.product.name,
-            catagory: {
-              id: product.catagory.id,
-              name: product.catagory.name,
-            },
-          },
-        },
-        productid: product.productid,
-        productname: product.name,
-        districts: districts.find((d) => d.id === orderForm.districts)?.name || orderForm.districts,
-        upazila: upazilas.find((u) => u.id === orderForm.upazila)?.name || orderForm.upazila,
-        address: orderForm.address,
-        requestDate,
-        status: 'Pending',
-        total: calculateTotal(),
-      };
+      
     }
 
     dispatch(placeOrder(orderPayload))

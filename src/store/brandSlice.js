@@ -38,7 +38,7 @@ export const fetchBrandById = createAsyncThunk(
   'brands/fetchBrandById',
   async ({ id }, { rejectWithValue }) => {
     try {
-      const response = await api.get(`${API_BASE_URL}/api/brands/get/${id}`);
+      const response = await api.get(`${API_BASE_URL}/api/brands/get/${id}`); // get brand by id (individual)
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch brand');
@@ -50,7 +50,7 @@ export const fetchProductsByBrand = createAsyncThunk(
   'brands/fetchProductsByBrand',
   async ({ id }, { rejectWithValue }) => {
     try {
-      const response = await api.get(`${API_BASE_URL}/api/productDetails/Brand/get/ById/${id}`);
+      const response = await api.get(`${API_BASE_URL}/api/productDetails/Brand/get/ById/${id}`); // all productdetails show under the brand id select
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch products by brand');

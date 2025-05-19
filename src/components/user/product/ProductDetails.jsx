@@ -43,14 +43,14 @@ const ProductDetails = () => {
   return (
     <div className="px-2 md:p-4 md:px-6">
       {/* Header Tabs */}
-      <div className="flex max-w-full md:max-w-xl space-x-1 md:space-x-8 bg-gray-800 font-medium text-xs md:text-lg">
+      <div className="flex max-w-full space-x-1 md:space-x-14 rounded-t-md bg-gray-800/80 font-medium text-xs md:text-lg">
         {["specifications", "details", "qa", "review"].map((tab) => (
           <button
             key={tab}
             className={`px-4 py-2 cursor-pointer ${
               activeTab === tab
                 ? "border-b-2 border-red-400 text-white"
-                : "text-gray-400"
+                : "text-gray-200"
             }`}
             onClick={() => handleScroll(tab)}
           >
@@ -66,7 +66,7 @@ const ProductDetails = () => {
         </h2>
         {currentProduct ? (
           <div className="text-sm md:text-lg space-y-1">
-            <p><strong>Brand:</strong> {currentProduct.brand.brandname|| "N/A"}</p>
+            <p><strong>Brand:</strong> {currentProduct.brand.brandname|| currentProduct.catagory.name}</p>
             <p><strong>Model:</strong> {currentProduct.name}</p>
             <p><strong>Product ID:</strong> {currentProduct.productid}</p>
             <p><strong>Specification:</strong> {currentProduct.specification}</p>

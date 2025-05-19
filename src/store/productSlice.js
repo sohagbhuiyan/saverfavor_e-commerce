@@ -18,6 +18,24 @@ export const fetchProducts = createAsyncThunk(
     }
   }
 );
+// Add this to your productSlice.js
+
+export const fetchRelatedProducts = createAsyncThunk(
+  'products/fetchRelatedByCategory',
+  async (categoryId, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/productDetails/byCategory/${categoryId}`);
+      return response.data.map(product => ({
+        ...product,
+        regularprice: Number(product.regularprice),
+        specialprice: Number(product.specialprice),
+      }));
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 
 // Async thunk to add product
 export const addProductDetails = createAsyncThunk(
@@ -71,13 +89,14 @@ export const fetchProductById = createAsyncThunk(
 
 const productSlice = createSlice({
   name: 'products',
-  initialState: {
-    products: [],
-    currentProduct: null,
-    loading: false,
-    error: null,
-    successMessage: null,
-  },
+initialState: {
+  products: [],
+  currentProduct: null,
+  relatedProducts: [],
+  loading: false,
+  error: null,
+  successMessage: null,
+},
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -130,7 +149,25 @@ const productSlice = createSlice({
       .addCase(fetchProductById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      }); 
+      })
+       // Fetch related products by category
+      .addCase(fetchRelatedProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchRelatedProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.relatedProducts = action.payload.map(product => ({
+        ...product,
+        imagea: product.imagea ? `${API_BASE_URL}/images/${product.imagea}` : '',
+        imageb: product.imageb ? `${API_BASE_URL}/images/${product.imageb}` : '',
+        imagec: product.imagec ? `${API_BASE_URL}/images/${product.imagec}` : '',
+        }));
+      })
+      .addCase(fetchRelatedProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 

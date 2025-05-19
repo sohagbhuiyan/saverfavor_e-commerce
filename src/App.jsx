@@ -52,10 +52,25 @@ import Addinfo from './components/admin/hero/Addinfo';
 import AddBrand from './components/admin/products/AddBrand';
 import ViewBrand from './components/admin/products/ViewBrand';
 import BrandSection from './components/user/body/BrandSection';
-import BrandProductsPage from './components/user/body/BrandProductsPage';
+import BrandProductPage from './components/user/body/BrandProductPage';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchCartItemsAsync, initializeCart } from './store/cartSlice';
+import CartCheckoutPage from './components/user/product/CheckOutPage';
 
 
-function App() {    
+function App() { 
+  const dispatch = useDispatch();
+  const { profile, token } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (profile?.id && profile?.email && token) {
+      dispatch(fetchCartItemsAsync());
+    } else {
+      dispatch(initializeCart({ auth: { profile } }));
+    }
+  }, [dispatch, profile, token]);
+  
   return (
     <Router>
       <Routes>
@@ -69,16 +84,14 @@ function App() {
           <Route path="exclusive-offers" element={<ExclusiveOffer />} />
           <Route path="news-media" element={<NewsMedia />} />
           <Route path="contact" element={<Contact />} />
-          <Route path="/brandname" element={<BrandSection />} />
-          {/* <Route path="/brand/:id" element={<BrandProductsPage />} /> */}
-          {/* <Route path="/brandname/:name" element={<BrandSection />} /> */}
+          <Route path="/brand" element={<BrandSection />} />
           <Route path="product/:id" element={<ProductviewPage />} />
           <Route path="wishlist" element={<WishlistPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="compare" element={<ComparePage />} />
           <Route path="/pc-builder" element={<PCBuilderPage />} />
           <Route path="/pc-builder/:categoryName" element={<ComponentProductsPage />} />
-
+          <Route path="/brand/:id/products" element={<BrandProductPage />} />
           {/* About Routes */}
           <Route path="about-us" element={<AboutUs />} />
           <Route path="about-ceo" element={<AboutCEO />} />
@@ -89,6 +102,7 @@ function App() {
           <Route element={<UserProtectedRoute />}>
             <Route path="/profile" element={<ProfileView />} />
             <Route path="/profile/edit" element={<ProfileEdit />} />
+            <Route path="/cart-checkout" element={<CartCheckoutPage/>} />/
             <Route path="/view-orders" element={<UserOrders />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
