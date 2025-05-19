@@ -4,6 +4,7 @@ import HeroSection from "../body/HeroSection";
 import Collections from "../../user/body/collection/Collections";
 import UserInfo from "../body/UserInfo";
 import BrandSection from "../body/BrandSection";
+import Branch from "../body/Branch";
 
 const Home = ()=> {
 
@@ -14,6 +15,7 @@ const Home = ()=> {
         <Categories/>
         <Collections classname = " mb-2 "/> <hr/>
         <BrandSection/>
+        <Branch/>
         </>
       );
     }

@@ -27,8 +27,8 @@ const BrandProductPage = () => {
 
   return (
     <div className="py-5 px-3 md:px-10">
-      <h2 className="text-md md:text-2xl text-white bg-gray-800 font-semibold mb-4 p-4">
-        Products for Brand
+      <h2 className="text-md md:text-2xl text-white bg-gray-700 font-semibold mb-4 p-1">
+        Top Brand Products
       </h2>
       {productsByBrand.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 md:gap-6 lg:gap-8 mb-4">

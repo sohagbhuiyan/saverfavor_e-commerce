@@ -14,6 +14,7 @@ import {
   AddAPhoto,
   Info,
   BrandingWatermarkRounded,
+  AddBoxSharp,
 } from "@mui/icons-material";
 
 const AdminSidebar = () => {
@@ -133,6 +134,30 @@ const AdminSidebar = () => {
             }`}
           >
             <AddBox className="mr-2" /> Add Product
+          </Link>
+        </li>
+          <li>
+          <Link
+            to="/admin/add-branch"
+            className={`flex items-center p-2 rounded-md ${
+              isActive("admin/add-branch")
+                ? "bg-gray-700 text-blue-400"
+                : "hover:text-gray-400"
+            }`}
+          >
+            <AddBoxSharp className="mr-2" /> Add Branch
+          </Link>
+        </li>
+                  <li>
+          <Link
+            to="/admin/add-aboutus"
+            className={`flex items-center p-2 rounded-md ${
+              isActive("admin/add-aboutus")
+                ? "bg-gray-700 text-blue-400"
+                : "hover:text-gray-400"
+            }`}
+          >
+            <AddBoxSharp className="mr-2" /> About Us Add
           </Link>
         </li>
         {/* Orders */}

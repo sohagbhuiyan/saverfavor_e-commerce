@@ -57,6 +57,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { fetchCartItemsAsync, initializeCart } from './store/cartSlice';
 import CartCheckoutPage from './components/user/product/CheckOutPage';
+import Branch from './components/user/body/Branch';
+import AddBranch from './components/admin/dashboard/AddBranch';
+import AddAboutUs from './components/admin/footer/AddAboutUs';
 
 
 function App() { 
@@ -92,6 +95,8 @@ function App() {
           <Route path="/pc-builder" element={<PCBuilderPage />} />
           <Route path="/pc-builder/:categoryName" element={<ComponentProductsPage />} />
           <Route path="/brand/:id/products" element={<BrandProductPage />} />
+          <Route path="/branch" element={<Branch />} />
+
           {/* About Routes */}
           <Route path="about-us" element={<AboutUs />} />
           <Route path="about-ceo" element={<AboutCEO />} />
@@ -116,6 +121,8 @@ function App() {
             <Route path="/admin/products/view-brand" element={<ViewBrand />} /> 
             <Route path="/admin/view-profile" element={<AdminProfileView />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/admin/add-branch" element={<AddBranch />} />
+            <Route path="/admin/add-aboutus" element={<AddAboutUs />} /> 
             <Route path="admin/products/add-category" element={<AddCategory />} />
             <Route path="/admin/products/view-categories" element={<ViewCategories />} />
             <Route path="admin/products/view-product" element={<ViewProduct />} />
