@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaAngleDoubleRight, FaChevronDown } from "react-icons/fa";
+import { FaAngleDoubleRight, FaChevronDown, FaHome } from "react-icons/fa";
 import { useState } from "react";
 
 const DesktopMenu = ({ menuItems }) => {
@@ -10,11 +10,19 @@ const DesktopMenu = ({ menuItems }) => {
   const firstTenItems = menuItems.slice(0, 10);
   const remainingItems = menuItems.slice(10);
 
-  // Determine column count based on number of remaining items (optional)
   const columnClass = remainingItems.length > 6 ? "grid-cols-3" : "grid-cols-2";
 
   return (
     <div className="hidden md:flex items-center justify-center space-x-2 px-2 py-3 font-medium text-sm md:space-x-6 md:px-4 relative z-40">
+      
+      {/* HOME MENU ITEM */}
+      <div className="relative cursor-pointer group">
+        <Link to="/" className="flex items-center hover:text-gray-300">
+          <FaHome className="mr-1" />
+        </Link>
+      </div>
+
+      {/* CATEGORY ITEMS (FIRST 10) */}
       {firstTenItems.map((item, index) => (
         <div
           key={index}
@@ -26,7 +34,7 @@ const DesktopMenu = ({ menuItems }) => {
             {item.name}
           </Link>
 
-          {item.subMenu && item.subMenu.length > 0 && hoverIndex === index && (
+          {item.subMenu?.length > 0 && hoverIndex === index && (
             <div className="absolute top-full left-0 mt-0 w-64 bg-white text-black shadow-lg rounded-md border border-gray-300 z-40">
               {item.subMenu
                 .filter((subItem) => subItem.name && subItem.path)
@@ -44,7 +52,7 @@ const DesktopMenu = ({ menuItems }) => {
         </div>
       ))}
 
-      {/* More Items Dropdown */}
+      {/* MORE ITEMS DROPDOWN */}
       {remainingItems.length > 0 && (
         <div
           className="relative cursor-pointer group"

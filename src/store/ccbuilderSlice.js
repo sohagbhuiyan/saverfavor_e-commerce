@@ -10,7 +10,7 @@ export const fetchCCComponents = createAsyncThunk(
   "ccBuilder/fetchCCComponents",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/ccbuilder/get`);
+      const response = await axios.get(`${API_BASE_URL}/api/ccbuilder/get`); //all cc builder view
       const components = response.data;
       if (!Array.isArray(components)) {
         return rejectWithValue("Invalid response: Components data is not an array.");
@@ -28,7 +28,7 @@ export const fetchCCBuilderById = createAsyncThunk(
   "ccBuilder/fetchCCBuilderById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/ccbuilder/get/${id}`);
+      const response = await axios.get(`${API_BASE_URL}/api/ccbuilder/get/${id}`); // cc builder view by id
       const builder = response.data;
       if (!builder || typeof builder !== "object") {
         return rejectWithValue("Invalid response: Builder data is not valid.");
@@ -46,7 +46,7 @@ export const fetchCCItemsByBuilderId = createAsyncThunk(
   "ccBuilder/fetchCCItemsByBuilderId",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/ccbuilder/get/${id}`);
+      const response = await axios.get(`${API_BASE_URL}/api/ccbuilder/get/${id}`); //confused this api; As already find by id previously 
       const items = response.data;
       if (!Array.isArray(items)) {
         return rejectWithValue("Invalid response: Items data is not an array.");
@@ -64,7 +64,7 @@ export const fetchCCItems = createAsyncThunk(
   "ccBuilder/fetchCCItems",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/items/get`);
+      const response = await axios.get(`${API_BASE_URL}/api/items/get`); //all items view under cc builder
       const items = response.data;
       if (!Array.isArray(items)) {
         return rejectWithValue("Invalid response: Items data is not an array.");
@@ -82,7 +82,7 @@ export const fetchCCItemById = createAsyncThunk(
   "ccBuilder/fetchCCItemById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/items/get/${id}`);
+      const response = await axios.get(`${API_BASE_URL}/api/items/get/${id}`); // items view under cc builder
       const item = response.data;
       if (!item || typeof item !== "object") {
         return rejectWithValue("Invalid response: Item data is not valid.");
@@ -100,7 +100,7 @@ export const fetchCCItemDetailsById = createAsyncThunk(
   "ccBuilder/fetchCCItemDetailsById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/CCBuilder/Item/Details/get/${id}`);
+      const response = await axios.get(`${API_BASE_URL}/api/CCBuilder/Item/Details/get/${id}`); // item details view by under item & cc builder
       const itemDetails = response.data;
       if (!itemDetails || typeof itemDetails !== "object") {
         return rejectWithValue("Invalid response: Item details data is not valid.");
@@ -123,7 +123,7 @@ export const addCCComponent = createAsyncThunk(
       if (!token) return rejectWithValue("No authentication token found.");
 
       const response = await axios.post(
-        `${API_BASE_URL}/api/ccbuilder/save`,
+        `${API_BASE_URL}/api/ccbuilder/save`, //save cc builder
         { name },
         {
           headers: {
@@ -149,7 +149,7 @@ export const updateCCBuilder = createAsyncThunk(
       if (!token) return rejectWithValue("No authentication token found.");
 
       const response = await axios.put(
-        `${API_BASE_URL}/api/ccbuilder/updete/data/${id}`,
+        `${API_BASE_URL}/api/ccbuilder/updete/data/${id}`, // update cc builder 
         { name },
         {
           headers: {
@@ -169,7 +169,7 @@ export const updateCCBuilder = createAsyncThunk(
 // Async thunk to add a CC item (product) under a CC builder
 export const addCCItem = createAsyncThunk(
   "ccBuilder/addCCItem",
-  async ({ name, ccBuilderId, submenuType }, { rejectWithValue, getState }) => {
+  async ({ name, ccBuilderId }, { rejectWithValue, getState }) => {
     try {
       const token = getAuthToken(getState());
       if (!token) return rejectWithValue("No authentication token found.");
@@ -182,14 +182,13 @@ export const addCCItem = createAsyncThunk(
 
       const itemData = {
         name,
-        submenuType: submenuType || "default",
         ccBuilder: {
           id: selectedBuilder.id,
           name: selectedBuilder.name,
         },
       };
 
-      const response = await axios.post(`${API_BASE_URL}/api/items/save`, itemData, {
+      const response = await axios.post(`${API_BASE_URL}/api/items/save`, itemData, { // items save under ccbuilder
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -206,7 +205,7 @@ export const addCCItem = createAsyncThunk(
 // Async thunk to update a CC item
 export const updateCCItem = createAsyncThunk(
   "ccBuilder/updateCCItem",
-  async ({ id, name, ccBuilderId, submenuType }, { rejectWithValue, getState }) => {
+  async ({ id, name, ccBuilderId }, { rejectWithValue, getState }) => {
     try {
       const token = getAuthToken(getState());
       if (!token) return rejectWithValue("No authentication token found.");
@@ -219,14 +218,14 @@ export const updateCCItem = createAsyncThunk(
 
       const itemData = {
         name,
-        submenuType: submenuType || "default",
+      
         ccBuilder: {
           id: selectedBuilder.id,
           name: selectedBuilder.name,
         },
       };
 
-      const response = await axios.put(`${API_BASE_URL}/api/items/update/${id}`, itemData, {
+      const response = await axios.put(`${API_BASE_URL}/api/items/update/${id}`, itemData, { // update items
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -274,7 +273,7 @@ export const addCCItemDetails = createAsyncThunk(
       formData.append("ccbuilder", new Blob([JSON.stringify(ccbuilder)], { type: "application/json" }));
       if (image) formData.append("image", image);
 
-      const response = await axios.post(`${API_BASE_URL}/api/CCBuilder/Item/Ditels/save`, formData, {
+      const response = await axios.post(`${API_BASE_URL}/api/CCBuilder/Item/Ditels/save`, formData, { // add item details under item & cc builder
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
