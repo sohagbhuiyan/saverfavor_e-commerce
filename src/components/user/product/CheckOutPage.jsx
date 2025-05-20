@@ -1,20 +1,20 @@
-import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import toast, { Toaster } from 'react-hot-toast';
-import { placeOrder } from '../../../store/orderSlice';
-import { API_BASE_URL } from '../../../store/api';
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import toast, { Toaster } from "react-hot-toast";
+import { placeOrder } from "../../../store/orderSlice";
+import { API_BASE_URL } from "../../../store/api";
 
-const CartCheckoutPage = () => {
+const CheckoutPage = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, profile, token } = useSelector((state) => state.auth);
-  const { product, quantity, cartItems, cartTotal } = location.state || {};
+  const { product, quantity } = location.state || {};
   const [orderForm, setOrderForm] = useState({
-    districts: '',
-    upazila: '',
-    address: '',
+    districts: "",
+    upazila: "",
+    address: "",
   });
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
@@ -22,51 +22,46 @@ const CartCheckoutPage = () => {
   const [loadingUpazilas, setLoadingUpazilas] = useState(false);
 
   // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!user?.id || !profile?.email || !token) {
-      toast.error('Please log in to place an order.', { duration: 2000 });
-      navigate('/login', { state: { from: location.pathname } });
-    }
-  }, [user, profile, token, navigate, location.pathname]);
+  if (!user?.id || !profile?.email || !token) {
+    toast.error("Please log in to place an order.", { duration: 1000 });
+    navigate("/login", { state: { from: location.pathname } });
+    return null;
+  }
 
-  // Validate order source
-  useEffect(() => {
-    if (!product && !cartItems) {
-      toast.error('No items selected for checkout.', { duration: 2000 });
-      navigate('/');
-    }
-  }, [product, cartItems, navigate]);
+  if (!product) {
+    toast.error("No product selected.", { duration: 1000 });
+    navigate("/");
+    return null;
+  }
 
-  // Fetch districts on mount
+  // Fetch districts on component mount
   useEffect(() => {
     const fetchDistricts = async () => {
       setLoadingDistricts(true);
       try {
-        const cachedDistricts = JSON.parse(localStorage.getItem('districts') || '[]');
-        if (cachedDistricts.length > 0) {
-          setDistricts(cachedDistricts);
-          setLoadingDistricts(false);
-          return;
+        const response = await fetch("https://sohojapi.vercel.app/api/districts");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
-        const response = await fetch('https://sohojapi.vercel.app/api/districts');
-        if (!response.ok) throw new Error('Failed to fetch districts');
         const data = await response.json();
-        const districtsData = (Array.isArray(data) ? data : data.data || [])
-          .sort((a, b) => a.name.localeCompare(b.name));
+     
+        const districtsData = (Array.isArray(data) ? data : data.data || []).sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
         setDistricts(districtsData);
-        localStorage.setItem('districts', JSON.stringify(districtsData));
+        localStorage.setItem("districts", JSON.stringify(districtsData)); // Cache districts
         if (districtsData.length === 0) {
-          toast.warn('No districts available.', { duration: 2000 });
+          toast.error("No districts available.", { duration: 2000 });
         }
       } catch (error) {
-        const cachedDistricts = JSON.parse(localStorage.getItem('districts') || '[]');
+        const cachedDistricts = JSON.parse(localStorage.getItem("districts") || "[]");
         if (cachedDistricts.length > 0) {
           setDistricts(cachedDistricts);
-          toast.warn('Using cached districts.', { duration: 2000 });
+          toast.warn("Using cached districts due to API failure.", { duration: 2000 });
         } else {
-          toast.error('Failed to load districts.', { duration: 2000 });
+          toast.error("Failed to load districts. Please try again.", { duration: 2000 });
         }
+        console.error("Error fetching districts:", error);
       } finally {
         setLoadingDistricts(false);
       }
@@ -80,40 +75,28 @@ const CartCheckoutPage = () => {
       const fetchUpazilas = async () => {
         setLoadingUpazilas(true);
         try {
-          const cachedUpazilas = JSON.parse(
-            localStorage.getItem(`upazilas_${orderForm.districts}`) || '[]'
-          );
-          if (cachedUpazilas.length > 0) {
-            setUpazilas(cachedUpazilas);
-            setLoadingUpazilas(false);
-            return;
+          const response = await fetch(`https://sohojapi.vercel.app/api/upzilas/${orderForm.districts}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
           }
-
-          const response = await fetch(
-            `https://sohojapi.vercel.app/api/upzilas/${orderForm.districts}`
-          );
-          if (!response.ok) throw new Error('Failed to fetch upazilas');
           const data = await response.json();
-          const upazilasData = (Array.isArray(data) ? data : data.data || [])
-            .sort((a, b) => a.name.localeCompare(b.name));
-          setUpazilas(upazilasData);
-          localStorage.setItem(
-            `upazilas_${orderForm.districts}`,
-            JSON.stringify(upazilasData)
+          const upazilasData = (Array.isArray(data) ? data : data.data || []).sort((a, b) =>
+            a.name.localeCompare(b.name)
           );
+          setUpazilas(upazilasData);
+          localStorage.setItem(`upazilas_${orderForm.districts}`, JSON.stringify(upazilasData)); // Cache upazilas
           if (upazilasData.length === 0) {
-            toast.warn('No upazilas available for selected district.', { duration: 2000 });
+            toast.warn("No upazilas available for selected district.", { duration: 2000 });
           }
         } catch (error) {
-          const cachedUpazilas = JSON.parse(
-            localStorage.getItem(`upazilas_${orderForm.districts}`) || '[]'
-          );
+          const cachedUpazilas = JSON.parse(localStorage.getItem(`upazilas_${orderForm.districts}`) || "[]");
           if (cachedUpazilas.length > 0) {
             setUpazilas(cachedUpazilas);
-            toast.warn('Using cached upazilas.', { duration: 2000 });
+            toast.warn("Using cached upazilas due to API failure.", { duration: 2000 });
           } else {
-            toast.error('Failed to load upazilas.', { duration: 2000 });
+            toast.error("Failed to load upazilas. Please try again.", { duration: 2000 });
           }
+          console.error("Error fetching upazilas:", error);
         } finally {
           setLoadingUpazilas(false);
         }
@@ -121,258 +104,200 @@ const CartCheckoutPage = () => {
       fetchUpazilas();
     } else {
       setUpazilas([]);
-      setOrderForm((prev) => ({ ...prev, upazila: '' }));
+      setOrderForm((prev) => ({ ...prev, upazila: "" }));
     }
   }, [orderForm.districts]);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
+  
     setOrderForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const calculateTotal = () => {
-    if (cartItems) {
-      return cartTotal || cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
-    }
-    return ((product.specialprice || product.regularprice) * quantity).toFixed(2);
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
+    // Validate form fields
     if (!orderForm.districts || !orderForm.upazila || !orderForm.address) {
-      toast.error('Please fill in all required fields.', { duration: 2000 });
+      toast.error("Please fill in all required fields.", { duration: 2000 });
       return;
     }
 
     const requestDate = new Date().toISOString();
-    let orderPayload;
-
-    if (cartItems) {
-      // Multiple items from cart
-      orderPayload = {
-        userId: user.id,
-        items: cartItems.map((item) => ({
-          quantity: item.quantity,
-          productDetails: {
-            id: item.productId,
-            productid: item.productId,
-            name: item.name,
-            quantity: item.quantity,
-            regularprice: item.price,
-            specialprice: item.price,
-            imagea: item.imagea,
-          },
-          productid: item.productId,
-          productname: item.name,
-        })),
-        districts: districts.find((d) => d.id === orderForm.districts)?.name || orderForm.districts,
-        upazila: upazilas.find((u) => u.id === orderForm.upazila)?.name || orderForm.upazila,
-        address: orderForm.address,
-        requestDate,
-        status: 'Pending',
-        total: calculateTotal(),
-      };
-    } else {
-      // Single product from ProductView
-      orderPayload = {
-        userId: user.id,
-        quantity,
-        productDetails: {
-          id: product.id,
-          productid: product.productid,
-          name: product.name,
-          quantity: product.quantity,
-          regularprice: product.regularprice,
-          specialprice: product.specialprice,
-          title: product.title,
-          details: product.details,
-          specification: product.specification,
-          imagea: product.imagea,
-          imageb: product.imageb,
-          imagec: product.imagec,
+    const orderPayload = {
+      quantity,
+      catagory: {
+        id: product.catagory.id,
+        name: product.catagory.name,
+      },
+      product: {
+        id: product.product.id,
+        name: product.product.name,
+        catagory: {
+          id: product.catagory.id,
+          name: product.catagory.name,
+        },
+      },
+      productDetails: {
+        id: product.id,
+        productid: product.productid,
+        name: product.name,
+        quantity: product.quantity,
+        regularprice: product.regularprice,
+        specialprice: product.specialprice,
+        title: product.title,
+        details: product.details,
+        specification: product.specification,
+        imagea: product.imagea,
+        imageb: product.imageb,
+        imagec: product.imagec,
+        catagory: {
+          id: product.catagory.id,
+          name: product.catagory.name,
+        },
+        product: {
+          id: product.product.id,
+          name: product.product.name,
           catagory: {
             id: product.catagory.id,
             name: product.catagory.name,
           },
-          product: {
-            id: product.product.id,
-            name: product.product.name,
-            catagory: {
-              id: product.catagory.id,
-              name: product.catagory.name,
-            },
-          },
         },
-        productid: product.productid,
-        productname: product.name,
-        districts: districts.find((d) => d.id === orderForm.districts)?.name || orderForm.districts,
-        upazila: upazilas.find((u) => u.id === orderForm.upazila)?.name || orderForm.upazila,
-        address: orderForm.address,
-        requestDate,
-        status: 'Pending',
-        total: calculateTotal(),
-      };
-    }
+      },
+      productid: product.productid,
+      productname: product.name,
+      districts: districts.find((d) => d.id === orderForm.districts)?.name || orderForm.districts,
+      upazila: upazilas.find((u) => u.id === orderForm.upazila)?.name || orderForm.upazila,
+      address: orderForm.address,
+      requestDate,
+      userId: user.id,
+      status: "Pending",
+    };
+
+    console.log("Submitting order payload:", orderPayload);
 
     dispatch(placeOrder(orderPayload))
       .unwrap()
       .then((response) => {
-        toast.success('Order placed successfully!', {
-          duration: 3000,
-          style: { background: '#10B981', color: '#FFFFFF', fontWeight: 'bold' },
-        });
-        navigate('/order-confirmation', {
-          state: { order: { ...orderPayload, orderId: response.orderId || response.id } },
-        });
+     
+      toast.success("Order placed successfully!", {
+      duration: 3000,
+      style: { background: "#10B981", color: "#FFFFFF", fontWeight: "bold" },
+    });
+        navigate("/order-confirmation", { state: { order: { ...orderPayload, orderId: response.orderId || response.id } }});
       })
       .catch((error) => {
-        toast.error(`Order failed: ${error.message || 'Unknown error'}`, { duration: 3000 });
+        console.error("Order submission failed:", error);
+        toast.error(`Order failed: ${error.message || error}`, { duration: 3000 });
       });
   };
 
   return (
-    <div className='p-4 sm:p-8 max-w-5xl mx-auto'>
-      <h2 className='text-2xl font-bold mb-6'>Checkout</h2>
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8'>
+    <div className="p-8 max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6">Checkout</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Order Summary */}
-        <div className='bg-white p-4 sm:p-6 rounded-lg shadow-sm'>
-          <h3 className='text-lg font-semibold mb-4'>Order Summary</h3>
-          {cartItems ? (
-            <div className='space-y-4'>
-              {cartItems.map((item) => (
-                <div key={item.productId} className='flex gap-4'>
-                  <img
-                    src={item.imagea ? `${API_BASE_URL}/images/${item.imagea}` : '/images/fallback-image.jpg'}
-                    alt={item.name}
-                    className='w-20 h-20 object-cover rounded border'
-                    onError={(e) => (e.target.src = '/images/fallback-image.jpg')}
-                  />
-                  <div className='flex-1'>
-                    <h4 className='font-medium text-sm sm:text-base'>{item.name}</h4>
-                    <p className='text-sm text-gray-600'>Product ID: {item.productId}</p>
-                    <p className='text-sm'>Quantity: {item.quantity}</p>
-                    <p className='text-sm font-semibold'>
-                      Price: Tk {item.price}
-                    </p>
-                    <p className='text-sm font-semibold'>
-                      Subtotal: Tk {(item.price * item.quantity).toFixed(2)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-              <p className='text-base font-semibold mt-4'>
-                Total: Tk {calculateTotal()}
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
+          <div className="flex gap-4">
+            <img
+              src={`${API_BASE_URL}/images/${product.imagea}`}
+              alt={product.name}
+              className="w-24 h-24 object-cover border"
+            />
+            <div>
+              <h4 className="font-medium">{product.name}</h4>
+              <p className="text-sm text-gray-600">Product ID: {product.productid}</p>
+              <p className="text-sm">Quantity: {quantity}</p>
+              <p className="text-sm font-bold">
+                Price: Tk {product.specialprice || product.regularprice}
+              </p>
+              <p className="text-sm font-bold">
+                Total: Tk {(product.specialprice || product.regularprice) * quantity}
               </p>
             </div>
-          ) : (
-            <div className='flex gap-4'>
-              <img
-                src={`${API_BASE_URL}/images/${product.imagea}`}
-                alt={product.name}
-                className='w-20 h-20 object-cover rounded border'
-                onError={(e) => (e.target.src = '/images/fallback-image.jpg')}
-              />
-              <div className='flex-1'>
-                <h4 className='font-medium text-sm sm:text-base'>{product.name}</h4>
-                <p className='text-sm text-gray-600'>Product ID: {product.productid}</p>
-                <p className='text-sm'>Quantity: {quantity}</p>
-                <p className='text-sm font-semibold'>
-                  Price: Tk {product.specialprice || product.regularprice}
-                </p>
-                <p className='text-sm font-semibold'>
-                  Total: Tk {calculateTotal()}
-                </p>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
 
         {/* Shipping Address Form */}
-        <div className='bg-white p-4 sm:p-6 rounded-lg shadow-sm'>
-          <h3 className='text-lg font-semibold mb-4'>Shipping Address</h3>
-          <form onSubmit={handleFormSubmit} className='space-y-4'>
-            <div>
-              <label htmlFor='districts' className='block text-sm font-medium text-gray-700'>
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Shipping Address</h3>
+          <form onSubmit={handleFormSubmit}>
+            <div className="mb-4">
+              <label htmlFor="districts" className="block text-sm font-medium text-gray-700">
                 District
               </label>
               <select
-                id='districts'
-                name='districts'
+                id="districts"
+                name="districts"
                 value={orderForm.districts}
                 onChange={handleFormChange}
-                className='mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-green-200 text-gray-900 bg-white'
+                className="mt-1 p-2 block w-full border rounded-md focus:ring focus:ring-green-200 text-gray-900 bg-white appearance-auto"
                 required
                 disabled={loadingDistricts || districts.length === 0}
-                aria-label='Select District'
               >
-                <option value=''>Select District</option>
+                <option value="" className="text-gray-900">Select District</option>
                 {districts.map((district) => (
-                  <option key={district.id} value={district.id}>
+                  <option key={district.id} value={district.id} className="text-gray-900">
                     {district.name}
                   </option>
                 ))}
               </select>
-              {loadingDistricts && <p className='text-sm text-gray-500 mt-1'>Loading districts...</p>}
+              {loadingDistricts && <p className="text-sm text-gray-500 mt-1">Loading districts...</p>}
               {!loadingDistricts && districts.length === 0 && (
-                <p className='text-sm text-red-500 mt-1'>No districts available</p>
+                <p className="text-sm text-red-500 mt-1">No districts available</p>
               )}
             </div>
-            <div>
-              <label htmlFor='upazila' className='block text-sm font-medium text-gray-700'>
+            <div className="mb-4">
+              <label htmlFor="upazila" className="block text-sm font-medium text-gray-700">
                 Upazila
               </label>
               <select
-                id='upazila'
-                name='upazila'
+                id="upazila"
+                name="upazila"
                 value={orderForm.upazila}
                 onChange={handleFormChange}
-                className='mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-green-200 text-gray-900 bg-white'
+                className="mt-1 p-2 block w-full border rounded-md focus:ring focus:ring-green-200 text-gray-900 bg-white appearance-auto"
                 required
                 disabled={loadingUpazilas || !orderForm.districts || upazilas.length === 0}
-                aria-label='Select Upazila'
               >
-                <option value=''>Select Upazila</option>
+                <option value="" className="text-gray-900">Select Upazila</option>
                 {upazilas.map((upazila) => (
-                  <option key={upazila.id} value={upazila.id}>
+                  <option key={upazila.id} value={upazila.id} className="text-gray-900">
                     {upazila.name}
                   </option>
                 ))}
               </select>
-              {loadingUpazilas && <p className='text-sm text-gray-500 mt-1'>Loading upazilas...</p>}
+              {loadingUpazilas && <p className="text-sm text-gray-500 mt-1">Loading upazilas...</p>}
               {!loadingUpazilas && orderForm.districts && upazilas.length === 0 && (
-                <p className='text-sm text-red-500 mt-1'>No upazilas available</p>
+                <p className="text-sm text-red-500 mt-1">No upazilas available for selected district</p>
               )}
             </div>
-            <div>
-              <label htmlFor='address' className='block text-sm font-medium text-gray-700'>
+            <div className="mb-4">
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
                 Address
               </label>
               <textarea
-                id='address'
-                name='address'
+                id="address"
+                name="address"
                 value={orderForm.address}
                 onChange={handleFormChange}
-                className='mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-green-200 text-gray-900 bg-white'
+                className="mt-1 p-2 block w-full border rounded-md focus:ring focus:ring-green-200 text-gray-900 bg-white"
                 required
-                rows='4'
-                aria-label='Shipping Address'
               />
             </div>
-            <div className='flex justify-end gap-3'>
+            <div className="flex justify-end gap-2">
               <button
-                type='button'
-                className='bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 text-sm font-medium'
+                type="button"
+                className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
                 onClick={() => navigate(-1)}
-                aria-label='Cancel checkout'
               >
                 Cancel
               </button>
               <button
-                type='submit'
-                className='bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-medium'
+                type="submit"
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
                 disabled={loadingDistricts || loadingUpazilas}
-                aria-label='Confirm order'
               >
                 Confirm Order
               </button>
@@ -380,9 +305,9 @@ const CartCheckoutPage = () => {
           </form>
         </div>
       </div>
-      <Toaster position='top-right' toastOptions={{ className: 'text-sm' }} />
+      <Toaster position="top-right"/>
     </div>
   );
 };
 
-export default CartCheckoutPage;  
+export default CheckoutPage;

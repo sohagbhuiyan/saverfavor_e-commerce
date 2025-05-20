@@ -56,10 +56,15 @@ import BrandProductPage from './components/user/body/BrandProductPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { fetchCartItemsAsync, initializeCart } from './store/cartSlice';
-import CartCheckoutPage from './components/user/product/CheckOutPage';
+
 import Branch from './components/user/body/Branch';
 import AddBranch from './components/admin/dashboard/AddBranch';
 import AddAboutUs from './components/admin/footer/AddAboutUs';
+import PcPartView from './components/user/pcbuilder/PcPartView';
+import CartCheckoutPage from './components/user/product/CartCheckOutPage';
+import CCBuilderPage from './components/user/ccbuilder/CCBuilderPage';
+import AddCCBuilder from './components/admin/systemBuild/AddCCBuilder';
+import CCItemsDetailsAdd from './components/admin/systemBuild/CCItemsDetailsAdd';
 
 
 function App() { 
@@ -93,7 +98,9 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="compare" element={<ComparePage />} />
           <Route path="/pc-builder" element={<PCBuilderPage />} />
+          <Route path="/cc-builder" element={<CCBuilderPage />} />
           <Route path="/pc-builder/:categoryName" element={<ComponentProductsPage />} />
+          <Route path="/pc-builder/pc-part/:id" element={<PcPartView />} />
           <Route path="/brand/:id/products" element={<BrandProductPage />} />
           <Route path="/branch" element={<Branch />} />
 
@@ -125,13 +132,15 @@ function App() {
             <Route path="/admin/add-aboutus" element={<AddAboutUs />} /> 
             <Route path="admin/products/add-category" element={<AddCategory />} />
             <Route path="/admin/products/view-categories" element={<ViewCategories />} />
-            <Route path="admin/products/view-product" element={<ViewProduct />} />
-            <Route path="admin/products/add-product" element={<AddProduct />} />
-            <Route path="admin/orders" element={<OrderManagement />} />
-            <Route path="admin/customers" element={<CustomerManagement />} />
-            <Route path="admin/payments" element={<PaymentManagement />} />
-            <Route path="admin/Pc-Builder" element={<PCBuilder />} />
-            <Route path="admin/Pc-builder/ViewSystemBuilder" element={<ViewSystemBuilder />} />
+            <Route path="/admin/products/view-product" element={<ViewProduct />} />
+            <Route path="/admin/products/add-product" element={<AddProduct />} />
+            <Route path="/admin/orders" element={<OrderManagement />} />
+            <Route path="/admin/customers" element={<CustomerManagement />} />
+            <Route path="/admin/payments" element={<PaymentManagement />} />
+            <Route path="/admin/Pc-Builder" element={<PCBuilder />} />
+            <Route path="/admin/add-cc-builder" element={<AddCCBuilder />} />
+            <Route path="/admin/Pc-builder/ViewSystemBuilder" element={<ViewSystemBuilder />} />
+            <Route path="/admin/add-cc-item-details" element={<CCItemsDetailsAdd />} />
           </Route>
 
           {/* Fallback Route */}

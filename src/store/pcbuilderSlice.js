@@ -1,4 +1,3 @@
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API_BASE_URL } from "./api";
@@ -6,14 +5,9 @@ import { API_BASE_URL } from "./api";
 // Async thunk to fetch all PC components
 export const fetchPCComponents = createAsyncThunk(
   "pcBuilder/fetchPCComponents",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state = getState();
-      const token = state.auth.token || localStorage.getItem("authToken");
-      if (!token) return rejectWithValue("No authentication token found.");
-
       const response = await axios.get(`${API_BASE_URL}/api/PcBuilder/Allget`, {
-        headers: { Authorization: `Bearer ${token}` },
       });
 
       const components = response.data;
@@ -38,7 +32,7 @@ export const fetchPCPartsByBuilderId = createAsyncThunk(
     try {
 
       const response = await axios.get(`${API_BASE_URL}/api/PcForPartAdd/getPcBuilder/Byid/${id}`, {
-
+       
       });
 
       const parts = response.data;
@@ -63,7 +57,7 @@ export const fetchPCParts = createAsyncThunk(
     try {
    
       const response = await axios.get(`${API_BASE_URL}/api/PcForPartAdd/get`, {
-    
+       
       });
 
       const parts = response.data;
@@ -77,6 +71,27 @@ export const fetchPCParts = createAsyncThunk(
     } catch (error) {
       console.error("Fetch PC parts error:", error.response?.data);
       return rejectWithValue(error.response?.data?.message || "Failed to fetch PC parts");
+    }
+  }
+);
+
+// Async thunk to fetch single PC part by ID
+export const fetchPCPartsById = createAsyncThunk(
+  "pcBuilder/fetchPCPartsById",
+  async (id, { rejectWithValue }) => {
+    try {
+   
+      const response = await axios.get(`${API_BASE_URL}/api/PcForPartAdd/get/${id}`, {
+      });
+      const part = response.data;
+      if (!part || typeof part !== "object") {
+        return rejectWithValue("Invalid response: Part data is not valid.");
+      }
+      part.imagea = part.imagea || null;
+      return part;
+    } catch (error) {
+      console.error("Fetch PC part by ID error:", error.response?.data);
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch PC part");
     }
   }
 );
@@ -154,6 +169,7 @@ const pcbuilderSlice = createSlice({
     components: [],
     parts: [],
     categoryParts: [],
+    currentPart: null, // Added to store single part
     loading: { component: false, part: false, categoryParts: false },
     error: { component: null, part: null, categoryParts: null },
     successMessage: { component: null, part: null },
@@ -207,6 +223,20 @@ const pcbuilderSlice = createSlice({
         state.parts = action.payload;
       })
       .addCase(fetchPCParts.rejected, (state, action) => {
+        state.loading.part = false;
+        state.error.part = action.payload;
+      })
+      // Fetch single PC Part by ID
+      .addCase(fetchPCPartsById.pending, (state) => {
+        state.loading.part = true;
+        state.error.part = null;
+        state.currentPart = null; // Reset currentPart
+      })
+      .addCase(fetchPCPartsById.fulfilled, (state, action) => {
+        state.loading.part = false;
+        state.currentPart = action.payload; // Store in currentPart
+      })
+      .addCase(fetchPCPartsById.rejected, (state, action) => {
         state.loading.part = false;
         state.error.part = action.payload;
       })

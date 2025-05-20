@@ -1,3 +1,4 @@
+// src/components/PCBuilderCard.jsx
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { FaShoppingCart, FaExchangeAlt, FaHeart, FaEye, FaTimes } from "react-icons/fa";
@@ -10,7 +11,7 @@ import { API_BASE_URL } from "../../../store/api";
 
 const FALLBACK_IMAGE = "/images/placeholder.png";
 
-const PCBuilderCard = ({
+const PcBuilderCard = ({
   id,
   imagea,
   name,
@@ -64,17 +65,16 @@ const PCBuilderCard = ({
   }, [cartStatus, cartError]);
 
   const handleProductClick = (e) => {
-    if (isMobile) {
-      if (!showMobileIcons) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      setShowMobileIcons(!showMobileIcons);
+    if (isMobile && !showMobileIcons) {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowMobileIcons(true);
     }
   };
 
   const handleIconAction = (callback) => (e) => {
     e.preventDefault();
+    e.stopPropagation(); // Prevent Link navigation
     callback(e);
     if (isMobile) setShowMobileIcons(false);
   };
@@ -130,9 +130,13 @@ const PCBuilderCard = ({
     toast.success("Added to compare!", { position: "top-right" });
   });
 
+  const handleQuickView = handleIconAction(() => {
+    setIsQuickViewOpen(true);
+  });
+
   return (
     <>
-      <Link to={`/pc-part/${id}`} className="block" onClick={handleProductClick}>
+      <Link to={`/pc-builder/pc-part/${id}`} className="block" onClick={handleProductClick}>
         <div
           className={`border border-gray-400 rounded-lg p-3 shadow-md hover:shadow-xl transition-all duration-400 bg-white relative ${
             isHovered ? "md:scale-105" : "scale-100"
@@ -145,7 +149,7 @@ const PCBuilderCard = ({
               src={imagea ? `${API_BASE_URL}/images/${imagea}` : FALLBACK_IMAGE}
               alt={name}
               className={`w-full h-40 md:h-48 object-contain rounded-md transition-transform duration-600 ${
-                isHovered ? "scale-118" : "scale-100"
+                isHovered ? "scale-110" : "scale-100"
               }`}
               onError={(e) => (e.target.src = FALLBACK_IMAGE)}
               loading="lazy"
@@ -159,23 +163,15 @@ const PCBuilderCard = ({
                   <button
                     key={action}
                     className="p-1 bg-white text-gray-600 border border-gray-600 hover:cursor-pointer rounded-full shadow-sm hover:bg-gray-700 hover:text-white transition-colors duration-200"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      switch (idx) {
-                        case 0:
-                          handleAddToCart(e);
-                          break;
-                        case 1:
-                          handleAddToCompare(e);
-                          break;
-                        case 2:
-                          handleAddToWishlist(e);
-                          break;
-                        case 3:
-                          setIsQuickViewOpen(true);
-                          break;
-                      }
-                    }}
+                    onClick={
+                      idx === 0
+                        ? handleAddToCart
+                        : idx === 1
+                        ? handleAddToCompare
+                        : idx === 2
+                        ? handleAddToWishlist
+                        : handleQuickView
+                    }
                     aria-label={`${action} ${name}`}
                   >
                     {[<FaShoppingCart />, <FaExchangeAlt />, <FaHeart />, <FaEye />][idx]}
@@ -263,4 +259,4 @@ const PCBuilderCard = ({
   );
 };
 
-export default PCBuilderCard;
+export default PcBuilderCard;

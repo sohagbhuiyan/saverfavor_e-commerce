@@ -11,6 +11,7 @@ import heroReducer from "./heroSlice";
 import infoReducer from "./infoSlice";
 import { brandReducer } from "./brandSlice";
 import branchReducer from "./branchSlice";
+import ccbuilderReducer from './ccbuilderSlice';
 
 export const store = configureStore({
   reducer: {
@@ -25,6 +26,7 @@ export const store = configureStore({
     pcBuilder: pcBuilderReducer,
     hero: heroReducer,
     info: infoReducer,
-    branch: branchReducer,    
+    branch: branchReducer, 
+    ccBuilder: ccbuilderReducer, 
   },
 });

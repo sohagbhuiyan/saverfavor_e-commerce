@@ -1,3 +1,4 @@
+// src/components/ComponentProductsPage.jsx
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -31,7 +32,7 @@ const ComponentProductsPage = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: "1200px", px: { xs: 1, sm: 2 }, py: 4 }}>
+    <Box sx={{ maxWidth: "1200px", px: { xs: 1, sm: 2 }, py: 4, mx: "auto" }}>
       <Typography variant="h4" fontWeight="bold" mb={4}>
         {selectedCategory ? `${selectedCategory.name} Parts` : "Category Not Found"}
       </Typography>

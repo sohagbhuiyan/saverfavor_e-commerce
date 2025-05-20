@@ -201,9 +201,32 @@ const AdminSidebar = () => {
               isActive("admin/Pc-Builder") ? "bg-gray-700 text-blue-400" : "hover:text-gray-400"
             }`}
           >
-            <BuildCircleRounded className="mr-2" /> PC Builder
+            <BuildCircleRounded className="mr-2" />Add PC Builder
           </Link>
         </li>
+      {/* CC Builder */}
+        <li>
+          <Link
+            to="/admin/add-cc-builder"
+            className={`flex items-center p-2 rounded-md ${
+              isActive("/admin/add-cc-builder") ? "bg-gray-700 text-blue-400" : "hover:text-gray-400"
+            }`}
+          >
+            <BuildCircleRounded className="mr-2" />Add CC Builder
+          </Link>
+        </li>
+              {/* CC Builder details add */}
+        <li>
+          <Link
+            to="/admin/add-cc-item-details"
+            className={`flex items-center p-2 rounded-md ${
+              isActive("/admin/add-cc-item-details") ? "bg-gray-700 text-blue-400" : "hover:text-gray-400"
+            }`}
+          >
+            <BuildCircleRounded className="mr-2" />Add CC Item Details
+          </Link>
+        </li>
+
         <li>
           <Link
             to="/admin/Pc-builder/ViewSystemBuilder"
