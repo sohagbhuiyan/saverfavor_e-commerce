@@ -7,7 +7,7 @@ const DesktopMenu = ({ menuItems }) => {
   const [showMoreItems, setShowMoreItems] = useState(false);
   const [hoverMoreItemIndex, setHoverMoreItemIndex] = useState(null);
 
-  const firstTenItems = menuItems.slice(0, 10);
+  const firstTenItems = menuItems.slice(0, 12);
   const remainingItems = menuItems.slice(10);
 
   const columnClass = remainingItems.length > 6 ? "grid-cols-3" : "grid-cols-2";

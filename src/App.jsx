@@ -65,7 +65,9 @@ import CartCheckoutPage from './components/user/product/CartCheckOutPage';
 import CCBuilderPage from './components/user/ccbuilder/CCBuilderPage';
 import AddCCBuilder from './components/admin/systemBuild/AddCCBuilder';
 import CCItemsDetailsAdd from './components/admin/systemBuild/CCItemsDetailsAdd';
-
+import CComponentProductsPageCC from './components/user/ccbuilder/CComponentProductsPageCC'
+import CCItemDetailsByItemPage from './components/user/ccbuilder/CCItemDetailsByItemPage';
+import CCPartView from './components/user/ccbuilder/CCPartView';
 
 function App() { 
   const dispatch = useDispatch();
@@ -98,9 +100,13 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="compare" element={<ComparePage />} />
           <Route path="/pc-builder" element={<PCBuilderPage />} />
-          <Route path="/cc-builder" element={<CCBuilderPage />} />
           <Route path="/pc-builder/:categoryName" element={<ComponentProductsPage />} />
           <Route path="/pc-builder/pc-part/:id" element={<PcPartView />} />
+          {/* cc builder */}
+          <Route path="/cc-builder" element={<CCBuilderPage />} />
+          <Route path="/cc-builder/:ccBuilderId/item-details" element={<CComponentProductsPageCC />} />
+          <Route path="/cc-builder/item/:itemId/details" element={<CCItemDetailsByItemPage />} />
+          <Route path="/cc-builder/item-details/:id" element={<CCPartView />} />
           <Route path="/brand/:id/products" element={<BrandProductPage />} />
           <Route path="/branch" element={<Branch />} />
 

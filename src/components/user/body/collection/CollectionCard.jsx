@@ -136,7 +136,7 @@ const CollectionCard = ({
           onMouseEnter={() => !isMobile && setIsHovered(true)}
           onMouseLeave={() => !isMobile && setIsHovered(false)}
         > 
-          <div className="relative p-1 md:p-2 overflow-hidden rounded-md">
+          <div className="relative p-1 overflow-hidden rounded-md">
             <img
               src={imagea}
               alt={name}
@@ -170,11 +170,11 @@ const CollectionCard = ({
             )}
           </div>
 
-          <div className="mt-2 text-center space-y-1">
+          <div className=" text-center mt-2 space-y-1">
             <h3 className="text-sm font-semibold text-gray-700 truncate">{name}</h3>
             <p className="text-xs text-gray-600 line-clamp-2 min-h-[2rem]">{category}</p>
             <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem]">{title}</p>
-             <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem]">{brandname}</p>
+             {/* <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem]">{brandname}</p> */}
             <p className="text-xs text-gray-600 line-clamp-2 min-h-[1.5rem]">{product}</p>
             <div className="flex flex-col items-center justify-center">
               <span className="text-sm font-bold text-gray-900">{formatPrice(currentPrice)}</span>

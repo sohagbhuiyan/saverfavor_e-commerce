@@ -50,7 +50,7 @@ export const getAboutUsById = createAsyncThunk(
       if (!token) {
         return rejectWithValue('No authentication token found.');
       }
-      const response = await axios.get(`${API_BASE_URL}/api/aboutus/getID/${id}`, {
+      const response = await axios.get(`${API_BASE_URL}/api/aboutus/get/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
